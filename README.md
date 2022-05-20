@@ -10,6 +10,4 @@
 
 ## Special Thanks to:
 
-1. [Esther Carelle](https://github.com/esthcarelle) for her wonderful feedback✨.
-2. 
-
+1. [Esther Carelle](https://github.com/esthcarelle) for her support and feedback
