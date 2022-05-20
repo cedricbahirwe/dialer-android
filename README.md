@@ -5,7 +5,7 @@
 ## Intro:
 
 ### An intuitive USSD client to handle most of the common actions for you.
-### Access Rwanda network providers USSD codes, and simplify the time complexity to activate packages. 
+### Access Rwanda Network providers USSD codes, and simplify packages activation nightmare.
 
 ## Features:
 * Check [Dialer iOS](https://github.com/cedricbahirwe/dialer) to learn more
