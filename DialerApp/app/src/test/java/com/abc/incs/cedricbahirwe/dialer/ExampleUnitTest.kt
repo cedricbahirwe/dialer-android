@@ -1,4 +1,4 @@
-package com.abcincs.dialer
+package com.abc.incs.cedricbahirwe.dialer
 
 import org.junit.Test
 
