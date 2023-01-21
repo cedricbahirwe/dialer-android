@@ -27,9 +27,9 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
-                    DashBoardItem("Android")
+                    DashBoardItem("Buy airtime")
                 }
             }
         }
@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DashBoardItem(name: String) {
-    Surface(color = MaterialTheme.colors.background) {
+    Surface(color = Color.White) {
         Text(text = "$name",
         modifier = Modifier.padding(16.dp),
             color = Color.DarkGray
