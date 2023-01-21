@@ -35,8 +35,9 @@ Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id159
 - Kotlin
 
 ## Screenshots
-
-- Coming soon 🔜
+Home Light                 |  Home Dark
+:-------------------------:|:-------------------------:
+![](https://user-images.githubusercontent.com/49038614/213887217-57aa4874-2b1c-4ea8-8318-a682f1615557.jpg)  |  ![](https://user-images.githubusercontent.com/49038614/213887252-28e07ed7-9f33-4806-990e-4c46a13c4bda.jpg)
 
 ## Demo:
 * Download [Dialer iOS](https://apps.apple.com/ke/app/dial-it/id1591756747) to learn more
