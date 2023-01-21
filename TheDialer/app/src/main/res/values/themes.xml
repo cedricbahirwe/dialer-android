@@ -2,6 +2,6 @@
 <resources>
 
     <style name="Theme.Dialer" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@android:color/background_dark</item>
     </style>
 </resources>
