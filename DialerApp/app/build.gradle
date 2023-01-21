@@ -32,6 +32,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.abc.incs.cedricbahirwe.dialer'
 }
 
 dependencies {
