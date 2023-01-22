@@ -29,7 +29,7 @@ class SendingActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    FieldsContainer("Android")
+                    FieldsContainer()
                 }
             }
         }
@@ -37,7 +37,7 @@ class SendingActivity : ComponentActivity() {
 }
 
 @Composable
-fun FieldsContainer(name: String) {
+fun FieldsContainer() {
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
     Box {
@@ -136,8 +136,8 @@ fun FieldsContainer(name: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview2() {
+fun SendingActivityPreview() {
     DialerTheme {
-        FieldsContainer("Android")
+        FieldsContainer()
     }
 }
