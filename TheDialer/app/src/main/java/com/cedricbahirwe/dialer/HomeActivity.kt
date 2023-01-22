@@ -50,7 +50,7 @@ class HomeActivity : ComponentActivity() {
 fun TitleView(title: String) {
     Row {
         Text(
-            "Dialer",
+            title,
             modifier = Modifier.padding(vertical = 15.dp),
             color = MaterialTheme.colors.primary,
             fontSize = 30.sp,

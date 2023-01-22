@@ -6,22 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
-import com.cedricbahirwe.dialer.ui.theme.MainRed
 
 class SendingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +38,8 @@ class SendingActivity : ComponentActivity() {
 
 @Composable
 fun FieldsContainer(name: String) {
-    val state = remember { true }
+    var amount by remember { mutableStateOf(TextFieldValue("")) }
+    var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
     Box {
         Column(
             modifier = Modifier
@@ -50,29 +47,39 @@ fun FieldsContainer(name: String) {
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-
             TitleView("Transfer Money")
 
-            val itemModifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .weight(1f)
-                .align(Alignment.Start)
-                .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
-                .background(MaterialTheme.colors.background)
-                .padding(10.dp)
-            Row {
-                DashBoardItem(R.drawable.wallet_pass, "Buy airtime", modifier = itemModifier)
-                Spacer(modifier = Modifier.width(16.dp))
-                DashBoardItem(R.drawable.paperplane_circle, "Transfer/Pay", modifier = itemModifier)
-            }
+            Column {
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = { newValue ->
+                        amount = newValue
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = {
+                        Text("Amount")
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    placeholder = { Text(text = "Enter Amount") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.primary, focusedBorderColor = Color.Blue),
+                    singleLine = true
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                DashBoardItem(R.drawable.clock_arrow_circlepath, "History", modifier = itemModifier)
-                Spacer(modifier = Modifier.width(16.dp))
-                DashBoardItem(R.drawable.wrench_and_screwdriver, "My Space", modifier = itemModifier)
+                Spacer(Modifier.padding(vertical = 8.dp))
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = { newValue ->
+                        phoneNumber = newValue
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = {
+                        Text("Phone Number")
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    placeholder = { Text(text = "Enter Receiver's number") },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.primary, focusedBorderColor = Color.Blue),
+                    singleLine = true
+                )
             }
 
 
@@ -87,7 +94,9 @@ fun FieldsContainer(name: String) {
             Column(Modifier.padding(vertical = 16.dp)) {
                 Button(
                     onClick = {},
-                    Modifier.fillMaxWidth().height(48.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.White,
                         contentColor = Color.Blue
@@ -106,9 +115,12 @@ fun FieldsContainer(name: String) {
 
                 Button(
                     onClick = {},
-                    Modifier.fillMaxWidth().height(48.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Blue,
+                        contentColor = Color.White
                     ),
                     elevation = btnElevation,
                     shape = RoundedCornerShape(8.dp)
