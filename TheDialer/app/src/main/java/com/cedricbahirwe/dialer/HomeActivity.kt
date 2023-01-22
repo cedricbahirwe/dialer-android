@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +43,23 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TitleView(title: String) {
+    Row {
+        Text(
+            title,
+            modifier = Modifier.padding(vertical = 15.dp),
+            color = MaterialTheme.colors.primary,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.ExtraBold,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
@@ -85,17 +103,7 @@ fun DashBoardContainer() {
             .padding(10.dp)
     ) {
 
-        Row {
-            Text(
-                "Dialer",
-                modifier = Modifier.padding(vertical = 15.dp),
-                color = MaterialTheme.colors.primary,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-        }
+        TitleView("Dialer")
 
         val itemModifier = Modifier
             .fillMaxWidth()
