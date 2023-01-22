@@ -12,6 +12,11 @@
         android:theme="@style/Theme.Dialer"
         tools:targetApi="31">
         <activity
+            android:name=".SendingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sending"
+            android:theme="@style/Theme.Dialer" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
