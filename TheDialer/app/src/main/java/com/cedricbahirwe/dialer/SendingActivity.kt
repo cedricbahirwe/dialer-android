@@ -13,6 +13,7 @@ import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -108,7 +109,7 @@ fun FieldsContainer() {
                         Icons.Rounded.Person,
                         contentDescription = "Pick Contact icon"
                     )
-                    Text("Pick a contact", Modifier.padding(start = 10.dp))
+                    Text(stringResource(R.string.pick_contact_text), Modifier.padding(start = 10.dp))
                 }
 
                 Spacer(Modifier.padding(10.dp))
@@ -125,7 +126,7 @@ fun FieldsContainer() {
                     elevation = btnElevation,
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Dial USSD", Modifier.padding(start = 1.dp))
+                    Text(stringResource(R.string.dial_ussd_text), Modifier.padding(start = 1.dp))
                 }
             }
 
