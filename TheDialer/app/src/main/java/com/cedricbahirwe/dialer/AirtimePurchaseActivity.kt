@@ -117,49 +117,7 @@ fun PurchaseDetail() {
 
        PinView("*182#")
 
-//        Spacer(modifier = Modifier.weight(1.0f))
-    }
-}
-
-@Composable
-private fun PinView(input: String, isFullMode: Boolean = false, btnSize: Float = 60f) {
-    val buttons = remember {
-        listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "*", "0","#".takeIf { isFullMode } ?: "X" )
-    }
-    fun addKey(key: String) {
-        println("The new input is ${input+key}")
-    }
-
-    LazyVerticalGrid(columns = GridCells.Fixed(3),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        items(buttons.size) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircleButton(
-                    title = buttons[it],
-                    size = btnSize
-                ) {
-                    addKey(buttons[it])
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CircleButton(title: String, size: Float, action: () -> Unit) {
-    OutlinedButton(onClick = action,
-        modifier= Modifier.size(size.dp),
-        shape = CircleShape,
-        border= null,
-        contentPadding = PaddingValues(0.dp),
-        colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Gray.copy(0.2f))
-    ) {
-        Text(text = title,
-            Modifier.padding(start = 1.dp),
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold)
+        Spacer(modifier = Modifier.weight(1.0f))
     }
 }
 
