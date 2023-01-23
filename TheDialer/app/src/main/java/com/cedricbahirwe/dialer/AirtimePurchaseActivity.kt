@@ -7,9 +7,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -23,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 
 class AirtimePurchaseActivity : ComponentActivity() {
@@ -116,7 +112,7 @@ fun PurchaseDetail() {
 
         Spacer(Modifier.padding(8.dp))
 
-       PinView("*182#")
+        PinView("*182#")
     }
 }
 
@@ -124,8 +120,10 @@ fun PurchaseDetail() {
 @Composable
 fun AirtimePurchasePreview() {
     DialerTheme {
-        Surface(modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
             PurchaseDetail()
         }
     }
