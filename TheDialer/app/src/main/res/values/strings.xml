@@ -3,4 +3,5 @@
     <string name="title_activity_sending">SendingActivity</string>
     <string name="dial_ussd_text">Dial USSD</string>
     <string name="pick_contact_text">Pick a contact</string>
+    <string name="title_activity_airtimer_purchase">AirtimerPurchaseActivity</string>
 </resources>
