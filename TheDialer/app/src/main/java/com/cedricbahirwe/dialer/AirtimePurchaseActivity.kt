@@ -49,7 +49,8 @@ fun PurchaseDetail() {
         modifier = Modifier
             .background(MaterialTheme.colors.background)
             .fillMaxWidth()
-            .padding(10.dp)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.Center
     ) {
 
         Column {
@@ -105,7 +106,7 @@ fun PurchaseDetail() {
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.primary,
-                contentColor = Color.White
+                contentColor = MaterialTheme.colors.background
             ),
             elevation = btnElevation,
             shape = RoundedCornerShape(8.dp)
@@ -116,8 +117,6 @@ fun PurchaseDetail() {
         Spacer(Modifier.padding(8.dp))
 
        PinView("*182#")
-
-        Spacer(modifier = Modifier.weight(1.0f))
     }
 }
 
@@ -125,6 +124,9 @@ fun PurchaseDetail() {
 @Composable
 fun AirtimePurchasePreview() {
     DialerTheme {
-        PurchaseDetail()
+        Surface(modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background) {
+            PurchaseDetail()
+        }
     }
 }
