@@ -3,7 +3,6 @@ package com.cedricbahirwe.dialer.model
 import com.cedricbahirwe.dialer.model.protocol.Identifiable
 import java.util.*
 
-//data class Transaction()
 data class Transaction(
     var amount: String,
     var number: String,
