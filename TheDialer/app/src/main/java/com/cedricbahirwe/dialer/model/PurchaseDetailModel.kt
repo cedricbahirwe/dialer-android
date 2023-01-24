@@ -12,9 +12,8 @@ data class PurchaseDetailModel(var amount: Int = 0, var type: CodeType = CodeTyp
         }
     }
 
-    companion object {
-        val example = PurchaseDetailModel()
-        private const val prefixCode = "*18*2*2*1*1*1*"
+    private companion object {
+        const val prefixCode = "*18*2*2*1*1*1*"
     }
 
     enum class CodeType(val value: String) {

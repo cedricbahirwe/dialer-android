@@ -26,9 +26,5 @@ data class RecentDialCode(
     fun increaseCount() {
         count += 1
     }
-
-    companion object {
-        val example = RecentDialCode(detail = PurchaseDetailModel.example)
-    }
 }
 

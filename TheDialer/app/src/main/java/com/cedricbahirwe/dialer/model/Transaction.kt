@@ -42,7 +42,7 @@ data class Transaction(
         CLIENT, MERCHANT
     }
 
-    companion object {
+    private companion object {
         val transactionFees =
             mapOf(0..1000 to 20, 1001..10000 to 100, 10001..150000 to 250, 150001..2000000 to 1500)
     }

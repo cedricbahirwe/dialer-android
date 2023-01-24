@@ -9,13 +9,9 @@ data class USSDCode(
     var ussd: String
 ) : Identifiable<UUID> {
 
-    companion object {
-        private const val STAR_SYMBOL = '*'
-        private const val HASH_SYMBOL = '#'
-
-        fun equals(lhs: USSDCode, rhs: USSDCode): Boolean {
-            return lhs.ussd == rhs.ussd || lhs.title == rhs.title
-        }
+    private companion object {
+        const val STAR_SYMBOL = '*'
+        const val HASH_SYMBOL = '#'
     }
 
     constructor(title: String, ussd: String) : this(UUID.randomUUID(), title, ussd) {
