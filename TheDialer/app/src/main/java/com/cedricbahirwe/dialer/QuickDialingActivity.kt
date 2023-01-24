@@ -52,7 +52,7 @@ fun QuickDialingView() {
             modifier = Modifier
                 .background(Color.Black)
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -79,7 +79,7 @@ fun QuickDialingView() {
                     .size(80.dp)
                     .wrapContentWidth(Alignment.CenterHorizontally),
                 contentDescription = "Dialer Logo",
-                )
+            )
 
             Spacer(modifier = Modifier.weight(1f))
             Text(
@@ -89,7 +89,7 @@ fun QuickDialingView() {
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
-            
+
             Spacer(modifier = Modifier.weight(1f))
 
             PinView(
@@ -145,7 +145,7 @@ fun QuickDialingView() {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview2() {
+fun QuickDialingPreview() {
     DialerTheme {
         QuickDialingView()
     }
