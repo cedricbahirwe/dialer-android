@@ -17,11 +17,6 @@
             android:label="@string/title_activity_pin_view"
             android:theme="@style/Theme.Dialer" />
         <activity
-            android:name=".AirtimerPurchaseActivity"
-            android:exported="false"
-            android:label="@string/title_activity_airtimer_purchase"
-            android:theme="@style/Theme.Dialer" />
-        <activity
             android:name=".SendingActivity"
             android:exported="false"
             android:label="@string/title_activity_sending"
