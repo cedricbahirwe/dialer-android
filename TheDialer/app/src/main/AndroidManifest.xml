@@ -12,6 +12,11 @@
         android:theme="@style/Theme.Dialer"
         tools:targetApi="31">
         <activity
+            android:name=".QuickDialingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_quick_dialing"
+            android:theme="@style/Theme.Dialer" />
+        <activity
             android:name=".PinView"
             android:exported="false"
             android:label="@string/title_activity_pin_view"
