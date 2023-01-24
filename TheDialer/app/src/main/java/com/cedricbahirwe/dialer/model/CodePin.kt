@@ -1,5 +1,8 @@
 package com.cedricbahirwe.dialer.model
 
+import android.content.res.Resources
+import com.cedricbahirwe.dialer.R
+
 // https://www.gsmarena.com/glossary.php3?term=pin-code
 data class CodePin(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int) {
 
@@ -58,7 +61,10 @@ data class CodePin(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int) {
 }
 
 private sealed class ValidationError(override val message: String) : Throwable() {
-    class InvalidCharacters : ValidationError("The code pin must be composed of digits.")
+    private companion object {
+        val context: Resources = Resources.getSystem()
+    }
+    class InvalidCharacters : ValidationError(context.getString(R.string.pin_chars_invalid))
     class InvalidCount(count: Int) :
-        ValidationError("The code pin must be 5 digits, Found $count digits.")
+        ValidationError(context.getString(R.string.pin_count_invalid, count))
 }

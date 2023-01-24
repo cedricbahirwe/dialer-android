@@ -1,5 +1,6 @@
 package com.cedricbahirwe.dialer.model
 
+import android.content.res.Resources
 import androidx.compose.foundation.Image
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.model.protocol.Identifiable
 import java.util.*
 
@@ -24,67 +26,71 @@ enum class SettingsOption {
     DELETE_PIN,
     DELETE_ALL_USSD;
 
+    private companion object {
+        val context: Resources = Resources.getSystem()
+    }
+
     fun getSettingsItem(): SettingsItem {
         return when (this) {
             CHANGE_LANGUAGE -> SettingsItem(
                 Icons.Rounded.Create,
                 Color.Black.copy(0.7f),
-                "Change Language",
-                "Select your desired language."
+                context.getString(R.string.change_language_title),
+                context.getString(R.string.change_language_description)
             )
             BIOMETRICS -> SettingsItem(
                 Icons.Rounded.ThumbUp,
                 Color.Green,
-                "Biometric Authentication",
-                "For securing your activities on the app."
+                context.getString(R.string.biometric_title),
+                context.getString(R.string.biometric_description)
             )
             DELETE_PIN -> SettingsItem(
                 Icons.Rounded.AddCircle,
                 Color.Red,
-                "Remove Pin",
-                "You'll need to re-enter it later."
+                context.getString(R.string.remove_pin_title),
+                context.getString(R.string.remove_pin_description)
             )
             DELETE_ALL_USSD -> SettingsItem(
                 Icons.Rounded.Delete,
                 Color.Red.copy(0.9f),
-                "Delete All USSD codes",
-                "This action can not be undone."
+                context.getString(R.string.delete_ussd_title),
+                context.getString(R.string.delete_ussd_description)
             )
             GET_STARTED -> SettingsItem(
                 Icons.Rounded.Star,
                 Color.Blue,
-                "Just getting started?",
-                "Read our quick start blog post."
+                context.getString(R.string.getting_started_title),
+                context.getString(R.string.getting_started_description)
             )
             CONTACT_US -> SettingsItem(
                 Icons.Rounded.Phone,
                 Color.Yellow,
-                "Contact Us",
-                "Get help or ask a question."
+                context.getString(R.string.contact_us_title),
+                context.getString(R.string.contact_us_description)
             )
             TWEET_US -> SettingsItem(
                 Icons.Rounded.AddCircle,
                 Color.Blue,
-                "Tweet Us",
-                "Stay up to date."
+                context.getString(R.string.tweet_us_title),
+                context.getString(R.string.tweet_us_description)
             )
             TRANSLATION_SUGGESTION -> SettingsItem(
                 Icons.Rounded.Send,
                 Color.Blue,
-                "Translation Suggestion",
-                "Improve our localization."
+                context.getString(R.string.translate_suggestion_title),
+                context.getString(R.string.translate_suggestion_description)
             )
             ABOUT -> SettingsItem(
                 Icons.Rounded.AddCircle,
                 Color.Cyan,
-                "About",
-                "Version information."
+                context.getString(R.string.common_about),
+                context.getString(R.string.version_information_title)
             )
             REVIEW -> SettingsItem(
                 Icons.Rounded.Person,
                 Color.Red,
-                "Review Dialer",
-                "Let us know how we are doing."
+                context.getString(R.string.review_dialer_title),
+                context.getString(R.string.review_dialer_subtitle)
             )
         }
     }
