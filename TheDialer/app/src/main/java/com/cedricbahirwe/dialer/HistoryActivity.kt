@@ -3,24 +3,30 @@ package com.cedricbahirwe.dialer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.cedricbahirwe.dialer.model.PreviewContent
+import com.cedricbahirwe.dialer.model.RecentDialCode
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import java.util.*
 
 class HistoryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +35,9 @@ class HistoryActivity : ComponentActivity() {
             DialerTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    ContainerView()
+                    RencentCodesList()
                 }
             }
         }
@@ -40,9 +45,7 @@ class HistoryActivity : ComponentActivity() {
 }
 
 @Composable
-private fun ContainerView() {
-    var amount by remember { mutableStateOf(TextFieldValue("")) }
-    var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
+private fun RencentCodesList() {
     Box {
         Column(
             modifier = Modifier
@@ -52,91 +55,25 @@ private fun ContainerView() {
         ) {
             TitleView("History")
 
-            Column {
-                OutlinedTextField(
-                    value = amount,
-                    onValueChange = { newValue ->
-                        amount = newValue
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("Amount")
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    placeholder = { Text(text = "Enter Amount") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.primary,
-                        focusedBorderColor = Color.Blue
-                    ),
-                    singleLine = true
-                )
+            Column(
+                Modifier
+                    .verticalScroll(state = ScrollState(0))
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 10.dp)
 
-                Spacer(Modifier.padding(vertical = 8.dp))
-                OutlinedTextField(
-                    value = phoneNumber,
-                    onValueChange = { newValue ->
-                        phoneNumber = newValue
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text("Phone Number")
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    placeholder = { Text(text = "Enter Receiver's number") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.primary,
-                        focusedBorderColor = Color.Blue
-                    ),
-                    singleLine = true
-                )
-            }
-
-            val btnElevation = ButtonDefaults.elevation(
-                defaultElevation = 20.dp,
-                pressedElevation = 15.dp,
-                disabledElevation = 0.dp,
-                hoveredElevation = 15.dp,
-                focusedElevation = 10.dp
-            )
-
-            Column(Modifier.padding(vertical = 16.dp)) {
-                Button(
-                    onClick = {},
-                    Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.White,
-                        contentColor = Color.Blue
-                    ),
-                    elevation = btnElevation,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Icon(
-                        Icons.Rounded.Person,
-                        contentDescription = "Pick Contact icon"
-                    )
-                    Text(
-                        stringResource(R.string.pick_contact_text),
-                        Modifier.padding(start = 10.dp)
-                    )
+            ) {
+                val recentCodes = Array(size = 10) {
+                    RecentDialCode(UUID.randomUUID(), PreviewContent.exampleRecentCode.detail)
                 }
 
-                Spacer(Modifier.padding(10.dp))
+                recentCodes.forEach { code ->
 
-                Button(
-                    onClick = {},
-                    Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Blue,
-                        contentColor = Color.White
-                    ),
-                    elevation = btnElevation,
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(stringResource(R.string.dial_ussd_text), Modifier.padding(start = 1.dp))
+                    HistoryRow(code)
+                    if (code != recentCodes.last()) {
+                        Divider(Modifier.padding(start = 30.dp))
+                    }
+
                 }
             }
 
@@ -145,28 +82,70 @@ private fun ContainerView() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row() {
+                Row {
                     Text(
-                        "Total:",
-
+                        "Total :", 
                         style = MaterialTheme.typography.h6,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.primary
                     )
                     Spacer(modifier = Modifier.weight(1.0f))
                     Text(
                         "120,000 RWF",
                         style = MaterialTheme.typography.h6,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.primary
                     )
                 }
                 Text(
                     "The estimations are based on the recent USSD codes used.",
+                    fontSize = 12.sp,
                     color = Color.Gray,
-                    style = MaterialTheme.typography.caption,
-                    modifier = Modifier.padding(0.dp)
+                    textAlign = TextAlign.Left,
+                    maxLines = 1
                 )
             }
         }
+    }
+}
+
+@Composable
+fun HistoryRow(code: RecentDialCode) {
+    fun getColor(): Color {
+        return if (code.detail.amount < 1000) {
+            Color.Green
+        } else if (code.detail.amount < 5000) {
+            Color.Blue
+        } else {
+            Color.Red
+        }
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(5.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(10.dp)
+                .clip(CircleShape)
+                .background(getColor())
+        )
+        Spacer(Modifier.padding(end = 10.dp))
+
+        Text(
+            code.detail.fullCode,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 1
+        )
+        Spacer(Modifier.weight(1f))
+        Text(
+            "${code.count}",
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colors.primary)
+                .wrapContentSize(Alignment.Center),
+            color = Color.White
+        )
     }
 }
 
@@ -174,6 +153,6 @@ private fun ContainerView() {
 @Composable
 fun HistoryActivityPreview() {
     DialerTheme {
-        ContainerView()
+        RencentCodesList()
     }
 }
