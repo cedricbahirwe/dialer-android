@@ -49,8 +49,7 @@ Pin Light                   |  Pin Dark
 
 Quick Dial                 | 
 :-------------------------:|
-![](https://user-images.githubusercontent.com/49038614/214437366-62b20a76-72f4-4352-ba36-38b9c44b21f2.png)  |
-
+![](https://user-images.githubusercontent.com/49038614/214670353-327b788d-57d5-4e7c-b4f0-cfe74ce35dad.png)  |
 
 ## Demo:
 * Download [Dialer iOS](https://apps.apple.com/ke/app/dial-it/id1591756747) to learn more
