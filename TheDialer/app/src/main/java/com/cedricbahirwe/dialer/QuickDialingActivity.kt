@@ -22,10 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
@@ -45,8 +48,11 @@ class QuickDialingActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun QuickDialingView() {
+    val gradientColors = listOf(Color.Red, Color.Blue)
+
     Surface(contentColor = Color.White) {
         Column(
             modifier = Modifier
@@ -56,20 +62,6 @@ fun QuickDialingView() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val fieldBorderGradient = remember {
-                Brush.linearGradient(
-                    colors = listOf(Color.Green, Color.Blue)
-                )
-            }
-            val fieldModifier = Modifier
-                .fillMaxWidth()
-                .height(45.dp)
-                .border(
-                    BorderStroke(1.dp, fieldBorderGradient), RoundedCornerShape(10.dp)
-                )
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colors.primary.copy(0.06f))
-                .wrapContentHeight(Alignment.CenterVertically)
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -82,10 +74,16 @@ fun QuickDialingView() {
             )
 
             Spacer(modifier = Modifier.weight(1f))
+
             Text(
-                "*182#",
-                fontWeight = FontWeight.SemiBold,
-                modifier = fieldModifier,
+                text = "*182#",
+                style = TextStyle(
+                    brush = Brush.linearGradient(
+                        colors = gradientColors
+                    ),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold
+                ),
                 textAlign = TextAlign.Center,
                 maxLines = 1
             )
