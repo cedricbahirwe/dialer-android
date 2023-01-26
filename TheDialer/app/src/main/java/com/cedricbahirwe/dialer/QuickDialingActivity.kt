@@ -1,24 +1,26 @@
 package com.cedricbahirwe.dialer
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -29,6 +31,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
@@ -41,7 +46,7 @@ class QuickDialingActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background
                 ) {
-                    QuickDialingView()
+//                    QuickDialingView()
                 }
             }
         }
@@ -50,9 +55,12 @@ class QuickDialingActivity : ComponentActivity() {
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun QuickDialingView() {
+fun QuickDialingView(phoneDialer: PhoneDialer) {
     val gradientColors = listOf(Color.Red, Color.Blue)
-
+    fun dialCode() {
+    println("It is ${phoneDialer == null}")
+        phoneDialer.dial("0782628511")
+    }
     Surface(contentColor = Color.White) {
         Column(
             modifier = Modifier
@@ -121,7 +129,7 @@ fun QuickDialingView() {
                 }
 
                 OutlinedButton(
-                    onClick = { },
+                    onClick = { dialCode() },
                     modifier = Modifier.size(55.dp),
                     shape = CircleShape,
                     border = null,
@@ -141,10 +149,49 @@ fun QuickDialingView() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun QuickDialingPreview() {
-    DialerTheme {
-        QuickDialingView()
+//@Preview(showBackground = true)
+//@Composable
+//fun QuickDialingPreview() {
+//    DialerTheme {
+//        QuickDialingView()
+//    }
+//}
+
+class PhoneDialer(private val context: Context) {
+    private val CALL_PHONE_PERMISSION_REQUEST_CODE = 1
+
+    fun dial(phoneNumber: String) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context as Activity,
+                arrayOf(Manifest.permission.CALL_PHONE),
+                CALL_PHONE_PERMISSION_REQUEST_CODE)
+        } else {
+            makeCall(phoneNumber)
+        }
+    }
+
+    private fun makeCall(phoneNumber: String) {
+        val dial = Intent(Intent.ACTION_CALL, Uri.parse("tel:$phoneNumber"))
+        if (dial.resolveActivity(context.packageManager) != null) {
+            context.startActivity(dial)
+        } else {
+            // no app to handle phone calls
+            Toast.makeText(context, "No app found to handle phone calls", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            CALL_PHONE_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    makeCall("0782628511")
+                } else {
+                    // permission denied
+                    Toast.makeText(context, "Permission to make phone calls denied", Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+        }
     }
 }
