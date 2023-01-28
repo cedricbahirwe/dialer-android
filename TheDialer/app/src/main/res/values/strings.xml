@@ -28,4 +28,5 @@
     <string name="review_dialer_subtitle">Let us know how we are doing.</string>
     <string name="title_activity_quick_dialing">QuickDialingActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="roll">Roll</string>
 </resources>
