@@ -1,13 +1,13 @@
 package com.cedricbahirwe.dialer
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,30 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 
-class PinView : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            DialerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    PinView("Android")
-                }
-            }
-        }
-    }
-}
-
 @Composable
-fun PinView(
-    input: String, isFullMode: Boolean = false,
+fun PinView(isFullMode: Boolean = false,
     btnSize: Float = 60f,
     btnColors: ButtonColors = ButtonDefaults.outlinedButtonColors(
         backgroundColor = Color.Gray.copy(0.2f)
-    )
+    ), onEditChanged: (String) -> Unit
 ) {
 
     val buttons = remember {
@@ -62,7 +44,7 @@ fun PinView(
     }
 
     fun addKey(key: String) {
-        println("The new input is ${input + key}")
+        onEditChanged(key)
     }
 
     LazyVerticalGrid(
@@ -107,7 +89,7 @@ private fun CircleButton(title: String, size: Float, btnColors: ButtonColors, ac
 @Composable
 fun PinViewPreview() {
     DialerTheme {
-        PinView("Android")
+        PinView {}
 //        CircleButton(title = "0", size = 60f, btnColors = ButtonDefaults.buttonColors()) {}
     }
 }

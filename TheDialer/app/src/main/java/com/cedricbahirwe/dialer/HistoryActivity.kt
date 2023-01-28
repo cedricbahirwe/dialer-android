@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.cedricbahirwe.dialer.model.PreviewContent
 import com.cedricbahirwe.dialer.model.RecentDialCode
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import java.text.NumberFormat
 import java.util.*
 
 class HistoryActivity : ComponentActivity() {
@@ -46,6 +47,11 @@ class HistoryActivity : ComponentActivity() {
 
 @Composable
 private fun RencentCodesList() {
+    fun getTotal(): String {
+        val formatter = NumberFormat.getCurrencyInstance()
+        formatter.currency = Currency.getInstance("RWF")
+        return formatter.format(120000)
+    }
     Box {
         Column(
             modifier = Modifier
@@ -91,7 +97,7 @@ private fun RencentCodesList() {
                     )
                     Spacer(modifier = Modifier.weight(1.0f))
                     Text(
-                        "120,000 RWF",
+                        getTotal(),
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.primary

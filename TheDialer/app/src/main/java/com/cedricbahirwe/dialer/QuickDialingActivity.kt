@@ -1,13 +1,6 @@
 package com.cedricbahirwe.dialer
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -18,7 +11,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,9 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
@@ -55,11 +46,20 @@ class QuickDialingActivity : ComponentActivity() {
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun QuickDialingView(phoneDialer: PhoneDialer) {
+fun QuickDialingView() {
     val gradientColors = listOf(Color.Red, Color.Blue)
+    var composedCode by remember { mutableStateOf("") }
     fun dialCode() {
-    println("It is ${phoneDialer == null}")
-        phoneDialer.dial("0782628511")
+        println("0782628511")
+    }
+
+    fun codeChanged(newKey: String) {
+        println("New Key: $newKey")
+        if (newKey == "X" && composedCode.isNotEmpty()) {
+            composedCode = composedCode.dropLast(1)
+        } else {
+            composedCode += newKey
+        }
     }
     Surface(contentColor = Color.White) {
         Column(
@@ -84,7 +84,7 @@ fun QuickDialingView(phoneDialer: PhoneDialer) {
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "*182#",
+                text = composedCode,
                 style = TextStyle(
                     brush = Brush.linearGradient(
                         colors = gradientColors
@@ -99,10 +99,11 @@ fun QuickDialingView(phoneDialer: PhoneDialer) {
             Spacer(modifier = Modifier.weight(1f))
 
             PinView(
-                "*182#", btnColors = ButtonDefaults.outlinedButtonColors(
+                isFullMode = true,
+                btnSize = 80f,
+                btnColors = ButtonDefaults.outlinedButtonColors(
                     backgroundColor = Color.Gray.copy(0.2f), contentColor = Color.White
-                )
-            )
+                ), onEditChanged = { codeChanged(it) })
 
             Spacer(Modifier.padding(vertical = 20.dp))
 
@@ -112,21 +113,47 @@ fun QuickDialingView(phoneDialer: PhoneDialer) {
                     .fillMaxWidth()
                     .padding(vertical = 14.dp, horizontal = 40.dp)
             ) {
-                OutlinedButton(
-                    onClick = { },
-                    modifier = Modifier
-                        .size(30.dp)
-                        .align(Alignment.CenterStart),
-                    shape = CircleShape,
-                    border = null,
-                    contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed)
-                ) {
-                    Icon(
-                        Icons.Rounded.ArrowBack,
-                        contentDescription = "Go Back icon",
-                    )
+                Row(Modifier.fillMaxWidth()) {
+                    OutlinedButton(
+                        onClick = { },
+                        modifier = Modifier
+                            .size(30.dp)
+                            .align(Alignment.CenterVertically),
+                        shape = CircleShape,
+                        border = null,
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed)
+                    ) {
+                        Icon(
+                            Icons.Rounded.ArrowBack,
+                            contentDescription = "Go Back icon",
+                        )
+                    }
+
+                    Spacer(Modifier.weight(1f))
+
+                    if (composedCode.isNotEmpty()) {
+                        OutlinedButton(
+                            onClick = {
+                                codeChanged("X")
+                            },
+                            modifier = Modifier
+                                .size(30.dp)
+                                .align(Alignment.CenterVertically),
+                            shape = CircleShape,
+                            border = null,
+                            contentPadding = PaddingValues(0.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed)
+                        ) {
+                            Icon(
+                                Icons.Rounded.Close,
+                                contentDescription = "Go Back icon",
+                            )
+                        }
+                    }
+
                 }
+
 
                 OutlinedButton(
                     onClick = { dialCode() },
@@ -149,49 +176,10 @@ fun QuickDialingView(phoneDialer: PhoneDialer) {
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun QuickDialingPreview() {
-//    DialerTheme {
-//        QuickDialingView()
-//    }
-//}
-
-class PhoneDialer(private val context: Context) {
-    private val CALL_PHONE_PERMISSION_REQUEST_CODE = 1
-
-    fun dial(phoneNumber: String) {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context as Activity,
-                arrayOf(Manifest.permission.CALL_PHONE),
-                CALL_PHONE_PERMISSION_REQUEST_CODE)
-        } else {
-            makeCall(phoneNumber)
-        }
-    }
-
-    private fun makeCall(phoneNumber: String) {
-        val dial = Intent(Intent.ACTION_CALL, Uri.parse("tel:$phoneNumber"))
-        if (dial.resolveActivity(context.packageManager) != null) {
-            context.startActivity(dial)
-        } else {
-            // no app to handle phone calls
-            Toast.makeText(context, "No app found to handle phone calls", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            CALL_PHONE_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    makeCall("0782628511")
-                } else {
-                    // permission denied
-                    Toast.makeText(context, "Permission to make phone calls denied", Toast.LENGTH_SHORT).show()
-                }
-                return
-            }
-        }
+@Preview(showBackground = true)
+@Composable
+fun QuickDialingPreview() {
+    DialerTheme {
+        QuickDialingView()
     }
 }
