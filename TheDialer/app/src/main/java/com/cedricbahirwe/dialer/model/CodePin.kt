@@ -6,7 +6,7 @@ import com.cedricbahirwe.dialer.R
 // https://www.gsmarena.com/glossary.php3?term=pin-code
 data class CodePin(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int) {
 
-    private val asString: String
+    val asString: String
         get() {
             return "$a$b$c$d$e"
         }
