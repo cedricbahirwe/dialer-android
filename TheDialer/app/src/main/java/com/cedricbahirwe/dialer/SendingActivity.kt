@@ -57,11 +57,9 @@ fun FieldsContainer() {
                 .padding(10.dp)
         ) {
             TitleView("Transfer Money")
-Text(amount.text)
-            Text(phoneNumber.text)
-//            if (isValid) {
-                Text("Valid Input $isValid")
-//            }
+            if (isValid) {
+                Text("Valid Input")
+            }
             Column {
                 OutlinedTextField(
                     value = amount,
