@@ -46,6 +46,9 @@ fun FieldsContainer() {
     val focusManager = LocalFocusManager.current
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
+    val isValid = remember(amount, phoneNumber) {
+        amount.text.isNotEmpty() && phoneNumber.text.isNotEmpty()
+    }
     Box {
         Column(
             modifier = Modifier
@@ -54,7 +57,11 @@ fun FieldsContainer() {
                 .padding(10.dp)
         ) {
             TitleView("Transfer Money")
-
+Text(amount.text)
+            Text(phoneNumber.text)
+//            if (isValid) {
+                Text("Valid Input $isValid")
+//            }
             Column {
                 OutlinedTextField(
                     value = amount,
@@ -63,9 +70,12 @@ fun FieldsContainer() {
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = {
-                        Text("Amount")
+                        Text(stringResource(R.string.common_amount))
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
                     keyboardActions = KeyboardActions(
                         onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
@@ -89,7 +99,10 @@ fun FieldsContainer() {
                     label = {
                         Text("Phone Number")
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
