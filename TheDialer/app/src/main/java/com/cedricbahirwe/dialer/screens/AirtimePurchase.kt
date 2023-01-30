@@ -96,7 +96,7 @@ fun PurchaseDetail() {
 
             Spacer(Modifier.padding(8.dp))
 
-            PinView(input = "*182#")
+            PinView {}
         }
     }
 }

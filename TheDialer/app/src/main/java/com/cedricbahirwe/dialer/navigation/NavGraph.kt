@@ -82,8 +82,6 @@ fun addPinViewScreen(
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(route = NavRoute.PinView.path) {
-        PinView(
-            input = "Android"
-        )
+        PinView{}
     }
 }
