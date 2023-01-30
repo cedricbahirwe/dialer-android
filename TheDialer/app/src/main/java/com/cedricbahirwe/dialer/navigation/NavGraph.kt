@@ -16,22 +16,21 @@ fun NavGraph(navController: NavHostController) {
         startDestination = NavRoute.MainScreen.path
     ) {
 
-        addPinViewScreen(navController, this)
+        addPinViewScreen(this)
 
-        addSendScreen(navController, this)
+        addSendScreen(this)
 
-        addHistoryScreen(navController, this)
+        addHistoryScreen(this)
 
-        addAirtimePurchaseScreen(navController, this)
+        addAirtimePurchaseScreen(this)
 
         addMainScreen(navController, this)
 
-        addHomeScreen(navController, this)
+        addHomeScreen(this)
     }
 }
 
 fun addHomeScreen(
-    navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(route = NavRoute.HomeScreen.path) {
@@ -50,38 +49,26 @@ fun addMainScreen(
     }
 }
 
-fun addAirtimePurchaseScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
+fun addAirtimePurchaseScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.AirtimePurchase.path) {
         PurchaseDetail()
     }
 }
 
-fun addHistoryScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
+fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.History.path) {
         RecentCodesList()
     }
 }
 
-fun addSendScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
+fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         FieldsContainer()
     }
 }
 
-fun addPinViewScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
+fun addPinViewScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.PinView.path) {
-        PinView{}
+        PinView {}
     }
 }

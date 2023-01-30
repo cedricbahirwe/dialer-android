@@ -54,12 +54,10 @@ fun RecentCodesList() {
                     }
 
                     recentCodes.forEach { code ->
-
                         HistoryRow(code)
                         if (code != recentCodes.last()) {
                             Divider(Modifier.padding(start = 30.dp))
                         }
-
                     }
                 }
 
