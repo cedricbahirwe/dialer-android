@@ -34,4 +34,6 @@
     <string name="home_screen">Home Screen</string>
     <string name="airtime_purchase">Airtime Purchase screen</string>
     <string name="nav_title">Navigation screen</string>
+    <string name="roll">Roll</string>
+    <string name="common_amount">Amount</string>
 </resources>

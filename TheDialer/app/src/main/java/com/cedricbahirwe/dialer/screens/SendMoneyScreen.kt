@@ -3,14 +3,18 @@ package com.cedricbahirwe.dialer.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,8 +25,12 @@ import com.cedricbahirwe.dialer.TitleView
 @Preview(showBackground = true)
 @Composable
 fun FieldsContainer() {
+    val focusManager = LocalFocusManager.current
     var amount by remember { mutableStateOf(TextFieldValue("")) }
     var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
+    val isValid = remember(amount, phoneNumber) {
+        amount.text.isNotEmpty() && phoneNumber.text.isNotEmpty()
+    }
     Box {
         Column(
             modifier = Modifier
@@ -31,7 +39,9 @@ fun FieldsContainer() {
                 .padding(10.dp)
         ) {
             TitleView("Transfer Money")
-
+            if (isValid) {
+                Text("Valid Input")
+            }
             Column {
                 OutlinedTextField(
                     value = amount,
@@ -40,9 +50,17 @@ fun FieldsContainer() {
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = {
-                        Text("Amount")
+                        Text(stringResource(R.string.common_amount))
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    ),
                     placeholder = { Text(text = "Enter Amount") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = MaterialTheme.colors.primary,
@@ -61,7 +79,15 @@ fun FieldsContainer() {
                     label = {
                         Text("Phone Number")
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
                     placeholder = { Text(text = "Enter Receiver's number") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = MaterialTheme.colors.primary,

@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,7 +20,13 @@ import androidx.compose.ui.unit.sp
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 
 @Composable
-fun PinView(input: String, isFullMode: Boolean = false, btnSize: Float = 60f) {
+fun PinView(isFullMode: Boolean = false,
+    btnSize: Float = 60f,
+    btnColors: ButtonColors = ButtonDefaults.outlinedButtonColors(
+        backgroundColor = Color.Gray.copy(0.2f)
+    ), onEditChanged: (String) -> Unit
+) {
+
     val buttons = remember {
         listOf(
             "1",
@@ -35,7 +44,7 @@ fun PinView(input: String, isFullMode: Boolean = false, btnSize: Float = 60f) {
     }
 
     fun addKey(key: String) {
-        println("The new input is ${input + key}")
+        onEditChanged(key)
     }
 
     LazyVerticalGrid(
@@ -47,7 +56,8 @@ fun PinView(input: String, isFullMode: Boolean = false, btnSize: Float = 60f) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CircleButton(
                     title = buttons[it],
-                    size = btnSize
+                    size = btnSize,
+                    btnColors = btnColors
                 ) {
                     addKey(buttons[it])
                 }
@@ -57,14 +67,14 @@ fun PinView(input: String, isFullMode: Boolean = false, btnSize: Float = 60f) {
 }
 
 @Composable
-private fun CircleButton(title: String, size: Float, action: () -> Unit) {
+private fun CircleButton(title: String, size: Float, btnColors: ButtonColors, action: () -> Unit) {
     OutlinedButton(
         onClick = action,
         modifier = Modifier.size(size.dp),
         shape = CircleShape,
         border = null,
         contentPadding = PaddingValues(0.dp),
-        colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Gray.copy(0.2f))
+        colors = btnColors
     ) {
         Text(
             text = title,
@@ -79,6 +89,7 @@ private fun CircleButton(title: String, size: Float, action: () -> Unit) {
 @Composable
 fun PinViewPreview() {
     DialerTheme {
-        PinView(input = "Android")
+        PinView {}
+//        CircleButton(title = "0", size = 60f, btnColors = ButtonDefaults.buttonColors()) {}
     }
 }
