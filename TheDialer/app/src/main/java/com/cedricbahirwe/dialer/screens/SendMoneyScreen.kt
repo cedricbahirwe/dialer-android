@@ -1,8 +1,5 @@
-package com.cedricbahirwe.dialer
+package com.cedricbahirwe.dialer.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,25 +15,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import com.cedricbahirwe.dialer.R
+import com.cedricbahirwe.dialer.TitleView
 
-class SendingActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            DialerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    FieldsContainer()
-                }
-            }
-        }
-    }
-}
-
+@Preview(showBackground = true)
 @Composable
 fun FieldsContainer() {
     var amount by remember { mutableStateOf(TextFieldValue("")) }
@@ -62,7 +44,10 @@ fun FieldsContainer() {
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     placeholder = { Text(text = "Enter Amount") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.primary, focusedBorderColor = Color.Blue),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = MaterialTheme.colors.primary,
+                        focusedBorderColor = Color.Blue
+                    ),
                     singleLine = true
                 )
 
@@ -78,7 +63,10 @@ fun FieldsContainer() {
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     placeholder = { Text(text = "Enter Receiver's number") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(textColor = MaterialTheme.colors.primary, focusedBorderColor = Color.Blue),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = MaterialTheme.colors.primary,
+                        focusedBorderColor = Color.Blue
+                    ),
                     singleLine = true
                 )
             }
@@ -108,7 +96,10 @@ fun FieldsContainer() {
                         Icons.Rounded.Person,
                         contentDescription = "Pick Contact icon"
                     )
-                    Text(stringResource(R.string.pick_contact_text), Modifier.padding(start = 10.dp))
+                    Text(
+                        stringResource(R.string.pick_contact_text),
+                        Modifier.padding(start = 10.dp)
+                    )
                 }
 
                 Spacer(Modifier.padding(10.dp))
@@ -131,13 +122,5 @@ fun FieldsContainer() {
 
             Spacer(modifier = Modifier.weight(1.0f))
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SendingActivityPreview() {
-    DialerTheme {
-        FieldsContainer()
     }
 }
