@@ -30,4 +30,5 @@
     <string name="title_activity_history">HistoryActivity</string>
     <string name="roll">Roll</string>
     <string name="common_amount">Amount</string>
+    <string name="quick_dial">Quick Dial</string>
 </resources>

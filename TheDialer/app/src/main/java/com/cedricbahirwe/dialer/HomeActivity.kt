@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -132,6 +133,7 @@ fun DashBoardContainer() {
         Row(modifier = Modifier.padding(vertical = 8.dp)) {
             Button(
                 onClick = {},
+                enabled = false,
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = MainRed,
                     contentColor = Color.White
@@ -141,7 +143,7 @@ fun DashBoardContainer() {
                     Icons.Rounded.AddCircle,
                     contentDescription = "Quick Dial icon"
                 )
-                Text("Add to cart", Modifier.padding(start = 10.dp))
+                Text(stringResource(R.string.quick_dial), Modifier.padding(start = 10.dp))
             }
             Spacer(modifier = Modifier.weight(1.0f))
 
