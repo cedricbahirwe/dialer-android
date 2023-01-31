@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer
+package com.cedricbahirwe.dialer.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
