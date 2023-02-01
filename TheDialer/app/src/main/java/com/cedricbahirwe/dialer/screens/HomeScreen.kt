@@ -1,8 +1,5 @@
 package com.cedricbahirwe.dialer
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,25 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
-
-class HomeActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            DialerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background,
-                ) {
-                    DashBoardContainer()
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun TitleView(title: String) {
@@ -95,6 +74,7 @@ fun DashBoardItem(icon: Int, name: String, modifier: Modifier) {
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun DashBoardContainer() {
     Column(
@@ -158,13 +138,5 @@ fun DashBoardContainer() {
                 Text("MTN")
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomePreview() {
-    DialerTheme {
-        DashBoardContainer()
     }
 }

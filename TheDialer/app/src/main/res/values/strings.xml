@@ -28,6 +28,12 @@
     <string name="review_dialer_subtitle">Let us know how we are doing.</string>
     <string name="title_activity_quick_dialing">QuickDialingActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
+    <string name="send_screen">Send money screen</string>
+    <string name="pin_view">Pin View</string>
+    <string name="history_screen">History Screen</string>
+    <string name="home_screen">Home Screen</string>
+    <string name="airtime_purchase">Airtime Purchase screen</string>
+    <string name="nav_title">Navigation screen</string>
     <string name="roll">Roll</string>
     <string name="common_amount">Amount</string>
     <string name="quick_dial">Quick Dial</string>
