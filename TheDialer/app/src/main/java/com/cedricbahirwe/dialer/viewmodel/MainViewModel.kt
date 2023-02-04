@@ -71,13 +71,14 @@ abstract class MainViewModel {
 
     fun confirmPurchase() {
         val purchase = purchaseDetail
-        dialCode(purchase) { p
-            when (this) {
-                is Result.Success -> {
-                    storeCode(RecentDialCode(purchase))
-                    purchaseDetail = PurchaseDetailModel()
-                }
-                is Result.Error -> println(this.message)
+        dialCode(purchase) { success, failure ->
+            if (success != null) {
+                // Handle success
+                this.storeCode(RecentDialCode(detail = purchase))
+                this.purchaseDetail = PurchaseDetailModel()
+            } else if (failure != null) {
+                // Handle failure
+                print(failure.message)
             }
         }
     }
@@ -98,20 +99,24 @@ abstract class MainViewModel {
 
     private fun dialCode(
         purchase: PurchaseDetailModel,
-        completion: (Result<String, DialingError>) -> Unit
+        completion: (success: String?, failure: DialingError?) -> Unit
     ) {
-        val newUrl = getFullUSSDCode(purchase)
-        PhoneDialer.dial
-        if let telUrl = PhoneDialer  URL(string: "tel://\(newUrl)"),
-        UIApplication.shared.canOpenURL(telUrl) {
-            UIApplication.shared.open(telUrl, options: [:], completionHandler: { _ in
-                completion(.success("Successfully Dialed"))
-        })
-
-        } else {
-            // Can not dial this code
-            completion(.failure(.canNotDial))
+        val fullCode = getFullUSSDCode(purchase)
+        PhoneDialer.shared.dial(fullCode) {
+            when (it) {
+                true -> completion("Successfully Dialed", null)
+                false -> completion(null, DialingError.CanNotDial())
+            }
         }
+    }
+
+    private fun getFullUSSDCode(purchase: PurchaseDetailModel): String {
+        val code: String = if (pinCode != null && pinCode.toString().count() >= 5) {
+            pinCode.toString()
+        } else {
+            ""
+        }
+        return purchase.getDialCode(code)
     }
 
     private sealed class DialingError(override val message: String) : Throwable() {
@@ -120,7 +125,9 @@ abstract class MainViewModel {
         }
 
         class CanNotDial : DialingError("Can not dial this code")
-        class UnknownFormat(format: String) : DialingError("Can not decode this format: $format")
+        class UnknownFormat(format: String) :
+            DialingError("Can not decode this format: $format")
+
         class EmptyPin : DialingError("Pin Code not found, configure pin and try again")
     }
 }

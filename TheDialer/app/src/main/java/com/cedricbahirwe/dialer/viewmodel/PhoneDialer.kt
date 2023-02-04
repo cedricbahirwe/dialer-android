@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -15,16 +13,20 @@ import androidx.core.content.ContextCompat
 class PhoneDialer {
     private val CALL_PHONE_PERMISSION_REQUEST_CODE = 1
 
+    @JvmName("getContext1")
     private fun getContext(): Context? {
         return null
     }
 
-    // TODO: Horrible idea, please work on this
-    private val context: Context /// =
-        get() = getContext()
+    // TODO: Horrible idea, please work on this ASAP!!!
+    private val context: Context
+        get() = getContext()!!
 
+    companion object {
+        val shared = PhoneDialer()
+    }
 
-    fun dial(phoneNumber: String) {
+    fun dial(phoneNumber: String, completion: (Boolean) -> Unit) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -33,8 +35,10 @@ class PhoneDialer {
                 arrayOf(Manifest.permission.CALL_PHONE),
                 CALL_PHONE_PERMISSION_REQUEST_CODE
             )
+            completion(false)
         } else {
             makeCall(phoneNumber)
+            completion(true)
         }
     }
 

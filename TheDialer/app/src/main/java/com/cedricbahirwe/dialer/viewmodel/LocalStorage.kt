@@ -15,8 +15,8 @@ private typealias ElectricityMeters = List<ElectricityMeter>
 private typealias USSDCodes = List<USSDCode>
 
 class DialerStorage {
-    // TODO: Horrible idea, please work on this
-    private val sharedPreferences: SharedPreferences /// =
+    // TODO: Horrible idea, please work on this ASAP!!!
+    private val sharedPreferences /// =
         get() = PreferenceManager.getDefaultSharedPreferences(getContext())
 
     private fun getContext(): Context? {
