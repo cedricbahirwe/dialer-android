@@ -22,7 +22,7 @@ abstract class MainViewModel {
     var showSettingsSheet = false
 
     val estimatedTotalPrice: Int
-        get() = recentCodes.map { it.totalPrice }.sum()
+        get() = recentCodes.sumOf { it.totalPrice }
 
     var purchaseDetail = PurchaseDetailModel()
     var recentCodes = mutableListOf<RecentDialCode>()
@@ -119,11 +119,40 @@ abstract class MainViewModel {
         return purchase.getDialCode(code)
     }
 
-    /* MARK: Extension used for Quick USSD actions. */
+    fun getPurchaseDetailUSSDCode() {
+        getFullUSSDCode(purchaseDetail)
+    }
+
+    // Returns a `RecentDialCode` that matches the input identifier.
+    fun recentDialCode(identifier: String): RecentDialCode? {
+        return recentCodes.firstOrNull { it.id.toString() == identifier }
+    }
 
     private fun performQuickDial(quickCode: DialerQuickCode) {
         PhoneDialer.shared.dial(quickCode.ussd)
     }
+
+    /// Perform a quick dialing from the `History View Row.`
+    /// - Parameter recentCode: the row code to be performed.
+    fun performRecentDialing(recentCode: RecentDialCode) {
+        dialCode(recentCode.detail) { success, failure ->
+            if (success != null) {
+                this.storeCode(recentCode)
+            } else if (failure != null) {
+                print(failure.message)
+            }
+        }
+    }
+
+    fun showSettingsView() {
+        showSettingsSheet = true
+    }
+
+    fun dismissSettingsView() {
+        showSettingsSheet = false
+    }
+
+    /* MARK: Extension used for Quick USSD actions. */
 
     fun checkMobileWalletBalance() {
         performQuickDial(DialerQuickCode.MobileWalletBalance(code = pinCode))
