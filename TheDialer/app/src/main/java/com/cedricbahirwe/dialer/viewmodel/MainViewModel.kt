@@ -119,6 +119,28 @@ abstract class MainViewModel {
         return purchase.getDialCode(code)
     }
 
+    /* MARK: Extension used for Quick USSD actions. */
+
+    private fun performQuickDial(quickCode: DialerQuickCode) {
+        PhoneDialer.shared.dial(quickCode.ussd)
+    }
+
+    fun checkMobileWalletBalance() {
+        performQuickDial(DialerQuickCode.MobileWalletBalance(code = pinCode))
+    }
+
+    fun getElectricity(meterNumber: String, amount: Int) {
+        val number = meterNumber.replace(" ", "")
+        performQuickDial(
+            DialerQuickCode.Electricity(
+                meter = number,
+                amount = amount,
+                code = pinCode
+            )
+        )
+    }
+
+    // MARK: Extension used for Error, Models, etc
     private sealed class DialingError(override val message: String) : Throwable() {
         private companion object {
             val context: Resources = Resources.getSystem()
@@ -129,5 +151,76 @@ abstract class MainViewModel {
             DialingError("Can not decode this format: $format")
 
         class EmptyPin : DialingError("Pin Code not found, configure pin and try again")
+    }
+
+    /* MARK: Electricity Storage */
+
+    // Store a given  `MeterNumber`  locally.
+    fun storeMeter(number: ElectricityMeter) {
+        if (!elecMeters.any { it.id == number.id }) {
+            elecMeters.add(number)
+            saveMeterNumbersLocally(elecMeters)
+        }
+    }
+
+    // Save MeterNumber(s) locally.
+    private fun saveMeterNumbersLocally(meters: List<ElectricityMeter>) {
+        try {
+            DialerStorage.shared.saveElectricityMeters(meters)
+        } catch (e: Exception) {
+            println("Could not save meter numbers locally: ${e.localizedMessage}")
+        }
+    }
+
+    // Retrieve all locally stored Meter Numbers codes
+    fun retrieveMeterNumbers() {
+        elecMeters = DialerStorage.shared.getMeterNumbers().toMutableList()
+    }
+
+    fun deleteMeter(offsets: List<ElectricityMeter>) {
+        elecMeters.removeAll { offsets.contains(it) }
+        saveMeterNumbersLocally(elecMeters)
+    }
+
+    /* MARK: Custom USSD Storage */
+
+    // Store a given `USSDCode` locally.
+    fun storeUSSD(code: USSDCode) {
+        if (!ussdCodes.contains(code)) {
+            ussdCodes.add(code)
+            saveUSSDCodesLocally(ussdCodes)
+        }
+    }
+
+    fun updateUSSD(code: USSDCode) {
+        val index = ussdCodes.indexOf(code)
+        if (index != -1) {
+            ussdCodes[index] = code
+        }
+        saveUSSDCodesLocally(ussdCodes)
+    }
+
+    // Save USSDCode(s) locally.
+    private fun saveUSSDCodesLocally(codes: List<USSDCode>) {
+        try {
+            DialerStorage.shared.saveUSSDCodes(codes)
+        } catch (e: Exception) {
+            println("Could not save ussd codes locally: ${e.localizedMessage}")
+        }
+    }
+
+    // Retrieve all locally stored Meter Numbers codes
+    fun retrieveUSSDCodes() {
+        ussdCodes = DialerStorage.shared.getUSSDCodes().toMutableList()
+    }
+
+    fun deleteUSSD(offsets: List<USSDCode>) {
+        ussdCodes.removeAll { offsets.contains(it) }
+        saveUSSDCodesLocally(ussdCodes)
+    }
+
+    fun removeAllUSSDs() {
+        DialerStorage.shared.removeAllUSSDCodes()
+        ussdCodes.clear()
     }
 }

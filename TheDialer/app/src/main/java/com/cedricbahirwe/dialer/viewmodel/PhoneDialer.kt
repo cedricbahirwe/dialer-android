@@ -26,7 +26,7 @@ class PhoneDialer {
         val shared = PhoneDialer()
     }
 
-    fun dial(phoneNumber: String, completion: (Boolean) -> Unit) {
+    fun dial(phoneNumber: String, completion: ((Boolean) -> Unit) = {}) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -35,10 +35,10 @@ class PhoneDialer {
                 arrayOf(Manifest.permission.CALL_PHONE),
                 CALL_PHONE_PERMISSION_REQUEST_CODE
             )
-            completion(false)
+            completion?.invoke(false)
         } else {
             makeCall(phoneNumber)
-            completion(true)
+            completion?.invoke(true)
         }
     }
 

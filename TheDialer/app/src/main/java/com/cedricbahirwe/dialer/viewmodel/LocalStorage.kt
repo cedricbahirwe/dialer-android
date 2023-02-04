@@ -85,15 +85,14 @@ class DialerStorage {
         applyChanges()
     }
 
-//    fun getMeterNumbers() =
-//        decodeDatasArray<ElectricityMeters>(UserDefaults.Keys.meterNumbers).orEmpty()
+    fun getMeterNumbers(): ElectricityMeters { return emptyList() }
 
     fun saveUSSDCodes(ussds: USSDCodes) {
         sharedPreferences.edit().putString(LocalKeys.customUSSDCodes, ussds.toString())
         applyChanges()
     }
 
-//    fun getUSSDCodes() = decodeDatasArray<USSDCodes>(UserDefaults.Keys.customUSSDCodes).orEmpty()
+    fun getUSSDCodes(): USSDCodes { return emptyList() }
 
     fun removeAllUSSDCodes() {
         sharedPreferences.edit().clear()
