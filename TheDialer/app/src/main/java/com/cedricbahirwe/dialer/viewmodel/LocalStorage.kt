@@ -2,9 +2,7 @@ package com.cedricbahirwe.dialer.viewmodel
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.preference.PreferenceManager
-import androidx.annotation.RequiresApi
 import com.cedricbahirwe.dialer.model.CodePin
 import com.cedricbahirwe.dialer.model.ElectricityMeter
 import com.cedricbahirwe.dialer.model.RecentDialCode
@@ -16,10 +14,18 @@ private typealias RecentCodes = List<RecentDialCode>
 private typealias ElectricityMeters = List<ElectricityMeter>
 private typealias USSDCodes = List<USSDCode>
 
-class DialerStorage(context: Context) {
-    private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+class DialerStorage {
+    // TODO: Horrible idea, please work on this
+    private val sharedPreferences: SharedPreferences /// =
+        get() = PreferenceManager.getDefaultSharedPreferences(getContext())
 
+    private fun getContext(): Context? {
+        return null
+    }
 
+    companion object {
+        val shared = DialerStorage()
+    }
 //    private val userDefaults = UserDefaults.standard
 
     fun saveCodePin(value: CodePin) {
@@ -28,7 +34,7 @@ class DialerStorage(context: Context) {
 //        userDefaults.set(data, forKey: UserDefaults. Keys . pinCode)
     }
 
-    private fun getCodePin(): CodePin? {
+    fun getCodePin(): CodePin? {
         val codePin = sharedPreferences.getString(LocalKeys.pinCode, null) ?: return null
         return CodePin(codePin)
 //        return decodeData(UserDefaults.Keys.pinCode, CodePin::class.java)
@@ -56,13 +62,13 @@ class DialerStorage(context: Context) {
     }
 
     // Check whether 1 month period has been reached since last sync date
-    @RequiresApi(Build.VERSION_CODES.O)
+//    @RequiresApi(Build.VERSION_CODES.O)
     fun isSyncDateReached(): Boolean {
         val lastSyncDate = sharedPreferences.getString(LocalKeys.lastSyncDate, null) ?: return false
 
-        val date = Date(lastSyncDate)
         // To check if 30 Days have passed
-        return date.toInstant().nano / 84_400 > 30
+//        return date.inNanoSeconds / 84_400 > 30
+        return false
     }
 
     fun saveRecentCodes(codes: RecentCodes) {
@@ -70,7 +76,9 @@ class DialerStorage(context: Context) {
         applyChanges()
     }
 
-//    fun getRecentCodes() = decodeDatasArray<RecentCodes>(UserDefaults.Keys.recentCodes).orEmpty()
+    fun getRecentCodes(): RecentCodes {
+        return emptyList()
+    }
 
     fun saveElectricityMeters(meters: ElectricityMeters) {
         sharedPreferences.edit().putString(LocalKeys.meterNumbers, meters.toString())

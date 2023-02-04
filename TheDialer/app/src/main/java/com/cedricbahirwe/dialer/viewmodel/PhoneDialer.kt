@@ -4,14 +4,25 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class PhoneDialer(private val context: Context) {
+class PhoneDialer {
     private val CALL_PHONE_PERMISSION_REQUEST_CODE = 1
+
+    private fun getContext(): Context? {
+        return null
+    }
+
+    // TODO: Horrible idea, please work on this
+    private val context: Context /// =
+        get() = getContext()
+
 
     fun dial(phoneNumber: String) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
