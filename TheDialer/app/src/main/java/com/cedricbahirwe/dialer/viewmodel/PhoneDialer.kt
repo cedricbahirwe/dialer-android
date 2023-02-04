@@ -10,10 +10,23 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
-class PhoneDialer(private val context: Context) {
+class PhoneDialer {
     private val CALL_PHONE_PERMISSION_REQUEST_CODE = 1
 
-    fun dial(phoneNumber: String) {
+    @JvmName("getContext1")
+    private fun getContext(): Context? {
+        return null
+    }
+
+    // TODO: Horrible idea, please work on this ASAP!!!
+    private val context: Context
+        get() = getContext()!!
+
+    companion object {
+        val shared = PhoneDialer()
+    }
+
+    fun dial(phoneNumber: String, completion: ((Boolean) -> Unit) = {}) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
             != PackageManager.PERMISSION_GRANTED
         ) {
@@ -22,8 +35,10 @@ class PhoneDialer(private val context: Context) {
                 arrayOf(Manifest.permission.CALL_PHONE),
                 CALL_PHONE_PERMISSION_REQUEST_CODE
             )
+            completion?.invoke(false)
         } else {
             makeCall(phoneNumber)
+            completion?.invoke(true)
         }
     }
 
