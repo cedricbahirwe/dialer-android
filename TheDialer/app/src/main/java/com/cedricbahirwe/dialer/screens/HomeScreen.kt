@@ -45,13 +45,13 @@ import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
 @Composable
-fun TitleView(title: String) {
+fun TitleView(title: String, modifier: Modifier = Modifier) {
     Row {
         Text(
             title,
-            modifier = Modifier.padding(vertical = 15.dp),
+            modifier = modifier.padding(vertical = 15.dp),
             color = MaterialTheme.colors.primary,
-            fontSize = 30.sp,
+            fontSize = 26.sp,
             fontWeight = FontWeight.ExtraBold,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
