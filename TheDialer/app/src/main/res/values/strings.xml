@@ -37,4 +37,6 @@
     <string name="roll">Roll</string>
     <string name="common_amount">Amount</string>
     <string name="quick_dial">Quick Dial</string>
+    <string name="pay_merchant">Pay Merchant</string>
+    <string name="pay_user">Switch to User</string>
 </resources>

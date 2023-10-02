@@ -38,11 +38,6 @@ fun MainHomeScreen (navController: NavController){
             )
 
             DefaultButton(
-                text = context.getString(R.string.pin_view),
-                onClick = { navController.navigate(NavRoute.PinView.path) }
-            )
-
-            DefaultButton(
                 text = context.getString(R.string.send_screen),
                 onClick = { navController.navigate(NavRoute.Send.path) }
             )

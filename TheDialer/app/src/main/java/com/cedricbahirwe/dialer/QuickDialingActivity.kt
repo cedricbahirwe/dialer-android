@@ -25,7 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.screens.PinView
+import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
@@ -47,7 +50,7 @@ class QuickDialingActivity : ComponentActivity() {
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-fun QuickDialingView() {
+fun QuickDialingView(navController: NavHostController) {
     val gradientColors = listOf(Color.Red, Color.Blue)
     var composedCode by remember { mutableStateOf("") }
     fun dialCode() {
@@ -116,14 +119,16 @@ fun QuickDialingView() {
             ) {
                 Row(Modifier.fillMaxWidth()) {
                     OutlinedButton(
-                        onClick = { },
+                        onClick = {
+                            navController.navigateUp()
+                        },
                         modifier = Modifier
                             .size(30.dp)
                             .align(Alignment.CenterVertically),
                         shape = CircleShape,
                         border = null,
                         contentPadding = PaddingValues(0.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed)
+                        colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed, contentColor = Color.White)
                     ) {
                         Icon(
                             Icons.Rounded.ArrowBack,
@@ -144,7 +149,8 @@ fun QuickDialingView() {
                             shape = CircleShape,
                             border = null,
                             contentPadding = PaddingValues(0.dp),
-                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed)
+                            colors = ButtonDefaults.outlinedButtonColors(backgroundColor = MainRed, contentColor = Color.White)
+
                         ) {
                             Icon(
                                 Icons.Rounded.Close,
@@ -155,14 +161,13 @@ fun QuickDialingView() {
 
                 }
 
-
                 OutlinedButton(
                     onClick = { dialCode() },
                     modifier = Modifier.size(55.dp),
                     shape = CircleShape,
                     border = null,
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = Color.Green),
+                    colors = ButtonDefaults.outlinedButtonColors(backgroundColor = AccentBlue, contentColor = Color.White),
                 ) {
                     Icon(
                         Icons.Default.Call,
@@ -181,6 +186,7 @@ fun QuickDialingView() {
 @Composable
 fun QuickDialingPreview() {
     DialerTheme {
-        QuickDialingView()
+        val navController = rememberNavController()
+        QuickDialingView(navController = navController)
     }
 }
