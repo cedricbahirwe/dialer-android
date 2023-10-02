@@ -20,7 +20,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cedricbahirwe.dialer.R
-import com.cedricbahirwe.dialer.TitleView
 
 @Preview(showBackground = true)
 @Composable

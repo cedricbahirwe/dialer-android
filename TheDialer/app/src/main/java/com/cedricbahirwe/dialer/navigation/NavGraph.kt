@@ -5,7 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.cedricbahirwe.dialer.DashBoardContainer
+import com.cedricbahirwe.dialer.QuickDialingView
+import com.cedricbahirwe.dialer.screens.DashBoardContainer
 import com.cedricbahirwe.dialer.screens.*
 
 @Composable
@@ -13,28 +14,32 @@ fun NavGraph(navController: NavHostController) {
 
     NavHost(
         navController = navController,
-        startDestination = NavRoute.MainScreen.path
+        startDestination = NavRoute.HomeScreen.path
     ) {
 
-        addPinViewScreen(this)
+        addHomeScreen(navController, this)
+
+        addAirtimePurchaseScreen(this)
 
         addSendScreen(this)
 
         addHistoryScreen(this)
 
-        addAirtimePurchaseScreen(this)
+        addQuickDialingScreen(navController, this)
 
         addMainScreen(navController, this)
 
-        addHomeScreen(this)
     }
 }
 
 fun addHomeScreen(
+    navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(route = NavRoute.HomeScreen.path) {
-        DashBoardContainer()
+        DashBoardContainer(
+            navController = navController
+        )
     }
 }
 
@@ -55,6 +60,15 @@ fun addAirtimePurchaseScreen(navGraphBuilder: NavGraphBuilder) {
     }
 }
 
+private fun addQuickDialingScreen(
+    navController: NavHostController,
+    navGraphBuilder: NavGraphBuilder
+) {
+    navGraphBuilder.composable(NavRoute.QuickDialing.path) {
+        QuickDialingView(navController = navController)
+    }
+}
+
 fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.History.path) {
         RecentCodesList()
@@ -64,11 +78,5 @@ fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
 fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         FieldsContainer()
-    }
-}
-
-fun addPinViewScreen(navGraphBuilder: NavGraphBuilder) {
-    navGraphBuilder.composable(route = NavRoute.PinView.path) {
-        PinView {}
     }
 }

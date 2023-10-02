@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
 import androidx.test.runner.AndroidJUnitRunner
+import com.cedricbahirwe.dialer.screens.DashBoardContainer
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import org.junit.Rule
 import org.junit.Test

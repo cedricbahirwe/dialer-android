@@ -7,11 +7,13 @@ sealed class NavRoute(val path: String) {
 
     object AirtimePurchase : NavRoute("Airtime Purchase")
 
-    object PinView : NavRoute("Pin View")
-
     object Send : NavRoute("Send")
 
     object History : NavRoute("History")
+
+    object MySpace: NavRoute("My Space")
+
+    object QuickDialing: NavRoute("Quick Dialing")
 
     object HomeScreen : NavRoute("Home Screen")
 }
