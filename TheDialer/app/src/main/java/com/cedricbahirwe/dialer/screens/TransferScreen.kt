@@ -23,10 +23,9 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -35,23 +34,31 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
+import com.cedricbahirwe.dialer.model.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
+import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 
 @Preview(showBackground = true)
 @Composable
-fun FieldsContainer() {
+fun TransferView(
+    viewModel: TransferViewModel = viewModel()
+) {
     val focusManager = LocalFocusManager.current
-    var isMerchantTransfer by remember {
-        mutableStateOf(true)
+
+    val uiState by viewModel.uiState.collectAsState()
+
+    val isMerchantTransfer = remember(uiState.isMerchantTransfer) {
+        uiState.isMerchantTransfer
     }
-    var amount by remember { mutableStateOf(TextFieldValue("")) }
-    var phoneNumber by remember { mutableStateOf(TextFieldValue("")) }
-    val isValid = remember(amount, phoneNumber) {
-        amount.text.isNotEmpty() && phoneNumber.text.isNotEmpty()
+
+    val pageTitle = if (isMerchantTransfer) {
+        "Pay Merchant"
+    } else {
+        "Transfer momo"
     }
 
     Box {
@@ -66,7 +73,8 @@ fun FieldsContainer() {
                     .fillMaxWidth()
             ){
 
-                TitleView(if (isMerchantTransfer) "Pay Merchant" else "Transfer momo",
+                TitleView(
+                    title = pageTitle,
                     modifier = Modifier
                         .padding(vertical = 12.dp)
                 )
@@ -75,7 +83,7 @@ fun FieldsContainer() {
                     modifier = Modifier
                         .align(Alignment.TopEnd),
                     onClick = {
-                        isMerchantTransfer = !isMerchantTransfer
+                        viewModel.switchPaymentType()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Transparent,
@@ -90,16 +98,12 @@ fun FieldsContainer() {
                     )
                 }
             }
-
-            if (isValid) {
-                Text("Valid Input")
-            }
-
-            Column {
+            
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 OutlinedTextField(
-                    value = amount,
-                    onValueChange = { newValue ->
-                        amount = newValue
+                    value = uiState.amount,
+                    onValueChange = {
+                        viewModel.handleAmountChange(it)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = {
@@ -124,9 +128,9 @@ fun FieldsContainer() {
 
                 Spacer(Modifier.padding(vertical = 8.dp))
                 OutlinedTextField(
-                    value = phoneNumber,
-                    onValueChange = { newValue ->
-                        phoneNumber = newValue
+                    value = uiState.number,
+                    onValueChange = {
+                        viewModel.handleNumberField(it)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = {
@@ -148,6 +152,17 @@ fun FieldsContainer() {
                     ),
                     singleLine = true
                 )
+
+                AnimatedVisibility(
+                    visible = isMerchantTransfer
+                ) {
+                    Spacer(Modifier.padding(vertical = 8.dp))
+                    Text(
+                        text = stringResource(R.string.show_merchant_code_warning),
+                        color = AccentBlue,
+                        style = MaterialTheme.typography.caption
+                    )
+                }
             }
 
             val btnElevation = ButtonDefaults.elevation(
@@ -188,7 +203,10 @@ fun FieldsContainer() {
                 Spacer(Modifier.padding(10.dp))
 
                 Button(
-                    onClick = {},
+                    onClick = {
+                        focusManager.clearFocus()
+                        viewModel.transferMoney()
+                    },
                     Modifier
                         .fillMaxWidth()
                         .height(48.dp),
@@ -197,7 +215,8 @@ fun FieldsContainer() {
                         contentColor = Color.White
                     ),
                     elevation = btnElevation,
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(8.dp),
+                    enabled = uiState.isValid
                 ) {
                     Text(stringResource(R.string.dial_ussd_text), Modifier.padding(start = 1.dp))
                 }

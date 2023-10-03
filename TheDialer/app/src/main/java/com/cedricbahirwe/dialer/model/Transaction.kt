@@ -3,10 +3,13 @@ package com.cedricbahirwe.dialer.model
 import com.cedricbahirwe.dialer.model.protocol.Identifiable
 import java.util.*
 
+
+typealias TransactionType = Transaction.Type
+
 data class Transaction(
     var amount: String,
     var number: String,
-    var type: TransactionType = TransactionType.CLIENT
+    var type: TransactionType
 ) : Identifiable<String> {
     override val id: String = Date().toString()
     private val trailingCode: String
@@ -38,7 +41,7 @@ data class Transaction(
             TransactionType.MERCHANT -> doubleAmount > 0.0 && number.length in 5..6
         }
 
-    enum class TransactionType {
+    enum class Type {
         CLIENT, MERCHANT
     }
 
@@ -47,4 +50,5 @@ data class Transaction(
             mapOf(0..1000 to 20, 1001..10000 to 100, 10001..150000 to 250, 150001..2000000 to 1500)
     }
 }
-
+val Transaction.isMerchantTransfer: Boolean
+    get() = type == TransactionType.MERCHANT

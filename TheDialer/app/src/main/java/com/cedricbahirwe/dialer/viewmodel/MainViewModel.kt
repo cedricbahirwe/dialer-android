@@ -1,13 +1,13 @@
 package com.cedricbahirwe.dialer.viewmodel
 
 import android.content.res.Resources
+import androidx.lifecycle.ViewModel
 import com.cedricbahirwe.dialer.model.*
 
 abstract class UtilitiesDelegate {
     abstract fun didSelectOption(withCode: DialerQuickCode)
 }
-
-abstract class MainViewModel {
+class MainViewModel: ViewModel() {
     var pinCode: CodePin? = DialerStorage.shared.getCodePin()
     var hasReachSync = DialerStorage.shared.isSyncDateReached()
         set(newValue) {
@@ -17,7 +17,8 @@ abstract class MainViewModel {
             field = newValue
         }
 
-    abstract var utilityDelegate: UtilitiesDelegate?
+
+    var utilityDelegate: UtilitiesDelegate? = null
     var showHistorySheet = false
     var showSettingsSheet = false
 

@@ -10,4 +10,7 @@ data class Contact(val names: String, private var phoneNumbers: List<String>) {
     fun updatePhones(numbers: List<String>) {
         phoneNumbers = numbers
     }
+
+    val phoneNumberList: List<String>
+        get() = phoneNumbers
 }

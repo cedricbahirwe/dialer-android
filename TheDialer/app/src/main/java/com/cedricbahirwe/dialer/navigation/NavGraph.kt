@@ -77,6 +77,6 @@ fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
 
 fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
-        FieldsContainer()
+        TransferView()
     }
 }
