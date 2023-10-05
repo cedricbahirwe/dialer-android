@@ -56,15 +56,15 @@ fun TransferView(
     }
 
     val pageTitle = if (isMerchantTransfer) {
-        "Pay Merchant"
+        stringResource(id = R.string.pay_merchant)
     } else {
-        "Transfer momo"
+        stringResource(R.string.transfer_momo)
     }
 
     val feeHintText = if (uiState.estimatedFee == -1) {
-        "We cannot estimate the fee for this amount."
+        stringResource(R.string.beyond_range_fee_msg)
     } else {
-        "Estimated fee: ${String.format("%d RWF", uiState.estimatedFee)}"
+        stringResource(R.string.estimated_fee_message, uiState.estimatedFee)
     }
 
     Box {

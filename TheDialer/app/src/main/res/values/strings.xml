@@ -40,4 +40,7 @@
     <string name="pay_merchant">Pay Merchant</string>
     <string name="pay_user">Switch to User</string>
     <string name="show_merchant_code_warning">The code should be a 5-6 digits number</string>
+    <string name="transfer_momo">Transfer momo</string>
+    <string name="beyond_range_fee_msg">We cannot estimate the fee for this amount.</string>
+    <string name="estimated_fee_message">Estimated fee: %d RWF</string>
 </resources>
