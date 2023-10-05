@@ -14,8 +14,8 @@ class TransferViewModel: ViewModel() {
     val uiState: StateFlow<Transaction> = _uiState.asStateFlow()
 
 
+    // NOTE: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
-
     private var selectedContact: Contact? = null
 
     fun switchPaymentType() {
@@ -65,6 +65,7 @@ class TransferViewModel: ViewModel() {
 
     fun transferMoney() {
         if (!_uiState.value.isValid) return
+        println("Transaction triggered ${_uiState.value.fullCode}")
         // Perform the money transfer (transaction service...?!)
         // Log to analytics...
     }
