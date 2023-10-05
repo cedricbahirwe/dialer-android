@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
+import com.cedricbahirwe.dialer.model.Transaction
 import com.cedricbahirwe.dialer.model.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
@@ -59,6 +60,12 @@ fun TransferView(
         "Pay Merchant"
     } else {
         "Transfer momo"
+    }
+
+    val feeHintText = if (uiState.estimatedFee == -1) {
+        "We cannot estimate the fee for this amount."
+    } else {
+        "Estimated fee: ${String.format("%d RWF", uiState.estimatedFee)}"
     }
 
     Box {
@@ -98,8 +105,19 @@ fun TransferView(
                     )
                 }
             }
-            
+
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                AnimatedVisibility(
+                    visible = !isMerchantTransfer && uiState.amount.isNotEmpty()
+                ) {
+                    Spacer(Modifier.padding(vertical = 8.dp))
+                    Text(
+                        text = feeHintText,
+                        color = AccentBlue,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 OutlinedTextField(
                     value = uiState.amount,
                     onValueChange = {
@@ -226,3 +244,6 @@ fun TransferView(
         }
     }
 }
+
+
+

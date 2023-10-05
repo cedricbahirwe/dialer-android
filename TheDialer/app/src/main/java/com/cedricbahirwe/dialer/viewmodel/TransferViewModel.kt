@@ -65,10 +65,7 @@ class TransferViewModel: ViewModel() {
 
     fun transferMoney() {
         if (!_uiState.value.isValid) return
-//        hideKeyboard()
-//        GlobalScope.launch {
-//            MainViewModel.performQuickDial(QuickDialType.OTHER, transaction.fullCode)
-//            Tracker.shared.logTransaction(transaction)
-//        }
+        // Perform the money transfer (transaction service...?!)
+        // Log to analytics...
     }
 }

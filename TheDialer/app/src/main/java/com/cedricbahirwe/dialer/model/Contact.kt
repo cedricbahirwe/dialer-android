@@ -11,6 +11,5 @@ data class Contact(val names: String, private var phoneNumbers: List<String>) {
         phoneNumbers = numbers
     }
 
-    val phoneNumberList: List<String>
-        get() = phoneNumbers
+    val phoneNumberList: List<String> get() = phoneNumbers
 }
