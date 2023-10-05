@@ -71,7 +71,7 @@ private fun addQuickDialingScreen(
 
 fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.History.path) {
-        RecentCodesList()
+        HistoryView()
     }
 }
 

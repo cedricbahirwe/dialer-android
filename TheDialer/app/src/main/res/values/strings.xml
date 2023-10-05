@@ -43,4 +43,10 @@
     <string name="transfer_momo">Transfer momo</string>
     <string name="beyond_range_fee_msg">We cannot estimate the fee for this amount.</string>
     <string name="estimated_fee_message">Estimated fee: %d RWF</string>
+    <string name="history_total_title">Total :</string>
+    <string name="history_total_label">Total :</string>
+    <string name="currency">%d RWF</string>
+    <string name="history_total_estimation_warning">The estimations are based on the recent USSD codes used.</string>
+    <string name="common_history">History</string>
+    <string name="extensive_purchase">Extensive Purchase</string>
 </resources>
