@@ -244,5 +244,3 @@ fun TransferView(
     }
 }
 
-
-

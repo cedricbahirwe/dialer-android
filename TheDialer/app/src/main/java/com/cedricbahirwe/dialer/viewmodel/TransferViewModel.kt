@@ -13,7 +13,6 @@ class TransferViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(Transaction("", "", TransactionType.MERCHANT))
     val uiState: StateFlow<Transaction> = _uiState.asStateFlow()
 
-
     // NOTE: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
     private var selectedContact: Contact? = null
