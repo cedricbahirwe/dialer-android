@@ -33,7 +33,7 @@ class MainViewModel: ViewModel() {
     private fun storeCode(code: RecentDialCode) {
         val index = recentCodes.indexOfFirst { it.detail.amount == code.detail.amount }
         if (index != -1) {
-            recentCodes[index].increaseCount()
+//            recentCodes[index].increaseCount()
         } else {
             recentCodes.add(code)
         }

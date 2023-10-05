@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -23,15 +22,17 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,12 +42,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.model.RecentDialCode
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Preview(showBackground = true)
 @Composable
 fun HistoryView(
     viewModel: HistoryViewModel = viewModel()
 ) {
+
     val recentCodes by rememberUpdatedState(newValue = viewModel.uiState)
 
     val estimatedTotalPrice = recentCodes.sumOf { it.totalPrice }
@@ -94,6 +99,26 @@ fun HistoryView(
                 ) {
                     TitleView(stringResource(R.string.common_history))
 
+//                    LazyColumn(
+//                        modifier = Modifier.fillMaxSize()
+//                    ) {
+//                        items(recentCodes) {item ->
+//                            val index = recentCodes.indexOf(item)
+//
+//                            Row() {
+//                                TextButton(onClick = {
+//                                    viewModel.performRecentDialing(item)
+//                                }) {
+//                                    Text(item.detail.fullCode)
+//                                }
+//
+//                                Spacer(Modifier.weight(1f))
+//
+//                                Text("${item.count}")
+//                            }
+//                        }
+//                    }
+
                     LazyColumn(
                         Modifier
                             .fillMaxSize()
@@ -116,6 +141,7 @@ fun HistoryView(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
     fun getColor(): Color {
@@ -127,6 +153,7 @@ fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
             Color.Red
         }
     }
+
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .padding(5.dp)
@@ -135,38 +162,81 @@ fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
             }
     ) {
 
-        if (code.count > 20) {
-            Image(
-                painter = painterResource(id = R.drawable.fire),
-                contentDescription = stringResource(R.string.extensive_purchase),
-                contentScale = ContentScale.FillHeight,
-                modifier = Modifier
-                    .size(25.dp)
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .clip(CircleShape)
-                    .background(getColor())
-            )
+        Box(
+            modifier = Modifier.size(20.dp)
+        ) {
+            if (code.count > 20) {
+                Image(
+                    painter = painterResource(id = R.drawable.fire),
+                    contentDescription = stringResource(R.string.extensive_purchase),
+                    contentScale = ContentScale.FillHeight,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(0.65f)
+                        .clip(CircleShape)
+                        .background(getColor())
+                )
+            }
         }
+
         Spacer(Modifier.padding(end = 10.dp))
 
-        Text(
-            code.detail.fullCode,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 1
-        )
-        Spacer(Modifier.weight(1f))
-        Text(
-            "${code.count}",
+        Column(
             modifier = Modifier
-                .size(28.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colors.onSurface)
-                .wrapContentSize(Alignment.Center),
-            color = MaterialTheme.colors.surface
-        )
+                .weight(1f)
+                .align(Alignment.CenterVertically)
+        ) {
+            Text(
+                text = "You bought ${code.detail.amount} RWF of airtime",
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Row {
+                Text(
+                    text = if ((0 until 10).contains(code.count))
+                        pluralStringResource(
+                            id = R.plurals.purchase_count,
+                            code.count,
+                            code.count
+                        ) else
+                        "More than 10+ times",
+                    style = MaterialTheme.typography.caption,
+                    fontStyle = FontStyle.Italic,
+                )
+
+                Spacer(Modifier.weight(1f))
+
+                val sdf = SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault())
+
+                val currentDateAndTime = sdf.format(Date())
+
+                Text(
+                    text = currentDateAndTime, //code.detail.purchaseDate.toString(),
+                    color = Color.Gray,
+                    style = MaterialTheme.typography.caption,
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    maxLines = 1
+                )
+            }
+        }
+
+//        Text(
+//            code.detail.fullCode,
+//            fontWeight = FontWeight.SemiBold,
+//            maxLines = 1
+//        )
+//        Spacer(Modifier.weight(1f))
+//        Text(
+//            "${code.count}",
+//            modifier = Modifier
+//                .size(28.dp)
+//                .clip(CircleShape)
+//                .background(MaterialTheme.colors.onSurface)
+//                .wrapContentSize(Alignment.Center),
+//            color = MaterialTheme.colors.surface
+//        )
     }
 }

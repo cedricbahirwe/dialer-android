@@ -1,6 +1,8 @@
 package com.cedricbahirwe.dialer.model
 
-data class PurchaseDetailModel(var amount: Int = 0, var type: CodeType = CodeType.MOMO) {
+import java.util.Date
+
+data class PurchaseDetailModel(val amount: Int = 0, val purchaseDate: Date = Date()) {
     val fullCode: String
         get() { return "${prefixCode}$amount*PIN#" }
 
@@ -14,9 +16,5 @@ data class PurchaseDetailModel(var amount: Int = 0, var type: CodeType = CodeTyp
 
     private companion object {
         const val prefixCode = "*18*2*2*1*1*1*"
-    }
-
-    enum class CodeType(val value: String) {
-        MOMO("momo"), CALL("call"), MESSAGE("message"),OTHER("other")
     }
 }
