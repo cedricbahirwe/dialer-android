@@ -89,7 +89,7 @@ fun TransferView(
                     modifier = Modifier
                         .align(Alignment.TopEnd),
                     onClick = {
-                        viewModel.switchPaymentType()
+                        viewModel.switchTransactionType()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color.Transparent,
@@ -120,7 +120,7 @@ fun TransferView(
                 OutlinedTextField(
                     value = uiState.amount,
                     onValueChange = {
-                        viewModel.handleAmountChange(it)
+                        viewModel.handleTransactionAmountChange(it)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = {
@@ -147,7 +147,7 @@ fun TransferView(
                 OutlinedTextField(
                     value = uiState.number,
                     onValueChange = {
-                        viewModel.handleNumberField(it)
+                        viewModel.handleTransactionNumberChange(it)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     label = {

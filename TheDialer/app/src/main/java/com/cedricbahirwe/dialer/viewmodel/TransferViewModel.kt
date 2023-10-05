@@ -18,7 +18,7 @@ class TransferViewModel: ViewModel() {
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
     private var selectedContact: Contact? = null
 
-    fun switchPaymentType() {
+    fun switchTransactionType() {
         _uiState.update { currentState ->
 
             currentState.copy(
@@ -27,7 +27,7 @@ class TransferViewModel: ViewModel() {
         }
     }
 
-    fun handleAmountChange(value: String) {
+    fun handleTransactionAmountChange(value: String) {
         val cleanAmount = value.filter { it.isDigit() }
         _uiState.update {
             it.copy(
@@ -36,7 +36,7 @@ class TransferViewModel: ViewModel() {
         }
     }
 
-    fun handleNumberField(value: String) {
+    fun handleTransactionNumberChange(value: String) {
         val filteredValue = value.filter { it.isDigit() }
 
         if (_uiState.value.type == TransactionType.MERCHANT) {
