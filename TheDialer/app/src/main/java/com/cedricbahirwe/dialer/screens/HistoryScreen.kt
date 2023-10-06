@@ -3,6 +3,7 @@ package com.cedricbahirwe.dialer.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,6 +58,7 @@ fun HistoryView(
     val estimatedTotalPrice = recentCodes.sumOf { it.totalPrice }
 
     Scaffold(bottomBar = {
+        HistoryBottomBar(estimatedTotalPrice)
         Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
@@ -71,12 +73,24 @@ fun HistoryView(
                     color = MaterialTheme.colors.primary
                 )
                 Spacer(modifier = Modifier.weight(1.0f))
-                Text(
-                    stringResource(R.string.currency, estimatedTotalPrice),
-                    style = MaterialTheme.typography.h6,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary
-                )
+                Row(
+
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
+                ) {
+                    Text(
+                        estimatedTotalPrice.formatDecimalSeparator(),
+                        style = MaterialTheme.typography.h6,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.primary,
+                        maxLines = 1)
+                    Text(
+                        stringResource(R.string.currency),
+                        style = MaterialTheme.typography.caption,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.primary
+                    )
+                }
             }
             Text(
                 stringResource(R.string.history_total_estimation_warning),
@@ -98,27 +112,6 @@ fun HistoryView(
                         .padding(10.dp)
                 ) {
                     TitleView(stringResource(R.string.common_history))
-
-//                    LazyColumn(
-//                        modifier = Modifier.fillMaxSize()
-//                    ) {
-//                        items(recentCodes) {item ->
-//                            val index = recentCodes.indexOf(item)
-//
-//                            Row() {
-//                                TextButton(onClick = {
-//                                    viewModel.performRecentDialing(item)
-//                                }) {
-//                                    Text(item.detail.fullCode)
-//                                }
-//
-//                                Spacer(Modifier.weight(1f))
-//
-//                                Text("${item.count}")
-//                            }
-//                        }
-//                    }
-
                     LazyColumn(
                         Modifier
                             .fillMaxSize()
@@ -214,7 +207,7 @@ fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
                 val currentDateAndTime = sdf.format(Date())
 
                 Text(
-                    text = currentDateAndTime, //code.detail.purchaseDate.toString(),
+                    text = currentDateAndTime,
                     color = Color.Gray,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier.align(Alignment.CenterVertically),
@@ -222,21 +215,58 @@ fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
                 )
             }
         }
-
-//        Text(
-//            code.detail.fullCode,
-//            fontWeight = FontWeight.SemiBold,
-//            maxLines = 1
-//        )
-//        Spacer(Modifier.weight(1f))
-//        Text(
-//            "${code.count}",
-//            modifier = Modifier
-//                .size(28.dp)
-//                .clip(CircleShape)
-//                .background(MaterialTheme.colors.onSurface)
-//                .wrapContentSize(Alignment.Center),
-//            color = MaterialTheme.colors.surface
-//        )
     }
+}
+
+@Composable
+private fun HistoryBottomBar(estimatedTotalPrice: Int) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        Row {
+            Text(
+                stringResource(R.string.history_total_label),
+                style = MaterialTheme.typography.h6,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.primary
+            )
+            Spacer(modifier = Modifier.weight(1.0f))
+            Row(
+
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+            ) {
+                Text(
+                    estimatedTotalPrice.formatDecimalSeparator(),
+                    style = MaterialTheme.typography.h6,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary,
+                    maxLines = 1)
+                Text(
+                    stringResource(R.string.currency),
+                    style = MaterialTheme.typography.caption,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.primary
+                )
+            }
+        }
+        Text(
+            stringResource(R.string.history_total_estimation_warning),
+            fontSize = 10.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Left,
+            maxLines = 1
+        )
+    }
+}
+
+private fun Int.formatDecimalSeparator(): String {
+    return toString()
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
 }
