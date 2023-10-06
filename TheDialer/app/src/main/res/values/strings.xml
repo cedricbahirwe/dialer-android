@@ -45,11 +45,11 @@
     <string name="estimated_fee_message">Estimated fee: %d RWF</string>
     <string name="history_total_title">Total :</string>
     <string name="history_total_label">Total :</string>
-    <string name="currency_label">%,01d RWF</string>
     <string name="currency">RWF</string>
     <string name="history_total_estimation_warning">The estimations are based on the recent USSD codes used.</string>
     <string name="common_history">History</string>
     <string name="extensive_purchase">Extensive Purchase</string>
+    <string name="history_purchase_row_label">You bought %,d RWF of airtime</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>

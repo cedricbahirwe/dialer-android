@@ -59,47 +59,6 @@ fun HistoryView(
 
     Scaffold(bottomBar = {
         HistoryBottomBar(estimatedTotalPrice)
-        Column(
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Row {
-                Text(
-                    stringResource(R.string.history_total_label),
-                    style = MaterialTheme.typography.h6,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.primary
-                )
-                Spacer(modifier = Modifier.weight(1.0f))
-                Row(
-
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(3.dp),
-                ) {
-                    Text(
-                        estimatedTotalPrice.formatDecimalSeparator(),
-                        style = MaterialTheme.typography.h6,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.primary,
-                        maxLines = 1)
-                    Text(
-                        stringResource(R.string.currency),
-                        style = MaterialTheme.typography.caption,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.primary
-                    )
-                }
-            }
-            Text(
-                stringResource(R.string.history_total_estimation_warning),
-                fontSize = 10.sp,
-                color = Color.Gray,
-                textAlign = TextAlign.Left,
-                maxLines = 1
-            )
-        }
     }) { innerPaddings ->
         Box(modifier = Modifier.padding(innerPaddings)) {
             Surface(
@@ -183,7 +142,7 @@ fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
                 .align(Alignment.CenterVertically)
         ) {
             Text(
-                text = "You bought ${code.detail.amount} RWF of airtime",
+                text = stringResource(R.string.history_purchase_row_label, code.detail.amount),
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
@@ -240,7 +199,7 @@ private fun HistoryBottomBar(estimatedTotalPrice: Int) {
                 horizontalArrangement = Arrangement.spacedBy(3.dp),
             ) {
                 Text(
-                    estimatedTotalPrice.formatDecimalSeparator(),
+                    "%,d".format(estimatedTotalPrice),
                     style = MaterialTheme.typography.h6,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary,
