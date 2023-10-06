@@ -96,7 +96,7 @@ fun HistoryView(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
+private fun HistoryRow(code: RecentDialCode, onClick: (RecentDialCode) -> Unit) {
     fun getColor(): Color {
         return if (code.detail.amount < 500) {
             Color.Green

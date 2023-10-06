@@ -43,7 +43,7 @@ private fun addHomeScreen(
 
 private fun addAirtimePurchaseScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.AirtimePurchase.path) {
-        PurchaseDetail()
+        PurchaseDetailView()
     }
 }
 

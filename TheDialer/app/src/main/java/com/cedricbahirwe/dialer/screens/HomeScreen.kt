@@ -43,51 +43,6 @@ import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
 @Composable
-fun DashBoardItem(icon: Int, name: String, modifier: Modifier, onClick: () -> Unit) {
-
-    Column(
-        modifier = modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick
-            )
-    ) {
-        val borderWidth = 1.dp
-        Image(
-            painter = painterResource(id = icon),
-            contentDescription = "$name icon",
-
-            contentScale = ContentScale.FillHeight,
-            modifier = Modifier
-                .size(25.dp)
-                .border(
-                    BorderStroke(borderWidth, MainRed),
-                    CircleShape
-                )
-                .padding(borderWidth)
-                .clip(CircleShape),
-            alignment = Alignment.TopStart
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(
-            text = name,
-            color = Color.Gray,
-            style = MaterialTheme.typography.caption
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DashBoardContainerPreview() {
-    val navController = rememberNavController()
-    DashBoardContainer(navController = navController)
-}
-
-@Composable
 fun DashBoardContainer(navController: NavHostController) {
     Column(
         modifier = Modifier
@@ -151,4 +106,49 @@ fun DashBoardContainer(navController: NavHostController) {
 
         }
     }
+}
+
+@Composable
+private fun DashBoardItem(icon: Int, name: String, modifier: Modifier, onClick: () -> Unit) {
+
+    Column(
+        modifier = modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+    ) {
+        val borderWidth = 1.dp
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = "$name icon",
+
+            contentScale = ContentScale.FillHeight,
+            modifier = Modifier
+                .size(25.dp)
+                .border(
+                    BorderStroke(borderWidth, MainRed),
+                    CircleShape
+                )
+                .padding(borderWidth)
+                .clip(CircleShape),
+            alignment = Alignment.TopStart
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+            text = name,
+            color = Color.Gray,
+            style = MaterialTheme.typography.caption
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DashBoardContainerPreview() {
+    val navController = rememberNavController()
+    DashBoardContainer(navController = navController)
 }
