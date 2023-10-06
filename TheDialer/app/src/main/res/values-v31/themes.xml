@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Dialer" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@android:color/background_dark</item>
-    </style>
-
     <style name="Theme.Splash.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">
             @color/white
         </item>
         <item name="windowSplashScreenAnimatedIcon">
-            @drawable/dialer_red_icon
+            @drawable/dialer_icon_100x100
         </item>
         <item name="windowSplashScreenAnimationDuration">
             @integer/material_motion_duration_medium_1
         </item>
-
+        <item name="android:windowSplashScreenBrandingImage">
+            @drawable/branding_name
+        </item>
         <item name="postSplashScreenTheme">
             @style/Theme.Dialer
         </item>
