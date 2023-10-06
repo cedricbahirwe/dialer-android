@@ -128,7 +128,7 @@ fun PurchaseDetailView(
                 if (hasValidAmount) purchaseDetail.value.amount.toString()
                 else stringResource(R.string.enter_amount),
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Unspecified.copy(
+                color = MaterialTheme.colors.primary.copy(
                     alpha = if (hasValidAmount) 1f else 0.5f
                 ),
                 textAlign = TextAlign.Center,
@@ -163,9 +163,6 @@ fun PurchaseDetailView(
             Text(
                 codePin.value.ifEmpty { stringResource(R.string.enter_pin) },
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Unspecified.copy(
-                    alpha = if (hasValidAmount) 1f else 0.5f
-                ),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 modifier = Modifier
