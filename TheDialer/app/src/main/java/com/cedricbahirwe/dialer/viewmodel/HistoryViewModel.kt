@@ -6,6 +6,7 @@ import com.cedricbahirwe.dialer.model.DialingError
 import com.cedricbahirwe.dialer.model.PurchaseDetailModel
 import com.cedricbahirwe.dialer.model.RecentDialCode
 import java.util.UUID
+import kotlin.random.Random
 
 class HistoryViewModel: ViewModel() {
     private val _uiState = mutableStateListOf<RecentDialCode>()
@@ -23,7 +24,7 @@ class HistoryViewModel: ViewModel() {
         val recentCodes = List(size = 15) {
             RecentDialCode(
                 UUID.randomUUID(),
-                PurchaseDetailModel(it * 10)
+                PurchaseDetailModel(Random.Default.nextInt(0, 1_000))
             )
         }
         _uiState.addAll(recentCodes)
