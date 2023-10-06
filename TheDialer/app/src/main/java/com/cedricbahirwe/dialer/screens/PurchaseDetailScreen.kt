@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,20 +50,24 @@ fun PurchaseDetailView(
     val editedField = remember {
         mutableStateOf(EditedField.AMOUNT)
     }
-    
-    val hasValidAmount = remember {
-        mutableStateOf(false)
-    }
 
     val purchaseDetail = remember {
-        mutableStateOf(PurchaseDetailModel(100))
+        mutableStateOf(PurchaseDetailModel(0))
+    }
+
+    val hasValidAmount = remember(purchaseDetail.value) {
+        purchaseDetail.value.amount >= 1
     }
 
     val codePin = remember {
         mutableStateOf("")
     }
 
-    val amount = remember {
+    val pinInput = remember {
+        mutableStateOf("")
+    }
+
+    val amountInput = remember {
         mutableStateOf("")
     }
 
@@ -72,19 +76,28 @@ fun PurchaseDetailView(
     fun handleNextInput(value: String) {
         when (editedField.value) {
             EditedField.AMOUNT -> {
-
+                purchaseDetail.value = purchaseDetail.value.copy(amount = value.toIntOrNull() ?: 0)
             }
             EditedField.PIN-> {
                 codePin.value = value.take(5)
-//                data.pinCode = try {
-//                    CodePin(codepin)
-//                } catch (e: Exception) {
-//                    // Handle the exception if needed
-//                    null
-//                }
             }
         }
     }
+
+    fun handleNewKey(value: String) {
+        val input = if (editedField.value == EditedField.PIN) pinInput else amountInput
+        
+        if (value == "X") {
+            if (input.value.isNotEmpty())
+                input.value = input.value.dropLast(1)
+        } else {
+            input.value += value
+        }
+
+        println("Sending ${input.value}")
+        handleNextInput(input.value)
+    }
+
 
     Column(
         modifier = Modifier
@@ -112,11 +125,11 @@ fun PurchaseDetailView(
             }
             
             Text(
-                if (hasValidAmount.value) purchaseDetail.value.amount.toString()
+                if (hasValidAmount) purchaseDetail.value.amount.toString()
                 else stringResource(R.string.enter_amount),
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Unspecified.copy(
-                    alpha = if (hasValidAmount.value) 1f else 0.5f
+                    alpha = if (hasValidAmount) 1f else 0.5f
                 ),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -151,7 +164,7 @@ fun PurchaseDetailView(
                 codePin.value.ifEmpty { stringResource(R.string.enter_pin) },
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Unspecified.copy(
-                    alpha = if (hasValidAmount.value) 1f else 0.5f
+                    alpha = if (hasValidAmount) 1f else 0.5f
                 ),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -179,6 +192,16 @@ fun PurchaseDetailView(
                         }
                     )
             )
+
+            Text(
+                text = "Your pin will not be saved unless you save it.",
+                color = Color.Red,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.fillMaxWidth(),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
         }
 
         val btnElevation = ButtonDefaults.elevation(
@@ -189,11 +212,9 @@ fun PurchaseDetailView(
             focusedElevation = 10.dp
         )
 
-        Spacer(Modifier.padding(3.dp))
-
         Button(
             onClick = {
-                      // TODO: Confirm Dialing
+                viewModel.confirmPurchase()
             },
             Modifier
                 .fillMaxWidth()
@@ -204,7 +225,7 @@ fun PurchaseDetailView(
             ),
             elevation = btnElevation,
             shape = RoundedCornerShape(8.dp),
-            enabled = hasValidAmount.value
+            enabled = hasValidAmount
         ) {
             Text(stringResource(R.string.common_confirm))
         }
@@ -212,7 +233,7 @@ fun PurchaseDetailView(
         Spacer(Modifier.padding(4.dp))
 
         PinView {
-            handleNextInput(it)
+            handleNewKey(it)
         }
     }
 }

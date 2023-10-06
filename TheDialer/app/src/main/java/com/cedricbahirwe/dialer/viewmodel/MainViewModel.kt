@@ -63,7 +63,7 @@ class MainViewModel: ViewModel() {
 //        recentCodes = DialerStorage.shared.getRecentCodes().toMutableList()
 //    }
 //
-//    fun confirmPurchase() {
+    fun confirmPurchase() {
 //        val purchase = purchaseDetail
 //        dialCode(purchase) { success, failure ->
 //            if (success != null) {
@@ -75,7 +75,7 @@ class MainViewModel: ViewModel() {
 //                print(failure.message)
 //            }
 //        }
-//    }
+    }
 //
 //    fun deletePastCode(offSets: Array<RecentDialCode>) {
 //        recentCodes.removeAll { offSets.contains(it) }

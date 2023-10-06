@@ -17,10 +17,10 @@ import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 
 @Composable
 fun PinView(isFullMode: Boolean = false,
-    btnSize: Float = 60f,
-    btnColors: ButtonColors = ButtonDefaults.outlinedButtonColors(
-        backgroundColor = Color.Gray.copy(0.2f)
-    ), onEditChanged: (String) -> Unit
+            btnSize: Float = 50f,
+            btnColors: ButtonColors = ButtonDefaults.outlinedButtonColors(
+                backgroundColor = Color.Gray.copy(0.2f)
+            ), onEditChanged: (String) -> Unit
 ) {
 
     val buttons = remember {
@@ -45,17 +45,19 @@ fun PinView(isFullMode: Boolean = false,
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(buttons.size) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                CircleButton(
-                    title = buttons[it],
-                    size = btnSize,
-                    btnColors = btnColors
-                ) {
-                    addKey(buttons[it])
+                if (isFullMode || buttons[it] != "*" ) {
+                    CircleButton(
+                        title = buttons[it],
+                        size = btnSize,
+                        btnColors = btnColors
+                    ) {
+                        addKey(buttons[it])
+                    }
                 }
             }
         }
