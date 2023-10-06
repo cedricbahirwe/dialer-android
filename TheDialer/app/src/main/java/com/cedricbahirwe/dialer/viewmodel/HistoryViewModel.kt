@@ -20,7 +20,7 @@ class HistoryViewModel: ViewModel() {
         // TODO: Retrieve stored codes
         // recentCodes = DialerStorage.shared.getSortedRecentCodes()
 
-        val recentCodes = List(size = 10) {
+        val recentCodes = List(size = 15) {
             RecentDialCode(
                 UUID.randomUUID(),
                 PurchaseDetailModel(it * 10)
@@ -55,9 +55,9 @@ class HistoryViewModel: ViewModel() {
         }
     }
 
-
     /// Save RecentCode(s) locally.
     private fun saveRecentCodesLocally() {
+        // TODO: Store all local codes
         try {
             // Save all recent codes to local storage
 //            DialerStorage.shared.saveRecentCodes(recentCodes)
