@@ -19,23 +19,20 @@ Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id159
 ## Screenshots
 Home Light                 |  Home Dark
 :-------------------------:|:-------------------------:
-![](https://user-images.githubusercontent.com/49038614/213887405-c9c9d305-b34b-490e-865f-080d3bf5a155.png)  |  ![](https://user-images.githubusercontent.com/49038614/213887420-689701b7-d2db-4161-a878-012226e0ddef.png)
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/2282e45a-beb6-4601-a89f-a8276bac7f78)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/872adc38-9e05-4463-a018-0256a5289a7c)
 
 Transfer Light                   |  Transfer Dark
 :-------------------------:|:-------------------------:
-![](https://user-images.githubusercontent.com/49038614/213924135-629c16f9-ab13-4b25-9c8f-7259999e0bee.png)  |  ![](https://user-images.githubusercontent.com/49038614/213924287-3d9f67b9-7027-46ac-be5c-3288af9d9052.png)
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/bb937cb3-331f-47f7-9e33-663ac53767e8)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/90c94714-5c6d-45db-afab-c0dc73dcb811)
 
 Pin Light                   |  Pin Dark
 :-------------------------:|:-------------------------:
-![](https://user-images.githubusercontent.com/49038614/214170724-30b032bd-467c-4a79-88de-6dd1cc558a82.png)  |  ![](https://user-images.githubusercontent.com/49038614/214170688-0b7c159e-7b48-4828-a7a8-54ce1ea44096.png)
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/679d45d2-fa66-45fe-a681-b87c77667d79)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/1c2ddc9f-fe58-4fa8-8120-2d29977fcf68)
 
 History Light                   |  History Dark
 :-------------------------:|:-------------------------:
-![](https://user-images.githubusercontent.com/49038614/214687221-73084d51-b956-480f-b005-92b6fa5be5f1.png)  |  ![](https://user-images.githubusercontent.com/49038614/214687173-1dc10036-92c7-4dd8-8fa2-229ed27ec332.png)
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/60795335-e057-4b24-b9b3-6c7a7ba5fa0a)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/827b8799-d7cc-4aa8-93be-8bc8414291cf)
 
-Quick Dial                 | 
-:-------------------------:|
-![](https://user-images.githubusercontent.com/49038614/214670353-327b788d-57d5-4e7c-b4f0-cfe74ce35dad.png)  |
 
 ## Demo:
 * Download [Dialer iOS](https://apps.apple.com/ke/app/dial-it/id1591756747) to learn more
