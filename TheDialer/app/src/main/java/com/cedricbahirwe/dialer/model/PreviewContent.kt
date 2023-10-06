@@ -1,7 +1,6 @@
 package com.cedricbahirwe.dialer.model
 
 sealed class PreviewContent {
-    // fields which are common across class objects
     companion object {
         val exampleContact = Contact("Kate Bell", listOf("(555) 564-8583", "(415) 555-3695"))
         val exampleContact2 = Contact("John Smith", listOf("(415) 555-3695"))
