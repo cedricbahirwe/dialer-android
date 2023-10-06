@@ -1,5 +1,6 @@
 package com.cedricbahirwe.dialer.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,6 +10,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,13 +20,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircle
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,69 +48,105 @@ import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.MainRed
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DashBoardContainer(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colors.background)
-            .fillMaxWidth()
-            .padding(10.dp)
+    val sheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Expanded,
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
+    )
+    val coroutineScope = rememberCoroutineScope()
+
+    BackHandler(sheetState.isVisible) {
+        coroutineScope.launch { sheetState.show() }
+    }
+
+    ModalBottomSheetLayout(
+        sheetState = sheetState,
+        sheetContent = { PurchaseDetailView() },
+        modifier = Modifier.fillMaxSize(),
+        sheetShape = RoundedCornerShape(15.dp)
     ) {
 
-        TitleView("Dialer")
+        Column(
+            modifier = Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
 
-        val itemModifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp)
-            .weight(1f)
-            .align(Alignment.Start)
-            .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
-            .background(MaterialTheme.colors.background)
-            .padding(10.dp)
-        Row {
-            DashBoardItem(R.drawable.wallet_pass, "Buy airtime", modifier = itemModifier) {
-                navController.navigate(NavRoute.AirtimePurchase.path)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            DashBoardItem(R.drawable.paperplane_circle, "Transfer/Pay", modifier = itemModifier) {
-                navController.navigate(NavRoute.Send.path)
-            }
-        }
+            TitleView("Dialer")
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row {
-            DashBoardItem(R.drawable.clock_arrow_circlepath, "History", modifier = itemModifier) {
-                navController.navigate(NavRoute.History.path)
+            val itemModifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .weight(1f)
+                .align(Alignment.Start)
+                .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
+                .background(MaterialTheme.colors.background)
+                .padding(10.dp)
+            Row {
+                DashBoardItem(R.drawable.wallet_pass, "Buy airtime", modifier = itemModifier) {
+//                    navController.navigate(NavRoute.AirtimePurchase.path)
+                    coroutineScope.launch {
+                        if (sheetState.isVisible) sheetState.hide()
+                        else sheetState.show()
+                    }
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                DashBoardItem(
+                    R.drawable.paperplane_circle,
+                    "Transfer/Pay",
+                    modifier = itemModifier
+                ) {
+                    navController.navigate(NavRoute.Send.path)
+                }
             }
-            Spacer(modifier = Modifier.width(16.dp))
-            DashBoardItem(R.drawable.wrench_and_screwdriver, "My Space", modifier = itemModifier) {
-                navController.navigate(NavRoute.MySpace.path)
-            }
-        }
 
-        Spacer(modifier = Modifier.weight(1.0f))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Row(modifier = Modifier.padding(vertical = 8.dp)) {
-            Button(
-                onClick = {
-                    navController.navigate(NavRoute.QuickDialing.path)
-                },
-                enabled = true,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = MainRed,
-                    contentColor = Color.White
-                ),
-            ) {
-                Icon(
-                    Icons.Rounded.AddCircle,
-                    contentDescription = "Quick Dial icon"
-                )
-                Text(stringResource(R.string.quick_dial), Modifier.padding(start = 10.dp))
+            Row {
+                DashBoardItem(
+                    R.drawable.clock_arrow_circlepath,
+                    "History",
+                    modifier = itemModifier
+                ) {
+                    navController.navigate(NavRoute.History.path)
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                DashBoardItem(
+                    R.drawable.wrench_and_screwdriver,
+                    "My Space",
+                    modifier = itemModifier
+                ) {
+                    navController.navigate(NavRoute.MySpace.path)
+                }
             }
+
             Spacer(modifier = Modifier.weight(1.0f))
 
+            Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                Button(
+                    onClick = {
+                        navController.navigate(NavRoute.QuickDialing.path)
+                    },
+                    enabled = true,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MainRed,
+                        contentColor = Color.White
+                    ),
+                ) {
+                    Icon(
+                        Icons.Rounded.AddCircle,
+                        contentDescription = "Quick Dial icon"
+                    )
+                    Text(stringResource(R.string.quick_dial), Modifier.padding(start = 10.dp))
+                }
+                Spacer(modifier = Modifier.weight(1.0f))
+
+            }
         }
     }
 }
