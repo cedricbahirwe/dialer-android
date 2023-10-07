@@ -33,33 +33,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
+import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.MainRed
-
-@Composable
-fun TitleView(title: String, modifier: Modifier = Modifier) {
-    Row {
-        Text(
-            title,
-            modifier = modifier.padding(vertical = 15.dp),
-            color = MaterialTheme.colors.primary,
-            fontSize = 26.sp,
-            fontWeight = FontWeight.ExtraBold,
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 1
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-    }
-}
 
 @Composable
 fun DashBoardItem(icon: Int, name: String, modifier: Modifier, onClick: () -> Unit) {

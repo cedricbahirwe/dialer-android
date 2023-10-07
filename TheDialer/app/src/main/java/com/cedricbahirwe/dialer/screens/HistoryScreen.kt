@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
+import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.model.RecentDialCode
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModel
 import java.text.SimpleDateFormat
