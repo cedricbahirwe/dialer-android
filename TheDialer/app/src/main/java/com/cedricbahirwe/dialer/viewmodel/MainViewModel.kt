@@ -28,7 +28,7 @@ class MainViewModel: ViewModel() {
     private fun storeCode(code: RecentDialCode) {
         val index = recentCodes.indexOfFirst { it.detail.amount == code.detail.amount }
         if (index != -1) {
-            recentCodes[index].increaseCount()
+//            recentCodes[index].increaseCount()
         } else {
             recentCodes.add(code)
         }
@@ -163,19 +163,6 @@ class MainViewModel: ViewModel() {
                 code = pinCode
             )
         )
-    }
-
-    // MARK: Extension used for Error, Models, etc
-    private sealed class DialingError(override val message: String) : Throwable() {
-        private companion object {
-            val context: Resources = Resources.getSystem()
-        }
-
-        class CanNotDial : DialingError("Can not dial this code")
-        class UnknownFormat(format: String) :
-            DialingError("Can not decode this format: $format")
-
-        class EmptyPin : DialingError("Pin Code not found, configure pin and try again")
     }
 
     /* MARK: Electricity Storage */
