@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -49,23 +50,45 @@ import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DashBoardContainer(navController: NavHostController) {
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Expanded,
+
+    val isMySpaceFlowActive = remember { mutableStateOf(false) }
+
+    val purchaseSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
+
+    val mySpaceSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+        confirmStateChange = { false }
+    )
+
     val coroutineScope = rememberCoroutineScope()
 
-    BackHandler(sheetState.isVisible) {
-        coroutineScope.launch { sheetState.show() }
+    BackHandler(purchaseSheetState.isVisible) {
+        coroutineScope.launch { purchaseSheetState.hide() }
+    }
+
+    BackHandler(mySpaceSheetState.isVisible) {
+        coroutineScope.launch { mySpaceSheetState.hide() }
     }
 
     ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetContent = { PurchaseDetailView() },
+        sheetState = if (isMySpaceFlowActive.value) mySpaceSheetState else purchaseSheetState,
+        sheetContent = {
+            if (isMySpaceFlowActive.value)
+                MySpaceScreen {
+                    coroutineScope.launch {
+                        mySpaceSheetState.hide()
+                    }
+                }
+            else PurchaseDetailView()
+        },
         modifier = Modifier.fillMaxSize(),
         sheetShape = RoundedCornerShape(15.dp)
     ) {
@@ -88,17 +111,16 @@ fun DashBoardContainer(navController: NavHostController) {
                 .background(MaterialTheme.colors.background)
                 .padding(10.dp)
             Row {
-                DashBoardItem(R.drawable.wallet_pass, "Buy airtime", modifier = itemModifier) {
-//                    navController.navigate(NavRoute.AirtimePurchase.path)
+                DashBoardItem(R.drawable.wallet_pass, stringResource(R.string.buy_airtime), modifier = itemModifier) {
                     coroutineScope.launch {
-                        if (sheetState.isVisible) sheetState.hide()
-                        else sheetState.show()
+                        isMySpaceFlowActive.value = false
+                        purchaseSheetState.show()
                     }
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 DashBoardItem(
                     R.drawable.paperplane_circle,
-                    "Transfer/Pay",
+                    stringResource(R.string.transfer_pay),
                     modifier = itemModifier
                 ) {
                     navController.navigate(NavRoute.Send.path)
@@ -110,7 +132,7 @@ fun DashBoardContainer(navController: NavHostController) {
             Row {
                 DashBoardItem(
                     R.drawable.clock_arrow_circlepath,
-                    "History",
+                    stringResource(R.string.common_history),
                     modifier = itemModifier
                 ) {
                     navController.navigate(NavRoute.History.path)
@@ -118,10 +140,14 @@ fun DashBoardContainer(navController: NavHostController) {
                 Spacer(modifier = Modifier.width(16.dp))
                 DashBoardItem(
                     R.drawable.wrench_and_screwdriver,
-                    "My Space",
+                    stringResource(R.string.my_space),
                     modifier = itemModifier
                 ) {
-                    navController.navigate(NavRoute.MySpace.path)
+                    coroutineScope.launch {
+                        isMySpaceFlowActive.value = true
+                        mySpaceSheetState.show()
+                    }
+
                 }
             }
 
@@ -140,7 +166,7 @@ fun DashBoardContainer(navController: NavHostController) {
                 ) {
                     Icon(
                         Icons.Rounded.AddCircle,
-                        contentDescription = "Quick Dial icon"
+                        contentDescription = stringResource(R.string.quick_dial_icon)
                     )
                     Text(stringResource(R.string.quick_dial), Modifier.padding(start = 10.dp))
                 }
