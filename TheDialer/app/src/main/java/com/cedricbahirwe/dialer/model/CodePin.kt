@@ -5,16 +5,9 @@ import com.cedricbahirwe.dialer.R
 
 // https://www.gsmarena.com/glossary.php3?term=pin-code
 data class CodePin(var a: Int, var b: Int, var c: Int, var d: Int, var e: Int) {
-
-    val asString: String
-        get() {
-            return "$a$b$c$d$e"
-        }
-
-    val asDigits: Int
-        get() {
-            return asString.toIntOrNull() ?: 0
-        }
+    val asString: String get() =  "$a$b$c$d$e"
+    val asNumber: Int get() = asString.toIntOrNull() ?: 0
+    val digits: Int get() = asString.length
 
     constructor(value: String) : this(0, 0, 0, 0, 0) {
         if (!value.all { it.isDigit() }) {

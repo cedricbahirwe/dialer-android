@@ -50,8 +50,13 @@
     <string name="common_history">History</string>
     <string name="extensive_purchase">Extensive Purchase</string>
     <string name="history_purchase_row_label">You bought %,d RWF of airtime</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="enter_pin">Enter Pin</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="common_save">Save</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>
     </plurals>
+
 </resources>

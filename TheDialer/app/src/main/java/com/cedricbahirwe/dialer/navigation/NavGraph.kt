@@ -27,12 +27,10 @@ fun NavGraph(navController: NavHostController) {
 
         addQuickDialingScreen(navController, this)
 
-        addMainScreen(navController, this)
-
     }
 }
 
-fun addHomeScreen(
+private fun addHomeScreen(
     navController: NavHostController,
     navGraphBuilder: NavGraphBuilder
 ) {
@@ -43,20 +41,9 @@ fun addHomeScreen(
     }
 }
 
-fun addMainScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
-    navGraphBuilder.composable(route = NavRoute.MainScreen.path) {
-        MainHomeScreen(
-            navController = navController
-        )
-    }
-}
-
-fun addAirtimePurchaseScreen(navGraphBuilder: NavGraphBuilder) {
+private fun addAirtimePurchaseScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.AirtimePurchase.path) {
-        PurchaseDetail()
+        PurchaseDetailView()
     }
 }
 
@@ -69,13 +56,13 @@ private fun addQuickDialingScreen(
     }
 }
 
-fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
+private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.History.path) {
         HistoryView()
     }
 }
 
-fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
+private fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         TransferView()
     }

@@ -6,11 +6,7 @@ sealed class DialerQuickCode {
     class Other(val fullCode: String) : DialerQuickCode()
 
     private fun codeSuffix(code: CodePin?): String {
-        return if (code != null) {
-            "*${code.asDigits}#"
-        } else {
-            "#"
-        }
+        return code?.let { "*${it.asNumber}#" } ?: "#"
     }
 
     val ussd: String
