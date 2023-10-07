@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,6 +64,10 @@ fun PurchaseDetailView(
         mutableStateOf("")
     }
 
+    val isPinCodeValid = remember(codePin.value) {
+        codePin.value.length == 5
+    }
+
     val pinInput = remember {
         mutableStateOf("")
     }
@@ -80,6 +85,18 @@ fun PurchaseDetailView(
             }
             EditedField.PIN-> {
                 codePin.value = value.take(5)
+            }
+        }
+    }
+
+    fun showDeleteBtn() : Boolean {
+        return when (editedField.value) {
+            EditedField.AMOUNT -> {
+                purchaseDetail.value.amount > 0
+            }
+
+            EditedField.PIN-> {
+                codePin.value.isNotEmpty()
             }
         }
     }
@@ -160,12 +177,9 @@ fun PurchaseDetailView(
 
             Spacer(Modifier.padding(vertical = 10.dp))
 
-            Text(
-                codePin.value.ifEmpty { stringResource(R.string.enter_pin) },
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                modifier = Modifier
+            Box(
+                modifier =
+                Modifier
                     .fillMaxWidth()
                     .height(40.dp)
                     .border(
@@ -178,17 +192,55 @@ fun PurchaseDetailView(
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colors.primary.copy(0.06f))
                     .background(Color.Green.copy(alpha = if (editedField.value == EditedField.PIN) 0.04f else 0f))
-                    .wrapContentHeight(Alignment.CenterVertically)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            coroutineScope.launch {
-                                editedField.value = EditedField.PIN
+            ) {
+                Text(
+                    codePin.value.ifEmpty { stringResource(R.string.enter_pin) },
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .fillMaxSize()
+//                        .height(40.dp)
+//                        .border(
+//                            BorderStroke(
+//                                (if (editedField.value == EditedField.PIN) 1.dp else Dp.Unspecified),
+//                                fieldBorderGradient
+//                            ),
+//                            RoundedCornerShape(8.dp)
+//                        )
+//                        .clip(RoundedCornerShape(8.dp))
+//                        .background(MaterialTheme.colors.primary.copy(0.06f))
+//                        .background(Color.Green.copy(alpha = if (editedField.value == EditedField.PIN) 0.04f else 0f))
+                        .wrapContentHeight(Alignment.CenterVertically)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                coroutineScope.launch {
+                                    editedField.value = EditedField.PIN
+                                }
                             }
-                        }
-                    )
-            )
+                        )
+                )
+
+                Button(
+                    onClick = {
+
+                    },
+                    Modifier
+                        .height(38.dp)
+                        .align(Alignment.CenterEnd),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.primary,
+                        contentColor = MaterialTheme.colors.onPrimary
+                    ),
+//                    elevation = btnElevation,
+                    shape = RoundedCornerShape(8.dp),
+                    enabled = isPinCodeValid
+                ) {
+                    Text(stringResource(R.string.common_save), Modifier.padding(start = 1.dp))
+                }
+            }
 
             Text(
                 text = "Your pin will not be saved unless you save it.",
@@ -229,7 +281,9 @@ fun PurchaseDetailView(
 
         Spacer(Modifier.padding(4.dp))
 
-        PinView {
+        PinView(
+            showDeleteBtn = showDeleteBtn()
+        ) {
             handleNewKey(it)
         }
     }

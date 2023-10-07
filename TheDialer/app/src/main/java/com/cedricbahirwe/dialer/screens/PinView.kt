@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 
 @Composable
 fun PinView(isFullMode: Boolean = false,
+            showDeleteBtn: Boolean = true,
             btnSize: Float = 50f,
             btnColors: ButtonColors = ButtonDefaults.outlinedButtonColors(
                 backgroundColor = Color.Gray.copy(0.2f)
@@ -50,15 +52,21 @@ fun PinView(isFullMode: Boolean = false,
     ) {
         items(buttons.size) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (isFullMode || buttons[it] != "*" ) {
-                    CircleButton(
-                        title = buttons[it],
-                        size = btnSize,
-                        btnColors = btnColors
-                    ) {
-                        addKey(buttons[it])
+                if (!isFullMode && buttons[it] != "*" ) {
+                    if (buttons[it] != "X" || showDeleteBtn) {
+                        CircleButton(
+                            title = buttons[it],
+                            size = btnSize,
+                            btnColors = ButtonDefaults.outlinedButtonColors(
+                                backgroundColor = btnColors.backgroundColor(true).value,
+                                contentColor = if (buttons[it] == "X") Color.Red else MaterialTheme.colors.primary
+                            )
+                        ) {
+                            addKey(buttons[it])
+                        }
                     }
                 }
+
             }
         }
     }
