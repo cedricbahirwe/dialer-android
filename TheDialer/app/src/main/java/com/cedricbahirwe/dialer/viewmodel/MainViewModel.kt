@@ -1,8 +1,92 @@
 package com.cedricbahirwe.dialer.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.cedricbahirwe.dialer.model.CodePin
+import com.cedricbahirwe.dialer.model.PurchaseDetailModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
+
+enum class EditedField {
+    AMOUNT, PIN
+}
+data class PurchaseUiState (
+    val amount: Int = 0,
+    val pin: String = "",
+    val editedField: EditedField = EditedField.AMOUNT
+)
 class MainViewModel: ViewModel() {
+
+    private val _uiState = MutableStateFlow(PurchaseUiState())
+    val uiState: StateFlow<PurchaseUiState> = _uiState.asStateFlow()
+
+    val hasValidAmount: Boolean get() = _uiState.value.amount > 0
+    val isPinCodeValid: Boolean get() = _uiState.value.pin.length == 5
+
+    fun shouldShowDeleteBtn() : Boolean {
+        return when (_uiState.value.editedField) {
+            EditedField.AMOUNT -> {
+                hasValidAmount
+            }
+
+            EditedField.PIN-> {
+                _uiState.value.pin.isNotEmpty()
+            }
+        }
+    }
+
+    fun handleNewKey(value: String) {
+        var input = if (_uiState.value.editedField == EditedField.PIN) _uiState.value.pin else _uiState.value.amount.toString()
+
+        if (value == "X") {
+            if (input.isNotEmpty())
+                input = input.dropLast(1)
+        } else {
+            input += value
+        }
+
+        handleNewInput(input)
+    }
+
+    private fun handleNewInput(value: String) {
+        when (_uiState.value.editedField) {
+            EditedField.AMOUNT -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        amount = value.toIntOrNull() ?: 0
+                    )
+                }
+            }
+            EditedField.PIN-> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        pin = value.take(5)
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateEditedField(newField: EditedField) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                editedField = newField
+            )
+        }
+    }
+
+    fun rollDice() {
+        _uiState.update { currentState ->
+            currentState.copy(
+//                amount = Random.nextInt(from = 1, until = 7),
+//                pin = Random.nextInt(from = 1, until = 7),
+//                numberOfRolls = currentState.numberOfRolls + 1,
+            )
+        }
+    }
+
 //    var pinCode: CodePin? = DialerStorage.shared.getCodePin()
 //    var hasReachSync = DialerStorage.shared.isSyncDateReached()
 //        set(newValue) {
@@ -64,6 +148,17 @@ class MainViewModel: ViewModel() {
 //    }
 //
     fun confirmPurchase() {
+        val purchase = PurchaseDetailModel(_uiState.value.amount)
+    var codePin: CodePin?
+    try {
+        codePin = CodePin(_uiState.value.pin)
+    } catch (e: Exception) {
+        codePin = null
+        println("Found Error with Pin")
+        e.printStackTrace()
+    }
+
+    println("Purchasing ${purchase.getFullUSSDCode(codePin)}")
 //        val purchase = purchaseDetail
 //        dialCode(purchase) { success, failure ->
 //            if (success != null) {

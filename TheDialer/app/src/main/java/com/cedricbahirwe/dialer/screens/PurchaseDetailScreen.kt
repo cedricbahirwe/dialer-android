@@ -21,7 +21,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -38,8 +39,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
-import com.cedricbahirwe.dialer.model.PurchaseDetailModel
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
+import com.cedricbahirwe.dialer.viewmodel.EditedField
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -48,73 +49,9 @@ import kotlinx.coroutines.launch
 fun PurchaseDetailView(
     viewModel: MainViewModel = viewModel()
 ) {
-    val editedField = remember {
-        mutableStateOf(EditedField.AMOUNT)
-    }
-
-    val purchaseDetail = remember {
-        mutableStateOf(PurchaseDetailModel(0))
-    }
-
-    val hasValidAmount = remember(purchaseDetail.value) {
-        purchaseDetail.value.amount >= 1
-    }
-
-    val codePin = remember {
-        mutableStateOf("")
-    }
-
-    val isPinCodeValid = remember(codePin.value) {
-        codePin.value.length == 5
-    }
-
-    val pinInput = remember {
-        mutableStateOf("")
-    }
-
-    val amountInput = remember {
-        mutableStateOf("")
-    }
+    val uiState by viewModel.uiState.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
-
-    fun handleNextInput(value: String) {
-        when (editedField.value) {
-            EditedField.AMOUNT -> {
-                purchaseDetail.value = purchaseDetail.value.copy(amount = value.toIntOrNull() ?: 0)
-            }
-            EditedField.PIN-> {
-                codePin.value = value.take(5)
-            }
-        }
-    }
-
-    fun showDeleteBtn() : Boolean {
-        return when (editedField.value) {
-            EditedField.AMOUNT -> {
-                purchaseDetail.value.amount > 0
-            }
-
-            EditedField.PIN-> {
-                codePin.value.isNotEmpty()
-            }
-        }
-    }
-
-    fun handleNewKey(value: String) {
-        val input = if (editedField.value == EditedField.PIN) pinInput else amountInput
-        
-        if (value == "X") {
-            if (input.value.isNotEmpty())
-                input.value = input.value.dropLast(1)
-        } else {
-            input.value += value
-        }
-
-        println("Sending ${input.value}")
-        handleNextInput(input.value)
-    }
-
 
     Column(
         modifier = Modifier
@@ -142,11 +79,11 @@ fun PurchaseDetailView(
             }
             
             Text(
-                if (hasValidAmount) purchaseDetail.value.amount.toString()
+                if (viewModel.hasValidAmount) uiState.amount.toString()
                 else stringResource(R.string.enter_amount),
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colors.primary.copy(
-                    alpha = if (hasValidAmount) 1f else 0.5f
+                    alpha = if (viewModel.hasValidAmount) 1f else 0.5f
                 ),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -155,21 +92,21 @@ fun PurchaseDetailView(
                     .height(40.dp)
                     .border(
                         BorderStroke(
-                            (if (editedField.value == EditedField.AMOUNT) 1.dp else Dp.Unspecified),
+                            (if (uiState.editedField == EditedField.AMOUNT) 1.dp else Dp.Unspecified),
                             fieldBorderGradient
                         ),
                         RoundedCornerShape(8.dp)
                     )
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colors.primary.copy(0.06f))
-                    .background(Color.Green.copy(alpha = if (editedField.value == EditedField.AMOUNT) 0.04f else 0f))
+                    .background(Color.Green.copy(alpha = if (uiState.editedField == EditedField.AMOUNT) 0.04f else 0f))
                     .wrapContentHeight(Alignment.CenterVertically)
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         onClick = {
                             coroutineScope.launch {
-                                editedField.value = EditedField.AMOUNT
+                                viewModel.updateEditedField(EditedField.AMOUNT)
                             }
                         }
                     )
@@ -184,40 +121,29 @@ fun PurchaseDetailView(
                     .height(40.dp)
                     .border(
                         BorderStroke(
-                            (if (editedField.value == EditedField.PIN) 1.dp else Dp.Unspecified),
+                            (if (uiState.editedField == EditedField.PIN) 1.dp else Dp.Unspecified),
                             fieldBorderGradient
                         ),
                         RoundedCornerShape(8.dp)
                     )
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colors.primary.copy(0.06f))
-                    .background(Color.Green.copy(alpha = if (editedField.value == EditedField.PIN) 0.04f else 0f))
+                    .background(Color.Green.copy(alpha = if (uiState.editedField == EditedField.PIN) 0.04f else 0f))
             ) {
                 Text(
-                    codePin.value.ifEmpty { stringResource(R.string.enter_pin) },
+                    uiState.pin.ifEmpty { stringResource(R.string.enter_pin) },
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxSize()
-//                        .height(40.dp)
-//                        .border(
-//                            BorderStroke(
-//                                (if (editedField.value == EditedField.PIN) 1.dp else Dp.Unspecified),
-//                                fieldBorderGradient
-//                            ),
-//                            RoundedCornerShape(8.dp)
-//                        )
-//                        .clip(RoundedCornerShape(8.dp))
-//                        .background(MaterialTheme.colors.primary.copy(0.06f))
-//                        .background(Color.Green.copy(alpha = if (editedField.value == EditedField.PIN) 0.04f else 0f))
                         .wrapContentHeight(Alignment.CenterVertically)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null,
                             onClick = {
                                 coroutineScope.launch {
-                                    editedField.value = EditedField.PIN
+                                    viewModel.updateEditedField(EditedField.PIN)
                                 }
                             }
                         )
@@ -236,7 +162,7 @@ fun PurchaseDetailView(
                     ),
 //                    elevation = btnElevation,
                     shape = RoundedCornerShape(8.dp),
-                    enabled = isPinCodeValid
+                    enabled = viewModel.isPinCodeValid
                 ) {
                     Text(stringResource(R.string.common_save), Modifier.padding(start = 1.dp))
                 }
@@ -274,7 +200,7 @@ fun PurchaseDetailView(
             ),
             elevation = btnElevation,
             shape = RoundedCornerShape(8.dp),
-            enabled = hasValidAmount
+            enabled = viewModel.hasValidAmount
         ) {
             Text(stringResource(R.string.common_confirm))
         }
@@ -282,13 +208,10 @@ fun PurchaseDetailView(
         Spacer(Modifier.padding(4.dp))
 
         PinView(
-            showDeleteBtn = showDeleteBtn()
+            showDeleteBtn = viewModel.shouldShowDeleteBtn()
         ) {
-            handleNewKey(it)
+            viewModel.handleNewKey(it)
         }
     }
 }
 
-private enum class EditedField {
-    AMOUNT, PIN
-}
