@@ -1,6 +1,8 @@
 package com.cedricbahirwe.dialer.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -20,6 +24,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,13 +65,17 @@ fun SettingsScreen(
             )
         }
     ) {
+
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .padding(it)
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp)
                 .fillMaxSize()
                 .background(MaterialTheme.colors.background)
+                .verticalScroll(rememberScrollState())
+
         ) {
 
             Section(R.string.general_settings) {
@@ -79,7 +88,9 @@ fun SettingsScreen(
             }
 
             Section(R.string.reach_out) {
-                SettingsItemRow(SettingsOption.CONTACT_US) {}
+                SettingsItemRow(SettingsOption.CONTACT_US) {
+                    println("Clicked")
+                }
                 Divider(startIndent = 60.dp)
                 SettingsItemRow(SettingsOption.TWEET_US) {}
                 Divider(startIndent = 60.dp)
@@ -165,6 +176,13 @@ private fun SettingsItemRow(
             )
             .padding(start = 15.dp)
             .padding(vertical = 10.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {
+                    action?.invoke()
+                }
+            )
         ,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(15.dp)
