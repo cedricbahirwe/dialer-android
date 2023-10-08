@@ -2,6 +2,7 @@ package com.cedricbahirwe.dialer.navigation
 
 
 sealed class NavRoute(val path: String) {
+    object HomeScreen : NavRoute("Home Screen")
 
     object AirtimePurchase : NavRoute("Airtime Purchase")
 
@@ -13,5 +14,5 @@ sealed class NavRoute(val path: String) {
 
     object QuickDialing: NavRoute("Quick Dialing")
 
-    object HomeScreen : NavRoute("Home Screen")
+    object Settings : NavRoute("Settings Screen")
 }
