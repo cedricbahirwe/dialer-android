@@ -39,4 +39,29 @@
     <string name="quick_dial">Quick Dial</string>
     <string name="pay_merchant">Pay Merchant</string>
     <string name="pay_user">Switch to User</string>
+    <string name="show_merchant_code_warning">The code should be a 5–6 digits number</string>
+    <string name="transfer_momo">Transfer momo</string>
+    <string name="beyond_range_fee_msg">We cannot estimate the fee for this amount.</string>
+    <string name="estimated_fee_message">Estimated fee: %d RWF</string>
+    <string name="history_total_title">Total :</string>
+    <string name="history_total_label">Total :</string>
+    <string name="currency">RWF</string>
+    <string name="history_total_estimation_warning">The estimations are based on the recent USSD codes used.</string>
+    <string name="common_history">History</string>
+    <string name="extensive_purchase">Extensive Purchase</string>
+    <string name="history_purchase_row_label">You bought %,d RWF of airtime</string>
+    <string name="common_confirm">Confirm</string>
+    <string name="enter_pin">Enter Pin</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="common_save">Save</string>
+    <string name="buy_airtime">Buy airtime</string>
+    <string name="transfer_pay">Transfer/Pay</string>
+    <string name="my_space">My Space</string>
+    <string name="quick_dial_icon">Quick Dial icon</string>
+    <string name="coming_soon">Coming Soon</string>
+    <plurals name="purchase_count">
+        <item quantity="one">%d time</item>
+        <item quantity="other">%d times</item>
+    </plurals>
+
 </resources>

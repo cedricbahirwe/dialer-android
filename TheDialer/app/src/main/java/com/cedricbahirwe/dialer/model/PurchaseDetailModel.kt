@@ -1,22 +1,23 @@
 package com.cedricbahirwe.dialer.model
 
-data class PurchaseDetailModel(var amount: Int = 0, var type: CodeType = CodeType.MOMO) {
-    val fullCode: String
-        get() { return "${prefixCode}$amount*PIN#" }
+import com.cedricbahirwe.dialer.utilities.AppConstants
+import java.util.Date
 
-    fun getDialCode(pin: String): String {
-        return if (pin.isEmpty()) {
-            "${prefixCode}$amount#"
-        } else {
-            "*${prefixCode}$amount*$pin#"
-        }
-    }
-
+data class PurchaseDetailModel(val amount: Int = 0, val purchaseDate: Date = Date()) {
     private companion object {
         const val prefixCode = "*18*2*2*1*1*1*"
     }
 
-    enum class CodeType(val value: String) {
-        MOMO("momo"), CALL("call"), MESSAGE("message"),OTHER("other")
+    fun getFullUSSDCode(pinCode: CodePin?): String {
+        val pin: String = pinCode?.takeIf { it.digits >= 5 }?.asString ?: ""
+
+        // `27/03/2023`: MTN disabled the ability to dial airtime USSD that includes Momo PIN for an amount greater than 99.
+        // You can dial the code with PIN for amount in the range of 10 to 99
+        return if (pin.isNotEmpty() && AppConstants.allowedAmountRangeForPin.contains(amount)) {
+            "$prefixCode$amount*$pin#"
+        } else {
+            "$prefixCode$amount#"
+        }
     }
+
 }

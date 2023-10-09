@@ -1,66 +1,45 @@
 # Dialer Android
-### An intuitive USSD client to handle most of the common actions for you.
-### Access Network providers USSD codes, and simplify packages activation nightmare.
-### This is Dialer for android, equivalent of the [iOS one](https://github.com/cedricbahirwe/dialer).
+An intuitive USSD client to handle most of the common operations for you. Access Network providers' USSD codes, and simplify packages activation nightmare.
+This is Dialer for Android, the equivalent of the [iOS](https://github.com/cedricbahirwe/dialer) App.
 
 Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id1591756747).
 
 ## ✨ TODOs :
-- Building Screens UI and Navigation Flow(Home, Settings)
-- Addition of App Models
 - Local Storage Implementation
-- Support for Light/Dark Mode Theme
 - Home Screen Quick Actions.
-- Quick MTN Momo transfer (Client and Merchant support).
 - Contacts Filtering.
-- Transaction Amount Validation 
-- History View to Track Past dialings.
-- Support for Voice Commands
 - Transaction History
-
-## ✅ Dones
-- Project creation
-
-## TakeAways 🚀
-
-- Understand what makes a great app
-- Understand the SDLC (Software Development Life Cycle)
-- Following Apple Human Interface Guidelines
-- Deep Dive into Home Screen Quick Actions
-- Management of Local DataBase in SwiftUI
-- Light / Dark Mode Support
 
 ## Technology 🧑🏽‍💻
 
 - Kotlin
+- JetPack Compose
 
 ## Screenshots
-|                                                 Home Light                                                 |                                                 Home Dark                                                  |
-|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
-| ![](https://user-images.githubusercontent.com/49038614/213887405-c9c9d305-b34b-490e-865f-080d3bf5a155.png) | ![](https://user-images.githubusercontent.com/49038614/213887420-689701b7-d2db-4161-a878-012226e0ddef.png) |
 
-|                                               Transfer Light                                               |                                               Transfer Dark                                                |
-|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
-| ![](https://user-images.githubusercontent.com/49038614/213924135-629c16f9-ab13-4b25-9c8f-7259999e0bee.png) | ![](https://user-images.githubusercontent.com/49038614/213924287-3d9f67b9-7027-46ac-be5c-3288af9d9052.png) |
+Home Light                 |  Home Dark
+:-------------------------:|:-------------------------:
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/2282e45a-beb6-4601-a89f-a8276bac7f78)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/872adc38-9e05-4463-a018-0256a5289a7c)
 
-|                                                 Pin Light                                                  |                                                  Pin Dark                                                  |
-|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
-| ![](https://user-images.githubusercontent.com/49038614/214170724-30b032bd-467c-4a79-88de-6dd1cc558a82.png) | ![](https://user-images.githubusercontent.com/49038614/214170688-0b7c159e-7b48-4828-a7a8-54ce1ea44096.png) |
+Transfer Light                   |  Transfer Dark
+:-------------------------:|:-------------------------:
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/bb937cb3-331f-47f7-9e33-663ac53767e8)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/90c94714-5c6d-45db-afab-c0dc73dcb811)
 
-|                                               History Light                                                |                                                History Dark                                                |
-|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
-| ![](https://user-images.githubusercontent.com/49038614/214687221-73084d51-b956-480f-b005-92b6fa5be5f1.png) | ![](https://user-images.githubusercontent.com/49038614/214687173-1dc10036-92c7-4dd8-8fa2-229ed27ec332.png) |
+Pin Light                   |  Pin Dark
+:-------------------------:|:-------------------------:
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/679d45d2-fa66-45fe-a681-b87c77667d79)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/1c2ddc9f-fe58-4fa8-8120-2d29977fcf68)
 
-|                                                 Quick Dial                                                 | 
-|:----------------------------------------------------------------------------------------------------------:|
-| ![](https://user-images.githubusercontent.com/49038614/214670353-327b788d-57d5-4e7c-b4f0-cfe74ce35dad.png) |
+History Light                   |  History Dark
+:-------------------------:|:-------------------------:
+![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/60795335-e057-4b24-b9b3-6c7a7ba5fa0a)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/827b8799-d7cc-4aa8-93be-8bc8414291cf)
 
 ## Demo:
 * Download [Dialer iOS](https://apps.apple.com/ke/app/dial-it/id1591756747) to learn more
 
 # Contributions
 
-- PRs are very welcome!✨
+- We welcome PRs or any kind of contributions to this project!
+- You can check some of our [current issues](https://github.com/cedricbahirwe/dialer-android/issues) or submit [one](https://github.com/cedricbahirwe/dialer-android/issues/new) yourself✨
 
 ## Authors
 
