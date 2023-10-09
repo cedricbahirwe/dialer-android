@@ -62,6 +62,7 @@
     <string name="general_settings">General Settings</string>
     <string name="reach_out">Reach Out</string>
     <string name="common_colophon">Colophon</string>
+    <string name="help_more"><![CDATA[Help & More]]></string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>
