@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
 import android.content.res.Resources
 import com.cedricbahirwe.dialer.R

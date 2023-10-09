@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Create
@@ -12,7 +12,7 @@ import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.cedricbahirwe.dialer.R
-import com.cedricbahirwe.dialer.model.protocol.Identifiable
+import com.cedricbahirwe.dialer.data.protocol.Identifiable
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 import java.util.UUID

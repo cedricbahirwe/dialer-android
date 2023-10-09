@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
 data class Contact(val names: String, private var phoneNumbers: List<String>) {
 

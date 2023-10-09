@@ -2,9 +2,9 @@ package com.cedricbahirwe.dialer.viewmodel
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.cedricbahirwe.dialer.model.DialingError
-import com.cedricbahirwe.dialer.model.PurchaseDetailModel
-import com.cedricbahirwe.dialer.model.RecentDialCode
+import com.cedricbahirwe.dialer.data.DialingError
+import com.cedricbahirwe.dialer.data.PurchaseDetailModel
+import com.cedricbahirwe.dialer.data.RecentDialCode
 import java.util.UUID
 import kotlin.random.Random
 

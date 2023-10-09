@@ -1,8 +1,12 @@
 package com.cedricbahirwe.dialer.viewmodel
 
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
-import com.cedricbahirwe.dialer.model.CodePin
-import com.cedricbahirwe.dialer.model.PurchaseDetailModel
+import com.cedricbahirwe.dialer.data.CodePin
+import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +28,24 @@ class MainViewModel: ViewModel() {
 
     val hasValidAmount: Boolean get() = _uiState.value.amount > 0
     val isPinCodeValid: Boolean get() = _uiState.value.pin.length == 5
+
+    fun checkAndRequestCameraPermission(
+        context: Context,
+        permission: String,
+        launcher: ManagedActivityResultLauncher<String, Boolean>
+    ) {
+        val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
+
+        println("I think ${permissionCheckResult == PackageManager.PERMISSION_GRANTED}")
+        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+            println("Can do dialing")
+            // Open camera because permission is already granted
+        } else {
+            println("Not Accepted dialing")
+            // Request a permission
+            launcher.launch(permission)
+        }
+    }
 
     fun shouldShowDeleteBtn() : Boolean {
         return when (_uiState.value.editedField) {
@@ -73,16 +95,6 @@ class MainViewModel: ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(
                 editedField = newField
-            )
-        }
-    }
-
-    fun rollDice() {
-        _uiState.update { currentState ->
-            currentState.copy(
-//                amount = Random.nextInt(from = 1, until = 7),
-//                pin = Random.nextInt(from = 1, until = 7),
-//                numberOfRolls = currentState.numberOfRolls + 1,
             )
         }
     }
@@ -139,7 +151,7 @@ class MainViewModel: ViewModel() {
 //        pinCode = null
 //    }
 
-//    fun hasStoredCodePin(): Boolean {
+    //    fun hasStoredCodePin(): Boolean {
 //        return DialerStorage.shared.hasSavedCodePin()
 //    }
 //
@@ -149,16 +161,17 @@ class MainViewModel: ViewModel() {
 //
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
-    var codePin: CodePin?
-    try {
-        codePin = CodePin(_uiState.value.pin)
-    } catch (e: Exception) {
-        codePin = null
-        println("Found Error with Pin")
-        e.printStackTrace()
-    }
+        var codePin: CodePin?
+        try {
+            codePin = CodePin(_uiState.value.pin)
+            print("Formed ${codePin.asString} ")
+        } catch (e: Exception) {
+            codePin = null
+            println("Found Error with Pin")
+            e.printStackTrace()
+        }
 
-    println("Purchasing ${purchase.getFullUSSDCode(codePin)}")
+        println("Purchasing ${purchase.getFullUSSDCode(codePin)}")
 //        val purchase = purchaseDetail
 //        dialCode(purchase) { success, failure ->
 //            if (success != null) {

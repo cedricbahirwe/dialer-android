@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
 import com.cedricbahirwe.dialer.utilities.AppConstants
 import java.util.Date

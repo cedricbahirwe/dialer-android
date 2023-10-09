@@ -1,9 +1,9 @@
 package com.cedricbahirwe.dialer.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.cedricbahirwe.dialer.model.Contact
-import com.cedricbahirwe.dialer.model.Transaction
-import com.cedricbahirwe.dialer.model.TransactionType
+import com.cedricbahirwe.dialer.data.Contact
+import com.cedricbahirwe.dialer.data.Transaction
+import com.cedricbahirwe.dialer.data.TransactionType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

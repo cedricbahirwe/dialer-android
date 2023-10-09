@@ -29,13 +29,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,19 +47,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
-import com.cedricbahirwe.dialer.model.SettingsOption
+import com.cedricbahirwe.dialer.data.SettingsOption
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
     navController: NavController,
     viewModel: MainViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val settings = AppSettingsRepository(context)
+    val biometricsState = settings.getBiometrics.collectAsState(initial = false)
 
-    val switchState = rememberSaveable {
-        mutableStateOf(true)
-    }
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -97,9 +101,13 @@ fun SettingsScreen(
                         SettingsItemRow(SettingsOption.BIOMETRICS)
                     }
                     Switch(
-                        checked = switchState.value,
+                        checked = biometricsState.value,
                         onCheckedChange = { newValue ->
-                            switchState.value = newValue
+                            coroutineScope.launch {
+                                settings.saveBiometricsStatus(newValue)
+//                                biometricsState = false
+                            }
+
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.Green,

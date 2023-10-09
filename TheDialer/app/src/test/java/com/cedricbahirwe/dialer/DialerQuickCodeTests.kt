@@ -1,7 +1,7 @@
 package com.cedricbahirwe.dialer
 
-import com.cedricbahirwe.dialer.model.CodePin
-import com.cedricbahirwe.dialer.model.DialerQuickCode
+import com.cedricbahirwe.dialer.data.CodePin
+import com.cedricbahirwe.dialer.data.DialerQuickCode
 import org.junit.Test
 import org.junit.After
 import org.junit.Assert.assertEquals
