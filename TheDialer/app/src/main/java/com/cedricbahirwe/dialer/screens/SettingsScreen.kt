@@ -33,6 +33,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,7 +58,7 @@ fun SettingsScreen(
     viewModel: MainViewModel = viewModel()
 ) {
 
-    val switchState = remember {
+    val switchState = rememberSaveable {
         mutableStateOf(true)
     }
 
@@ -110,7 +111,7 @@ fun SettingsScreen(
                         )
                     )
                 }
-                Divider(startIndent = 60.dp)
+//                Divider(startIndent = 60.dp)
 //                SettingsItemRow(SettingsOption.DELETE_PIN)
             }
 
@@ -135,7 +136,7 @@ fun SettingsScreen(
 private fun SectionHeader(titleResId: Int) {
     Text(
         text = stringResource(titleResId),
-        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
     )
 }
 
