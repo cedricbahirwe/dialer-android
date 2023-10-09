@@ -90,7 +90,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            Section(R.string.general_settings) {
+            Section(R.string.common_general) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier.weight(1f)) {
@@ -109,16 +109,16 @@ fun SettingsScreen(
                         )
                     )
                 }
-//                Divider(startIndent = 60.dp)
-//                SettingsItemRow(SettingsOption.DELETE_PIN)
+                Divider(startIndent = 60.dp)
+                SettingsItemRow(SettingsOption.DELETE_PIN)
+                Divider(startIndent = 60.dp)
+                SettingsItemRow(SettingsOption.DELETE_ALL_USSD)
             }
 
             Section(R.string.reach_out) {
                 SettingsItemRow(SettingsOption.CONTACT_US) {}
                 Divider(startIndent = 60.dp)
                 SettingsItemRow(SettingsOption.TWEET_US) {}
-                Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.TRANSLATION_SUGGESTION) {}
             }
 
             Section(R.string.common_colophon) {

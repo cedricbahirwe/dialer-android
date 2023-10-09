@@ -33,7 +33,7 @@ enum class SettingsOption {
             CHANGE_LANGUAGE -> SettingsItem(
                 Icons.Rounded.Create,
                 Color.Black.copy(0.7f),
-                R.string.change_language_description,
+                R.string.change_language_title,
                 R.string.change_language_description
             )
             BIOMETRICS -> SettingsItem(
