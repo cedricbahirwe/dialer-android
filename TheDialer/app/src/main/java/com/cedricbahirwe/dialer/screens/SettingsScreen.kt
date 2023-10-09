@@ -111,10 +111,7 @@ fun SettingsScreen(
                     )
                 }
                 Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.DELETE_PIN)
-                Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.DELETE_ALL_USSD)
-
+//                SettingsItemRow(SettingsOption.DELETE_PIN)
             }
 
             Section(R.string.reach_out) {

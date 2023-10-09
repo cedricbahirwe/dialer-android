@@ -14,8 +14,6 @@
     <string name="remove_pin_description">You\'ll need to re-enter it later.</string>
     <string name="delete_ussd_description">This action can not be undone.</string>
     <string name="delete_ussd_title">Delete All USSD codes</string>
-    <string name="getting_started_title">Just getting started?</string>
-    <string name="getting_started_description">Read our quick start blog post.</string>
     <string name="contact_us_title">Contact Us</string>
     <string name="contact_us_description">Get help or ask a question.</string>
     <string name="tweet_us_title">Tweet Us</string>
