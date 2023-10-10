@@ -3,5 +3,11 @@
 
     <style name="Theme.Dialer" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/background_dark</item>
+        <item name="android:windowBackground">@drawable/launch_background</item>
     </style>
+
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+
 </resources>

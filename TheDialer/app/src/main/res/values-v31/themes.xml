@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="LaunchTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">
+            @color/colorPrimary
+        </item>
+        <item name="windowSplashScreenAnimatedIcon">
+            @drawable/dialer_icon_100x100
+        </item>
+        <item name="windowSplashScreenAnimationDuration">
+            @integer/material_motion_duration_medium_1
+        </item>
+        <item name="android:windowSplashScreenBrandingImage">
+            @drawable/branding_name
+        </item>
+        <item name="postSplashScreenTheme">
+            @style/Theme.Dialer
+        </item>
+    </style>
+</resources>
