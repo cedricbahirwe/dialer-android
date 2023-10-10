@@ -6,7 +6,7 @@ import java.util.*
 data class RecentDialCode(
     override val id: UUID = UUID.randomUUID(),
     val detail: PurchaseDetailModel,
-    val count: Int = 1
+    var count: Int = 1
 ) : Identifiable<UUID> {
 
     val totalPrice: Int
