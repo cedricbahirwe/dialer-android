@@ -162,6 +162,7 @@ fun PurchaseDetailView(
                             onClick = {
                                 coroutineScope.launch {
                                     settings.saveCodePin(viewModel.getCodePin())
+                                    viewModel.updateEditedField(EditedField.AMOUNT)
                                 }
                             },
                             Modifier
