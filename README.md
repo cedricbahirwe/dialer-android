@@ -16,22 +16,21 @@ Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id159
 - JetPack Compose
 
 ## Screenshots
-Home Light                 |  Home Dark
-:-------------------------:|:-------------------------:
-![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/2282e45a-beb6-4601-a89f-a8276bac7f78)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/872adc38-9e05-4463-a018-0256a5289a7c)
+|                                                Home Light                                                 |                                                 Home Dark                                                 |
+|:---------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+| ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/2282e45a-beb6-4601-a89f-a8276bac7f78) | ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/872adc38-9e05-4463-a018-0256a5289a7c) |
 
-Transfer Light                   |  Transfer Dark
-:-------------------------:|:-------------------------:
-![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/bb937cb3-331f-47f7-9e33-663ac53767e8)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/90c94714-5c6d-45db-afab-c0dc73dcb811)
+|                                              Transfer Light                                               |                                               Transfer Dark                                               |
+|:---------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+| ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/bb937cb3-331f-47f7-9e33-663ac53767e8) | ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/90c94714-5c6d-45db-afab-c0dc73dcb811) |
 
-Pin Light                   |  Pin Dark
-:-------------------------:|:-------------------------:
-![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/679d45d2-fa66-45fe-a681-b87c77667d79)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/1c2ddc9f-fe58-4fa8-8120-2d29977fcf68)
+|                                                 Pin Light                                                 |                                                 Pin Dark                                                  |
+|:---------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+| ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/679d45d2-fa66-45fe-a681-b87c77667d79) | ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/1c2ddc9f-fe58-4fa8-8120-2d29977fcf68) |
 
-History Light                   |  History Dark
-:-------------------------:|:-------------------------:
-![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/60795335-e057-4b24-b9b3-6c7a7ba5fa0a)  |  ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/827b8799-d7cc-4aa8-93be-8bc8414291cf)
-
+|                                               History Light                                               |                                               History Dark                                                |
+|:---------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|
+| ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/60795335-e057-4b24-b9b3-6c7a7ba5fa0a) | ![](https://github.com/cedricbahirwe/dialer-android/assets/49038614/827b8799-d7cc-4aa8-93be-8bc8414291cf) |
 
 ## Demo:
 * Download [Dialer iOS](https://apps.apple.com/ke/app/dial-it/id1591756747) to learn more
