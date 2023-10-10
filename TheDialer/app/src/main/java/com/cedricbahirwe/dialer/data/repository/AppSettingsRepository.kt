@@ -63,8 +63,6 @@ class AppSettingsRepository(private val context: Context) {
         it[METER_NUMBERS] ?:  emptySet()
     }
 
-    suspend  fun hasSavedCodePin() = getCodePin.single() != null
-
     suspend fun saveBiometricsStatus(status: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[ALLOW_BIOMETRICS] = status

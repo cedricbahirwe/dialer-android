@@ -61,6 +61,8 @@
     <string name="common_colophon">Colophon</string>
     <string name="help_more"><![CDATA[Help & More]]></string>
     <string name="common_general">General</string>
+    <string name="pin_covered">We\'ve got your back 🎉\nEnter the amount and you\'re good to go ✌🏾</string>
+    <string name="pin_not_covered">Your pin will not be saved unless you save it.</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>

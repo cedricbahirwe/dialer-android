@@ -159,11 +159,20 @@ class MainViewModel: ViewModel() {
 //        recentCodes = DialerStorage.shared.getRecentCodes().toMutableList()
 //    }
 //
+    fun getCodePin(): CodePin {
+        return try {
+            CodePin(_uiState.value.pin)
+        } catch (e: Exception) {
+            println("Found Error with Pin")
+            e.printStackTrace()
+            throw  e
+        }
+    }
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
         var codePin: CodePin?
         try {
-            codePin = CodePin(_uiState.value.pin)
+            codePin = getCodePin()// CodePin(_uiState.value.pin)
             print("Formed ${codePin.asString} ")
         } catch (e: Exception) {
             codePin = null

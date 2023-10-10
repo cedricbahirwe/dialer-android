@@ -1,5 +1,6 @@
 package com.cedricbahirwe.dialer.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -47,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
+import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.SettingsOption
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
@@ -60,7 +62,10 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val settings = AppSettingsRepository(context)
+
     val biometricsState = settings.getBiometrics.collectAsState(initial = false)
+    val codePin = settings.getCodePin.collectAsState(initial = null)
+    val allUSSDCodes = settings.getUSSDCodes.collectAsState(initial = emptySet())
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -105,9 +110,7 @@ fun SettingsScreen(
                         onCheckedChange = { newValue ->
                             coroutineScope.launch {
                                 settings.saveBiometricsStatus(newValue)
-//                                biometricsState = false
                             }
-
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.Green,
@@ -118,9 +121,24 @@ fun SettingsScreen(
                     )
                 }
                 Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.DELETE_PIN)
-                Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.DELETE_ALL_USSD)
+
+                AnimatedVisibility(visible = codePin.value != null) {
+                    SettingsItemRow(SettingsOption.DELETE_PIN) {
+                        coroutineScope.launch {
+                            println("Pin is ${codePin.value!!.asString}")
+                            settings.removePinCode()
+                        }
+                    }
+                    Divider(startIndent = 60.dp)
+                }
+
+                AnimatedVisibility(visible = allUSSDCodes.value.isNotEmpty()) {
+                    SettingsItemRow(SettingsOption.DELETE_ALL_USSD) {
+                        coroutineScope.launch {
+                            settings.removeAllUSSDCodes()
+                        }
+                    }
+                }
             }
 
             Section(R.string.reach_out) {
