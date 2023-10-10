@@ -8,7 +8,6 @@
         android:gravity="center" />
 
     <item
-        android:bottom="16dp"
         android:drawable="@drawable/branding_name"
         android:gravity="center|bottom" />
 </layer-list>
