@@ -13,8 +13,11 @@ import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.USSDCode
 import com.cedricbahirwe.dialer.utilities.LocalKeys
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.singleOrNull
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -120,6 +123,21 @@ class AppSettingsRepository private constructor(context: Context) {
         }
     }
 
+    suspend fun saveRecentCode(code: RecentDialCode) {
+        context.dataStore.edit {
+            val itemToUpdate = getRecentCodes
+                .filter { item -> item.contains(code.toString())  }
+                .map { set -> set.find { item -> item == code.toString() } }
+
+            var matchedItemString = itemToUpdate.singleOrNull()
+            if (matchedItemString != null) {
+                matchedItemString += "1"
+            } else {
+                matchedItemString = code.toString()
+            }
+            it[RECENT_CODES] = getRecentCodes.single() + matchedItemString
+        }
+    }
     suspend fun saveRecentCodes(codes: RecentCodes) {
         context.dataStore.edit {
             it[RECENT_CODES] = codes.map { item -> item.toString() }.toSet()
@@ -129,6 +147,12 @@ class AppSettingsRepository private constructor(context: Context) {
     suspend fun saveElectricityMeters(meters: ElectricityMeters) {
         context.dataStore.edit {
             it[METER_NUMBERS] = meters.map { item -> item.toString() }.toSet()
+        }
+    }
+
+    suspend fun saveUSSDCode(ussd: USSDCode) {
+        context.dataStore.edit {
+            it[ALL_USSD_CODES] = getUSSDCodes.single() + ussd.toString()
         }
     }
 

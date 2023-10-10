@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.DialerQuickCode
 import com.cedricbahirwe.dialer.data.DialingError
-import com.cedricbahirwe.dialer.data.ElectricityMeter
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.USSDCode
@@ -18,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.runBlocking
 
 
 enum class EditedField {
@@ -29,16 +29,12 @@ data class PurchaseUiState (
     val editedField: EditedField = EditedField.AMOUNT
 )
 
-class MainViewModel(
+open class MainViewModel(
     private val settings: AppSettingsRepository
 ): ViewModel() {
     val biometricsState = settings.getBiometrics
     val getCodePin = settings.getCodePin
     val allUSSDCodes = settings.getUSSDCodes
-
-    var ussdCodes = mutableListOf<USSDCode>()
-    var recentCodes = mutableListOf<RecentDialCode>()
-    var electricMeters = mutableListOf<ElectricityMeter>()
 
     private val _uiState = MutableStateFlow(PurchaseUiState())
     val uiState: StateFlow<PurchaseUiState> = _uiState.asStateFlow()
@@ -113,30 +109,11 @@ class MainViewModel(
         }
     }
 
-    fun storeCode(code: RecentDialCode) {
-        val itemToUpdate = recentCodes.find  { it.detail.amount == code.detail.amount }
-        if (itemToUpdate != null) {
-            itemToUpdate.count += 1
-        } else {
-            recentCodes.add(code)
-        }
-//        saveRecentCodesLocally()
+    suspend fun storeCode(code: RecentDialCode) {
+        settings.saveRecentCode(code)
     }
 
-    fun containsMeter(number: String): Boolean {
-        val meter = try {
-            ElectricityMeter(number)
-        } catch (e: Exception) {
-            return false
-        }
-        return electricMeters.contains(meter)
-    }
-
-    suspend fun saveRecentCodesLocally() {
-        settings.saveRecentCodes(recentCodes)
-    }
-
-    fun getOptionalCodePin(): CodePin? {
+    private fun getOptionalCodePin(): CodePin? {
         return try {
             CodePin(_uiState.value.pin)
         } catch (e: Exception) {
@@ -160,7 +137,21 @@ class MainViewModel(
         var codePin: CodePin?
         try {
             codePin = getCodePin()
-            print("Formed ${codePin.asString} ")
+            dialCode(purchase) { success, failure ->
+                runBlocking {
+                    if (success != null) {
+                        settings.saveRecentCode(RecentDialCode(detail = purchase))
+                        _uiState.update {
+                            it.copy(amount = 0)
+                        }
+                    } else if (failure != null) {
+                        println(failure.message)
+//                    Toast.makeText("", Toast.LENGTH_SHORT)
+                    }
+                }
+            }
+
+            println("Formed ${codePin.asString} ")
         } catch (e: Exception) {
             codePin = null
             println("Found Error with Pin")
@@ -168,17 +159,6 @@ class MainViewModel(
         }
 
         println("Purchasing ${purchase.getFullUSSDCode(codePin)}")
-//        val purchase = purchaseDetail
-//        dialCode(purchase) { success, failure ->
-//            if (success != null) {
-//                // Handle success
-//                this.storeCode(RecentDialCode(detail = purchase))
-//                this.purchaseDetail = PurchaseDetailModel()
-//            } else if (failure != null) {
-//                // Handle failure
-//                print(failure.message)
-//            }
-//        }
     }
     private fun dialCode(
         purchase: PurchaseDetailModel,
@@ -205,10 +185,13 @@ class MainViewModel(
     /// - Parameter recentCode: the row code to be performed.
     fun performRecentDialing(recentCode: RecentDialCode) {
         dialCode(recentCode.detail) { success, failure ->
-            if (success != null) {
-                this.storeCode(recentCode)
-            } else if (failure != null) {
-                print(failure.message)
+            runBlocking {
+                if (success != null) {
+                    println("Code saved")
+                    settings.saveRecentCode(recentCode)
+                } else if (failure != null) {
+                    println(failure.message)
+                }
             }
         }
     }
@@ -223,27 +206,8 @@ class MainViewModel(
         }
     }
 
-    // Store a given `USSDCode` locally.
-    suspend fun storeUSSD(code: USSDCode) {
-        if (!ussdCodes.contains(code)) {
-            ussdCodes.add(code)
-            saveUSSDCodesLocally(ussdCodes)
-        }
-    }
-
-    suspend fun updateUSSD(code: USSDCode) {
-        val index = ussdCodes.indexOf(code)
-        if (index != -1) {
-            ussdCodes[index] = code
-        }
-        saveUSSDCodesLocally(ussdCodes)
-    }
     suspend fun saveUSSDCodesLocally(codes: List<USSDCode>) {
         settings.saveUSSDCodes(codes)
-    }
-
-    fun retrieveUSSDCodes() {
-//        settings.getUSSDCodes
     }
 
     // Local Storage
@@ -257,8 +221,8 @@ class MainViewModel(
 
     suspend fun removeAllUSSDCodes() {
         settings.removeAllUSSDCodes()
-        ussdCodes.clear()
     }
+
     suspend fun removePinCode() {
         settings.removePinCode()
         _uiState.update {
