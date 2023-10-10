@@ -63,7 +63,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val settings = AppSettingsRepository(context)
 
-    val biometricsState = settings.getBiometrics.collectAsState(initial = false)
+    val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
     val codePin = settings.getCodePin.collectAsState(initial = null)
     val allUSSDCodes = settings.getUSSDCodes.collectAsState(initial = emptySet())
 

@@ -3,10 +3,12 @@ package com.cedricbahirwe.dialer.viewmodel
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.compose.runtime.collectAsState
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +23,10 @@ data class PurchaseUiState (
     val pin: String = "",
     val editedField: EditedField = EditedField.AMOUNT
 )
-class MainViewModel: ViewModel() {
+class MainViewModel(
+    private val settings: AppSettingsRepository
+): ViewModel() {
+    val biometricsState = settings.getBiometrics//.collectAsState(initial = false)
 
     private val _uiState = MutableStateFlow(PurchaseUiState())
     val uiState: StateFlow<PurchaseUiState> = _uiState.asStateFlow()
