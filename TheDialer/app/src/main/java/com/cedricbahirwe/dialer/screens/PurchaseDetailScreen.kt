@@ -45,19 +45,19 @@ import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.viewmodel.EditedField
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
+import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
 fun PurchaseDetailView(
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = viewModel(
+        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    val context = LocalContext.current
-    val settings = AppSettingsRepository(context)
-
-    val codePin = settings.getCodePin.collectAsState(initial = null)
+    val codePin = viewModel.getCodePin.collectAsState(initial = null)
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -161,7 +161,7 @@ fun PurchaseDetailView(
                         Button(
                             onClick = {
                                 coroutineScope.launch {
-                                    settings.saveCodePin(viewModel.getCodePin())
+                                    viewModel.saveCodePin(viewModel.getCodePin())
                                     viewModel.updateEditedField(EditedField.AMOUNT)
                                 }
                             },

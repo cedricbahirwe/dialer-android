@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -40,13 +41,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
+import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 
 @Preview(showBackground = true)
 @Composable
 fun TransferView(
-    viewModel: TransferViewModel = viewModel()
+    viewModel: TransferViewModel = viewModel(
+        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+    )
 ) {
     val focusManager = LocalFocusManager.current
 

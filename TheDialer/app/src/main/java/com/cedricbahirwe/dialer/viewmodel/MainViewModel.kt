@@ -3,9 +3,9 @@ package com.cedricbahirwe.dialer.viewmodel
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.compose.runtime.collectAsState
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
@@ -23,10 +23,28 @@ data class PurchaseUiState (
     val pin: String = "",
     val editedField: EditedField = EditedField.AMOUNT
 )
+
 class MainViewModel(
     private val settings: AppSettingsRepository
 ): ViewModel() {
-    val biometricsState = settings.getBiometrics//.collectAsState(initial = false)
+    val biometricsState = settings.getBiometrics
+    val getCodePin = settings.getCodePin
+    val allUSSDCodes = settings.getUSSDCodes
+
+    suspend fun saveCodePin(codePin: CodePin) {
+        settings.saveCodePin(codePin)
+    }
+
+    suspend fun saveBiometricsStatus(newValue: Boolean) {
+        settings.saveBiometricsStatus(newValue)
+    }
+
+    suspend fun removeAllUSSDCodes() {
+        settings.removeAllUSSDCodes()
+    }
+    suspend fun removePinCode() {
+        settings.removePinCode()
+    }
 
     private val _uiState = MutableStateFlow(PurchaseUiState())
     val uiState: StateFlow<PurchaseUiState> = _uiState.asStateFlow()
@@ -41,13 +59,10 @@ class MainViewModel(
     ) {
         val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
 
-        println("I think ${permissionCheckResult == PackageManager.PERMISSION_GRANTED}")
         if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
             println("Can do dialing")
-            // Open camera because permission is already granted
         } else {
             println("Not Accepted dialing")
-            // Request a permission
             launcher.launch(permission)
         }
     }
@@ -121,7 +136,7 @@ class MainViewModel(
 //
 //    var purchaseDetail = PurchaseDetailModel()
 //    var recentCodes = mutableListOf<RecentDialCode>()
-//    var elecMeters = mutableListOf<ElectricityMeter>()
+//    var electricMeters = mutableListOf<ElectricityMeter>()
 //    var ussdCodes = mutableListOf<USSDCode>()
 //
 //    private fun storeCode(code: RecentDialCode) {
@@ -140,7 +155,7 @@ class MainViewModel(
 //        } catch (e: Exception) {
 //            return false
 //        }
-//        return elecMeters.contains(meter)
+//        return electricMeters.contains(meter)
 //    }
 //
 //    fun saveRecentCodesLocally() {
@@ -198,6 +213,9 @@ class MainViewModel(
 //            }
 //        }
     }
+
+
+
 //
 //    fun deletePastCode(offSets: Array<RecentDialCode>) {
 //        recentCodes.removeAll { offSets.contains(it) }
@@ -289,9 +307,9 @@ class MainViewModel(
 //
 //    // Store a given  `MeterNumber`  locally.
 //    fun storeMeter(number: ElectricityMeter) {
-//        if (!elecMeters.any { it.id == number.id }) {
-//            elecMeters.add(number)
-//            saveMeterNumbersLocally(elecMeters)
+//        if (!electricMeters.any { it.id == number.id }) {
+//            electricMeters.add(number)
+//            saveMeterNumbersLocally(electricMeters)
 //        }
 //    }
 
@@ -306,12 +324,12 @@ class MainViewModel(
 
     // Retrieve all locally stored Meter Numbers codes
 //    fun retrieveMeterNumbers() {
-//        elecMeters = DialerStorage.shared.getMeterNumbers().toMutableList()
+//        electricMeters = DialerStorage.shared.getMeterNumbers().toMutableList()
 //    }
 //
 //    fun deleteMeter(offsets: List<ElectricityMeter>) {
-//        elecMeters.removeAll { offsets.contains(it) }
-//        saveMeterNumbersLocally(elecMeters)
+//        electricMeters.removeAll { offsets.contains(it) }
+//        saveMeterNumbersLocally(electricMeters)
 //    }
 //
 //    /* MARK: Custom USSD Storage */
@@ -355,4 +373,17 @@ class MainViewModel(
 //        DialerStorage.shared.removeAllUSSDCodes()
 //        ussdCodes.clear()
 //    }
+}
+
+class MainViewModelFactory(
+    private val settingsRepository: AppSettingsRepository
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(settingsRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

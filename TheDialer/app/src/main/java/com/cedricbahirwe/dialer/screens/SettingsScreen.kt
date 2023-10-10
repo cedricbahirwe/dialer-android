@@ -48,24 +48,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
-import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.SettingsOption
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
+import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = viewModel(
+        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+    )
 ) {
-    val context = LocalContext.current
-    val settings = AppSettingsRepository(context)
 
     val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
-    val codePin = settings.getCodePin.collectAsState(initial = null)
-    val allUSSDCodes = settings.getUSSDCodes.collectAsState(initial = emptySet())
+    val codePin = viewModel.getCodePin.collectAsState(initial = null)
+    val allUSSDCodes = viewModel.allUSSDCodes.collectAsState(initial = emptySet())
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -109,7 +109,7 @@ fun SettingsScreen(
                         checked = biometricsState.value,
                         onCheckedChange = { newValue ->
                             coroutineScope.launch {
-                                settings.saveBiometricsStatus(newValue)
+                                viewModel.saveBiometricsStatus(newValue)
                             }
                         },
                         colors = SwitchDefaults.colors(
@@ -120,22 +120,22 @@ fun SettingsScreen(
                         )
                     )
                 }
-                Divider(startIndent = 60.dp)
 
                 AnimatedVisibility(visible = codePin.value != null) {
+                    Divider(startIndent = 60.dp)
                     SettingsItemRow(SettingsOption.DELETE_PIN) {
                         coroutineScope.launch {
                             println("Pin is ${codePin.value!!.asString}")
-                            settings.removePinCode()
+                            viewModel.removePinCode()
                         }
                     }
-                    Divider(startIndent = 60.dp)
                 }
 
                 AnimatedVisibility(visible = allUSSDCodes.value.isNotEmpty()) {
+                    Divider(startIndent = 60.dp)
                     SettingsItemRow(SettingsOption.DELETE_ALL_USSD) {
                         coroutineScope.launch {
-                            settings.removeAllUSSDCodes()
+                            viewModel.removeAllUSSDCodes()
                         }
                     }
                 }

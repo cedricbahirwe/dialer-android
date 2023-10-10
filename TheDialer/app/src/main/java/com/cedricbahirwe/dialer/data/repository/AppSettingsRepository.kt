@@ -1,5 +1,6 @@
 package com.cedricbahirwe.dialer.data.repository
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -23,19 +24,11 @@ private typealias RecentCodes = List<RecentDialCode>
 private typealias ElectricityMeters = List<ElectricityMeter>
 private typealias USSDCodes = List<USSDCode>
 
-class AppSettingsRepository(private val context: Context) {
+class AppSettingsRepository private constructor(context: Context) {
 
-    companion object {
-        private val Context.dataStore by preferencesDataStore("appSettings")
-        private val ALLOW_BIOMETRICS = booleanPreferencesKey(LocalKeys.allowBiometrics)
-        private val PIN_CODE = stringPreferencesKey(LocalKeys.pinCode)
-        private  val SYNC_DATE = stringPreferencesKey(LocalKeys.lastSyncDate)
+    private val context =
+    context.applicationContext
 
-        private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.customUSSDCodes)
-        private  val RECENT_CODES = stringSetPreferencesKey(LocalKeys.recentCodes)
-        private  val METER_NUMBERS = stringSetPreferencesKey(LocalKeys.meterNumbers)
-
-    }
 
     val getBiometrics: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[ALLOW_BIOMETRICS] ?: false
@@ -47,7 +40,7 @@ class AppSettingsRepository(private val context: Context) {
             ?.let { CodePin(it) }
     }
 
-    val getSyncDate: Flow<String> = context.dataStore.data.map {
+    private val getSyncDate: Flow<String> = context.dataStore.data.map {
         it[SYNC_DATE] ?: ""
     }
 
@@ -114,14 +107,13 @@ class AppSettingsRepository(private val context: Context) {
         try {
             val lastSyncDate = dateFormat.parse(lastSyncDateString).takeIf { it != null } ?: return  false
             val currentDate = Date()
-            // To check if 30 Days have passed
 
             // Calculate the difference in days
             val differenceInMillis = currentDate.time - lastSyncDate.time
             val differenceInDays = TimeUnit.MILLISECONDS.toDays(differenceInMillis)
 
             // Check if 30 days have passed
-            return differenceInDays >= 30
+            return differenceInDays >= MAX_DAYS_BEFORE_SYNC
         } catch (e: Exception) {
             e.printStackTrace()
             return false
@@ -129,20 +121,49 @@ class AppSettingsRepository(private val context: Context) {
     }
 
     suspend fun saveRecentCodes(codes: RecentCodes) {
-        context.dataStore.edit { it ->
+        context.dataStore.edit {
             it[RECENT_CODES] = codes.map { item -> item.toString() }.toSet()
         }
     }
 
     suspend fun saveElectricityMeters(meters: ElectricityMeters) {
-        context.dataStore.edit { it ->
+        context.dataStore.edit {
             it[METER_NUMBERS] = meters.map { item -> item.toString() }.toSet()
         }
     }
 
     suspend fun saveUSSDCodes(ussds: USSDCodes) {
-        context.dataStore.edit { it ->
+        context.dataStore.edit {
             it[ALL_USSD_CODES] = ussds.map { item -> item.toString() }.toSet()
+        }
+    }
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        @Volatile
+        private var INSTANCE: AppSettingsRepository? = null
+
+        private val Context.dataStore by preferencesDataStore("appSettings")
+        private val ALLOW_BIOMETRICS = booleanPreferencesKey(LocalKeys.allowBiometrics)
+        private val PIN_CODE = stringPreferencesKey(LocalKeys.pinCode)
+        private  val SYNC_DATE = stringPreferencesKey(LocalKeys.lastSyncDate)
+
+        private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.customUSSDCodes)
+        private  val RECENT_CODES = stringSetPreferencesKey(LocalKeys.recentCodes)
+        private  val METER_NUMBERS = stringSetPreferencesKey(LocalKeys.meterNumbers)
+
+        const val MAX_DAYS_BEFORE_SYNC = 30
+
+        fun getInstance(context: Context): AppSettingsRepository {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE?.let {
+                    return it
+                }
+
+                val instance = AppSettingsRepository(context)
+                INSTANCE = instance
+                instance
+            }
         }
     }
 }

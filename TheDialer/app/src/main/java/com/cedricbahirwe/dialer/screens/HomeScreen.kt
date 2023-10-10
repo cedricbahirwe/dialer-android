@@ -49,27 +49,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
+import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DashBoardContainer(
     navController: NavHostController,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = viewModel(
+        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+    )
 ) {
 
     val isMySpaceFlowActive = remember { mutableStateOf(false) }
@@ -120,7 +121,7 @@ fun DashBoardContainer(
                         mySpaceSheetState.hide()
                     }
                 }
-            else PurchaseDetailView()
+            else PurchaseDetailView(viewModel)
         },
         modifier = Modifier.fillMaxSize(),
         sheetShape = RoundedCornerShape(15.dp)
