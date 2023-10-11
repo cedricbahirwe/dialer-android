@@ -1,11 +1,10 @@
 package com.cedricbahirwe.dialer.viewmodel
 
 import android.content.Context
-import android.content.pm.PackageManager
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.core.content.ContextCompat
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.DialerQuickCode
 import com.cedricbahirwe.dialer.data.DialingError
@@ -17,8 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.runBlocking
-
+import kotlinx.coroutines.launch
 
 enum class EditedField {
     AMOUNT, PIN
@@ -30,8 +28,11 @@ data class PurchaseUiState (
 )
 
 open class MainViewModel(
+    private val context: Context,
     private val settings: AppSettingsRepository
 ): ViewModel() {
+    private val phoneDialer = PhoneDialer.getInstance(context)
+
     val biometricsState = settings.getBiometrics
     val getCodePin = settings.getCodePin
     val allUSSDCodes = settings.getUSSDCodes
@@ -41,21 +42,6 @@ open class MainViewModel(
 
     val hasValidAmount: Boolean get() = _uiState.value.amount > 0
     val isPinCodeValid: Boolean get() = _uiState.value.pin.length == 5
-
-    fun checkAndRequestCameraPermission(
-        context: Context,
-        permission: String,
-        launcher: ManagedActivityResultLauncher<String, Boolean>
-    ) {
-        val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
-
-        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-            println("Can do dialing")
-        } else {
-            println("Not Accepted dialing")
-            launcher.launch(permission)
-        }
-    }
 
     fun shouldShowDeleteBtn() : Boolean {
         return when (_uiState.value.editedField) {
@@ -134,38 +120,29 @@ open class MainViewModel(
     }
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
-        var codePin: CodePin?
-        try {
-            codePin = getCodePin()
-            dialCode(purchase) { success, failure ->
-                runBlocking {
-                    if (success != null) {
-                        settings.saveRecentCode(RecentDialCode(detail = purchase))
-                        _uiState.update {
-                            it.copy(amount = 0)
-                        }
-                    } else if (failure != null) {
-                        println(failure.message)
-//                    Toast.makeText("", Toast.LENGTH_SHORT)
+
+        dialCode(purchase) { success, failure ->
+            viewModelScope.launch {
+                if (success != null) {
+                    settings.saveRecentCode(RecentDialCode(detail = purchase))
+                    _uiState.update {
+                        it.copy(amount = 0)
                     }
+                } else if (failure != null) {
+                    println(failure.message)
+//                    Toast.makeText("", Toast.LENGTH_SHORT)
                 }
             }
-
-            println("Formed ${codePin.asString} ")
-        } catch (e: Exception) {
-            codePin = null
-            println("Found Error with Pin")
-            e.printStackTrace()
         }
 
-        println("Purchasing ${purchase.getFullUSSDCode(codePin)}")
+        println("Purchasing ${purchase.getFullUSSDCode(null)}")
     }
     private fun dialCode(
         purchase: PurchaseDetailModel,
         completion: (success: String?, failure: DialingError?) -> Unit
     ) {
         val fullCode = purchase.getFullUSSDCode(getOptionalCodePin())
-        PhoneDialer.shared.dial(fullCode) {
+        phoneDialer.dial(fullCode) {
             when (it) {
                 true -> completion("Successfully Dialed", null)
                 false -> completion(null, DialingError.CanNotDial())
@@ -178,14 +155,14 @@ open class MainViewModel(
     }
 
     private fun performQuickDial(quickCode: DialerQuickCode) {
-        PhoneDialer.shared.dial(quickCode.ussd)
+        phoneDialer.dial(quickCode.ussd)
     }
 
     /// Perform a quick dialing from the `History View Row.`
     /// - Parameter recentCode: the row code to be performed.
     fun performRecentDialing(recentCode: RecentDialCode) {
         dialCode(recentCode.detail) { success, failure ->
-            runBlocking {
+            viewModelScope.launch {
                 if (success != null) {
                     println("Code saved")
                     settings.saveRecentCode(recentCode)
@@ -197,14 +174,14 @@ open class MainViewModel(
     }
 
     /* MARK: Extension used for Quick USSD actions. */
-    fun checkMobileWalletBalance() {
-        try {
-            val myPin = getCodePin()
-            performQuickDial(DialerQuickCode.MobileWalletBalance(code = myPin))
-        } catch (e: Exception) {
-            performQuickDial(DialerQuickCode.MobileWalletBalance(code = null))
-        }
-    }
+//    fun checkMobileWalletBalance() {
+//        try {
+//            val myPin = getCodePin()
+//            performQuickDial(DialerQuickCode.MobileWalletBalance(code = myPin))
+//        } catch (e: Exception) {
+//            performQuickDial(DialerQuickCode.MobileWalletBalance(code = null))
+//        }
+//    }
 
     suspend fun saveUSSDCodesLocally(codes: List<USSDCode>) {
         settings.saveUSSDCodes(codes)
@@ -229,16 +206,28 @@ open class MainViewModel(
             it.copy(pin = "")
         }
     }
+
+
+
+    private fun shareLink(context: Context, link: String) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, link)
+        }
+
+        context.startActivity(Intent.createChooser(intent, "Share Link"))
+    }
 }
 
 class MainViewModelFactory(
+    private val context: Context,
     private val settingsRepository: AppSettingsRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(settingsRepository) as T
+            return MainViewModel(context, settingsRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

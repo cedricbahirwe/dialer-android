@@ -1,6 +1,7 @@
 package com.cedricbahirwe.dialer.data
 
 import com.cedricbahirwe.dialer.data.protocol.Identifiable
+import com.google.gson.Gson
 import java.util.*
 
 data class RecentDialCode(
@@ -13,4 +14,3 @@ data class RecentDialCode(
         get() = detail.amount * count
 
 }
-

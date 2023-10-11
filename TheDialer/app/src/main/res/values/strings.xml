@@ -63,6 +63,7 @@
     <string name="common_general">General</string>
     <string name="pin_covered">We\'ve got your back 🎉\nEnter the amount and you\'re good to go ✌🏾</string>
     <string name="pin_not_covered">Your pin will not be saved unless you save it.</string>
+    <string name="toast_ussd_permission_is_not_granted">USSD Permission is not granted</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>

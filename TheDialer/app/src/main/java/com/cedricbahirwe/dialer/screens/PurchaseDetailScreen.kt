@@ -52,7 +52,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PurchaseDetailView(
     viewModel: MainViewModel = viewModel(
-        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+        factory = MainViewModelFactory(LocalContext.current, AppSettingsRepository.getInstance(LocalContext.current))
     )
 ) {
     val uiState by viewModel.uiState.collectAsState()

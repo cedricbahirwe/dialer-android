@@ -50,7 +50,7 @@ import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 @Composable
 fun TransferView(
     viewModel: TransferViewModel = viewModel(
-        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+        factory = MainViewModelFactory(LocalContext.current, AppSettingsRepository.getInstance(LocalContext.current))
     )
 ) {
     val focusManager = LocalFocusManager.current

@@ -5,7 +5,7 @@ import java.util.Date
 
 data class PurchaseDetailModel(val amount: Int = 0, val purchaseDate: Date = Date()) {
     private companion object {
-        const val prefixCode = "*18*2*2*1*1*1*"
+        const val prefixCode = "*182*2*1*1*1*"
     }
 
     fun getFullUSSDCode(pinCode: CodePin?): String {

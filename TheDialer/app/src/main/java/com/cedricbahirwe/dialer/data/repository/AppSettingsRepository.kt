@@ -8,13 +8,12 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.cedricbahirwe.dialer.data.CodePin
+import com.cedricbahirwe.dialer.data.DialerSerializer
 import com.cedricbahirwe.dialer.data.ElectricityMeter
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.USSDCode
 import com.cedricbahirwe.dialer.utilities.LocalKeys
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
@@ -30,25 +29,32 @@ private typealias USSDCodes = List<USSDCode>
 class AppSettingsRepository private constructor(context: Context) {
 
     private val context =
-    context.applicationContext
+        context.applicationContext
 
 
     val getBiometrics: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[ALLOW_BIOMETRICS] ?: false
     }
 
-    val getCodePin: Flow<CodePin?> = context.dataStore.data.map { it ->
-        it[PIN_CODE]
-            ?.takeIf { pinCodeString -> pinCodeString.isNotEmpty() }
-            ?.let { CodePin(it) }
+    val getCodePin: Flow<CodePin?> = context.dataStore.data.map {
+        val item = it[PIN_CODE]
+
+        if (item.isNullOrEmpty()) {
+            null
+        } else {
+            CodePin(item)
+        }
+//            ?.takeIf { pinCodeString -> pinCodeString.isNotEmpty() }
+//            ?.let { CodePin(it) }
     }
 
     private val getSyncDate: Flow<String> = context.dataStore.data.map {
         it[SYNC_DATE] ?: ""
     }
 
-    val getRecentCodes: Flow<Set<String>> = context.dataStore.data.map {
-        it[RECENT_CODES] ?: emptySet()
+    val getRecentCodes: Flow<RecentCodes> = context.dataStore.data.map {
+        val items: Set<String> = it[RECENT_CODES] ?: emptySet()
+        items.map { item -> DialerSerializer.fromJson(item) }
     }
 
     val getUSSDCodes: Flow<Set<String>> = context.dataStore.data.map {
@@ -123,24 +129,26 @@ class AppSettingsRepository private constructor(context: Context) {
         }
     }
 
+    // Warning: Weird logic requires update
     suspend fun saveRecentCode(code: RecentDialCode) {
         context.dataStore.edit {
-            val itemToUpdate = getRecentCodes
-                .filter { item -> item.contains(code.toString())  }
-                .map { set -> set.find { item -> item == code.toString() } }
+            var itemToUpdate = getRecentCodes
+                .map { set -> set.find { item -> item.detail.amount == code.detail.amount } }
+                .singleOrNull()
 
-            var matchedItemString = itemToUpdate.singleOrNull()
-            if (matchedItemString != null) {
-                matchedItemString += "1"
+            if (itemToUpdate == null) {
+                itemToUpdate = code
             } else {
-                matchedItemString = code.toString()
+                itemToUpdate.count += 1
             }
-            it[RECENT_CODES] = getRecentCodes.single() + matchedItemString
+            val resultItems = getRecentCodes.single() + itemToUpdate
+            val resultItemsSet = resultItems.map { item -> DialerSerializer.toJson(item) }.toSet()
+            it[RECENT_CODES] = resultItemsSet
         }
     }
     suspend fun saveRecentCodes(codes: RecentCodes) {
         context.dataStore.edit {
-            it[RECENT_CODES] = codes.map { item -> item.toString() }.toSet()
+            it[RECENT_CODES] = codes.map { item -> DialerSerializer.toJson(item) }.toSet()
         }
     }
 

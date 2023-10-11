@@ -1,9 +1,6 @@
 package com.cedricbahirwe.dialer.screens
 
-import android.Manifest
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,7 +33,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,7 +65,10 @@ import kotlinx.coroutines.launch
 fun DashBoardContainer(
     navController: NavHostController,
     viewModel: MainViewModel = viewModel(
-        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+        factory = MainViewModelFactory(
+            LocalContext.current,
+            AppSettingsRepository.getInstance(LocalContext.current)
+        )
     )
 ) {
 
@@ -86,23 +85,6 @@ fun DashBoardContainer(
     )
 
     val coroutineScope = rememberCoroutineScope()
-
-    val context = LocalContext.current
-    val permission = Manifest.permission.CALL_PHONE
-
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            println("Permission granted")
-        } else {
-            println("Permission denied")
-        }
-    }
-
-    LaunchedEffect(Unit){
-        viewModel.checkAndRequestCameraPermission(context, permission, launcher)
-    }
 
     BackHandler(purchaseSheetState.isVisible) {
         coroutineScope.launch { purchaseSheetState.hide() }

@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 fun SettingsScreen(
     navController: NavController,
     viewModel: MainViewModel = viewModel(
-        factory = MainViewModelFactory(AppSettingsRepository.getInstance(LocalContext.current))
+        factory = MainViewModelFactory(LocalContext.current, AppSettingsRepository.getInstance(LocalContext.current))
     )
 ) {
 

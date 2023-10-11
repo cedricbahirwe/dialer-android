@@ -1,32 +1,37 @@
 package com.cedricbahirwe.dialer.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
-import kotlinx.coroutines.flow.singleOrNull
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.random.Random
 
-class HistoryViewModel(private val settings: AppSettingsRepository): ViewModel() {
+class HistoryViewModel(
+    context: Context,
+    private val settings: AppSettingsRepository
+): ViewModel() {
+
+    private val phoneDialer = PhoneDialer.getInstance(context)
     private val codePin = settings.getCodePin
     val recentCodes = settings.getRecentCodes
-    val allUSSDCodes = settings.getUSSDCodes
-
-    private val _uiState = mutableStateListOf<RecentDialCode>()
-    val uiState: List<RecentDialCode> = _uiState
+//    val allUSSDCodes = settings.getUSSDCodes
 
     init {
         retrieveHistoryCodes()
     }
 
     // Save RecentCode(s) locally.
-    private suspend fun saveRecentCodesLocally() {
-        val list = emptyList<RecentDialCode>()
-        settings.saveRecentCodes(list)
-    }
+//    private suspend fun saveRecentCodesLocally() {
+//        val list = emptyList<RecentDialCode>()
+//        settings.saveRecentCodes(list)
+//    }
 
     // Retrieve all locally stored recent codes.
     private fun retrieveHistoryCodes() {
@@ -39,33 +44,37 @@ class HistoryViewModel(private val settings: AppSettingsRepository): ViewModel()
                 PurchaseDetailModel(Random.Default.nextInt(0, 2_000))
             )
         }
-        _uiState.addAll(recentCodes)
-        runBlocking {
+
+        viewModelScope.launch {
             settings.saveRecentCodes(recentCodes)
         }
-    }
-
-    private suspend fun storeCode(code: RecentDialCode) {
-        val index = _uiState.indexOf(code)
-        if (index != 1) {
-            _uiState[index] = _uiState[index].copy(count = code.count + 1)
-        } else {
-            _uiState.add(code)
-        }
-        saveRecentCodesLocally()
     }
 
     /// Perform a quick dialing from the `HistoryRow.`
     /// - Parameter recentCode: the row code to be performed.
     fun performRecentDialing(recentCode: RecentDialCode) {
-        runBlocking {
-            val fullCode = recentCode.detail.getFullUSSDCode(codePin.singleOrNull())
-            PhoneDialer.shared.dial(fullCode) {
+        viewModelScope.launch {
+            val fullCode = recentCode.detail.getFullUSSDCode(codePin.firstOrNull())
+            phoneDialer.dial(fullCode) {
                 when (it) {
-                    true -> println("Successfully Dialed")
-                    false -> println("Failed to dial")
+                    true -> Log.d("PhoneDialer", "Successfully Dialed : $fullCode")
+                    false -> Log.e("PhoneDialer", "Failed to dial : $fullCode")
                 }
             }
         }
+    }
+}
+
+class HistoryViewModelFactory(
+    private val context: Context,
+    private val settingsRepository: AppSettingsRepository
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(HistoryViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return HistoryViewModel(context, settingsRepository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
