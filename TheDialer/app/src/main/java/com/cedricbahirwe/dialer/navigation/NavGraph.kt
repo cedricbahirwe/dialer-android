@@ -1,6 +1,7 @@
 package com.cedricbahirwe.dialer.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,6 +28,7 @@ fun NavGraph(navController: NavHostController) {
 
         addQuickDialingScreen(navController, this)
 
+        addSettingsScreen(navController, this)
     }
 }
 
@@ -65,5 +67,14 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
 private fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         TransferView()
+    }
+}
+
+private fun addSettingsScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder
+) {
+    navGraphBuilder.composable(route = NavRoute.Settings.path) {
+        SettingsScreen(navController = navController)
     }
 }

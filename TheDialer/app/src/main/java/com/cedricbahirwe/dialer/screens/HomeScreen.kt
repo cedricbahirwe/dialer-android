@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,11 +23,13 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -41,13 +44,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.navigation.NavRoute
+import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 import kotlinx.coroutines.launch
 
@@ -98,8 +105,23 @@ fun DashBoardContainer(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TitleView("Dialer")
 
-            TitleView("Dialer")
+                IconButton(onClick = {
+                    navController.navigate(NavRoute.Settings.path)
+                }) {
+                    Icon(
+                        Icons.Filled.Settings,
+                        "backIcon",
+                        tint = AccentBlue
+                    )
+                }
+            }
 
             val itemModifier = Modifier
                 .fillMaxWidth()
