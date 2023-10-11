@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -144,7 +143,7 @@ fun SettingsScreen(
 private fun SectionHeader(titleResId: Int) {
     Text(
         text = stringResource(titleResId),
-        style = TextStyle(fontSize = 40.sp, fontWeight = FontWeight.Bold)
+        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
     )
 }
 
