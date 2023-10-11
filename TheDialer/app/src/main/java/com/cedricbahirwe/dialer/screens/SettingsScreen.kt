@@ -3,6 +3,7 @@ package com.cedricbahirwe.dialer.screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,9 +33,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,21 +51,28 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
-import com.cedricbahirwe.dialer.model.SettingsOption
+import com.cedricbahirwe.dialer.data.SettingsOption
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.utilities.AppLinks
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
+import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    viewModel: MainViewModel = viewModel()
+    viewModel: MainViewModel = viewModel(
+        factory = MainViewModelFactory(LocalContext.current, AppSettingsRepository.getInstance(LocalContext.current))
+    )
 ) {
 
-    val switchState = rememberSaveable {
-        mutableStateOf(true)
-    }
+    val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
+    val codePin = viewModel.getCodePin.collectAsState(initial = null)
+    val allUSSDCodes = viewModel.allUSSDCodes.collectAsState(initial = emptySet())
+
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -99,16 +107,18 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            Section(R.string.general_settings) {
+            Section(R.string.common_general) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier.weight(1f)) {
                         SettingsItemRow(SettingsOption.BIOMETRICS)
                     }
                     Switch(
-                        checked = switchState.value,
+                        checked = biometricsState.value,
                         onCheckedChange = { newValue ->
-                            switchState.value = newValue
+                            coroutineScope.launch {
+                                viewModel.saveBiometricsStatus(newValue)
+                            }
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = Color.Green,
@@ -118,16 +128,31 @@ fun SettingsScreen(
                         )
                     )
                 }
-//                Divider(startIndent = 60.dp)
-//                SettingsItemRow(SettingsOption.DELETE_PIN)
+
+                AnimatedVisibility(visible = codePin.value != null) {
+                    Divider(startIndent = 60.dp)
+                    SettingsItemRow(SettingsOption.DELETE_PIN) {
+                        coroutineScope.launch {
+                            println("Pin is ${codePin.value!!.asString}")
+                            viewModel.removePinCode()
+                        }
+                    }
+                }
+
+                AnimatedVisibility(visible = allUSSDCodes.value.isNotEmpty()) {
+                    Divider(startIndent = 60.dp)
+                    SettingsItemRow(SettingsOption.DELETE_ALL_USSD) {
+                        coroutineScope.launch {
+                            viewModel.removeAllUSSDCodes()
+                        }
+                    }
+                }
             }
 
             Section(R.string.reach_out) {
                 SettingsItemRow(SettingsOption.CONTACT_US) {}
                 Divider(startIndent = 60.dp)
                 SettingsItemRow(SettingsOption.TWEET_US) {}
-                Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.TRANSLATION_SUGGESTION) {}
             }
 
             Section(R.string.common_colophon) {

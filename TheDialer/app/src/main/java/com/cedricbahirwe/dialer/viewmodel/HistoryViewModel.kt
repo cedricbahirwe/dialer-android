@@ -1,22 +1,39 @@
 package com.cedricbahirwe.dialer.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
+import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.cedricbahirwe.dialer.model.DialingError
-import com.cedricbahirwe.dialer.model.PurchaseDetailModel
-import com.cedricbahirwe.dialer.model.RecentDialCode
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.cedricbahirwe.dialer.data.PurchaseDetailModel
+import com.cedricbahirwe.dialer.data.RecentDialCode
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.random.Random
 
-class HistoryViewModel: ViewModel() {
-    private val _uiState = mutableStateListOf<RecentDialCode>()
-    val uiState: List<RecentDialCode> = _uiState
+class HistoryViewModel(
+    context: Context,
+    private val settings: AppSettingsRepository
+): ViewModel() {
+
+    private val phoneDialer = PhoneDialer.getInstance(context)
+    private val codePin = settings.getCodePin
+    val recentCodes = settings.getRecentCodes
+//    val allUSSDCodes = settings.getUSSDCodes
 
     init {
         retrieveHistoryCodes()
     }
 
-    /// Retrieve all locally stored recent codes.
+    // Save RecentCode(s) locally.
+//    private suspend fun saveRecentCodesLocally() {
+//        val list = emptyList<RecentDialCode>()
+//        settings.saveRecentCodes(list)
+//    }
+
+    // Retrieve all locally stored recent codes.
     private fun retrieveHistoryCodes() {
         // TODO: Retrieve stored codes
         // recentCodes = DialerStorage.shared.getSortedRecentCodes()
@@ -27,45 +44,37 @@ class HistoryViewModel: ViewModel() {
                 PurchaseDetailModel(Random.Default.nextInt(0, 2_000))
             )
         }
-        _uiState.addAll(recentCodes)
 
-    }
-
-    /// Store a given  `RecentCode`  locally.
-    /// - Parameter code: the code to be added.
-    private fun storeCode(code: RecentDialCode) {
-        val index = _uiState.indexOf(code)
-        if (index != 1) {
-            _uiState[index] = _uiState[index].copy(count = code.count + 1)
-        } else {
-            _uiState.add(code)
+        viewModelScope.launch {
+            settings.saveRecentCodes(recentCodes)
         }
-        saveRecentCodesLocally()
     }
 
     /// Perform a quick dialing from the `HistoryRow.`
     /// - Parameter recentCode: the row code to be performed.
     fun performRecentDialing(recentCode: RecentDialCode) {
-        // TODO: Perform operation
-
-        try {
-//            val result = recentCode.detail.dialCode()
-            storeCode(recentCode)
-        } catch (error: DialingError) {
-//            Log.debug(error.message)
+        viewModelScope.launch {
+            val fullCode = recentCode.detail.getFullUSSDCode(codePin.firstOrNull())
+            phoneDialer.dial(fullCode) {
+                when (it) {
+                    true -> Log.d("PhoneDialer", "Successfully Dialed : $fullCode")
+                    false -> Log.e("PhoneDialer", "Failed to dial : $fullCode")
+                }
+            }
         }
     }
+}
 
-    /// Save RecentCode(s) locally.
-    private fun saveRecentCodesLocally() {
-        // TODO: Store all local codes
-        try {
-            // Save all recent codes to local storage
-//            DialerStorage.shared.saveRecentCodes(recentCodes)
-        } catch (error: Exception) {
-            // TODO: Track Error
-//            Tracker.shared.logError(error)
-//            Log.debug("Could not save recent codes locally: ${error.message}")
+class HistoryViewModelFactory(
+    private val context: Context,
+    private val settingsRepository: AppSettingsRepository
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(HistoryViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return HistoryViewModel(context, settingsRepository) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

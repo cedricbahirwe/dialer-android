@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
 sealed class DialerQuickCode {
     class MobileWalletBalance(val code: CodePin?) : DialerQuickCode()

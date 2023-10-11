@@ -9,7 +9,7 @@
     <string name="change_language_title">Change Language</string>
     <string name="change_language_description">Select your desired language.</string>
     <string name="biometric_title">Biometric Authentication</string>
-    <string name="biometric_description">For securing your activities on the app.</string>
+    <string name="biometric_description">Secure your activities on the app.</string>
     <string name="remove_pin_title">Remove Pin</string>
     <string name="remove_pin_description">You\'ll need to re-enter it later.</string>
     <string name="delete_ussd_description">This action can not be undone.</string>
@@ -57,10 +57,13 @@
     <string name="my_space">My Space</string>
     <string name="quick_dial_icon">Quick Dial icon</string>
     <string name="coming_soon">Coming Soon</string>
-    <string name="general_settings">General Settings</string>
     <string name="reach_out">Reach Out</string>
     <string name="common_colophon">Colophon</string>
     <string name="help_more"><![CDATA[Help & More]]></string>
+    <string name="common_general">General</string>
+    <string name="pin_covered">We\'ve got your back 🎉\nEnter the amount and you\'re good to go ✌🏾</string>
+    <string name="pin_not_covered">Your pin will not be saved unless you save it.</string>
+    <string name="toast_ussd_permission_is_not_granted">USSD Permission is not granted</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>

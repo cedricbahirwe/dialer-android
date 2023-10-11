@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
 enum class TransactionType {
     CLIENT, MERCHANT

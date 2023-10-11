@@ -5,6 +5,8 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
@@ -26,5 +28,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

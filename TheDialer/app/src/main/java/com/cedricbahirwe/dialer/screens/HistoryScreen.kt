@@ -22,14 +22,14 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -42,8 +42,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
-import com.cedricbahirwe.dialer.model.RecentDialCode
+import com.cedricbahirwe.dialer.data.RecentDialCode
+import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModel
+import com.cedricbahirwe.dialer.viewmodel.HistoryViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -51,12 +53,16 @@ import java.util.Locale
 @Preview(showBackground = true)
 @Composable
 fun HistoryView(
-    viewModel: HistoryViewModel = viewModel()
+    viewModel: HistoryViewModel = viewModel(
+        factory = HistoryViewModelFactory(
+            LocalContext.current,
+            AppSettingsRepository.getInstance(LocalContext.current)
+        )
+    )
 ) {
+    val recentCodes = viewModel.recentCodes.collectAsState(initial = emptyList())
 
-    val recentCodes by rememberUpdatedState(newValue = viewModel.uiState)
-
-    val estimatedTotalPrice = recentCodes.sumOf { it.totalPrice }
+    val estimatedTotalPrice = recentCodes.value.sumOf { it.totalPrice }
 
     Scaffold(bottomBar = {
         HistoryBottomBar(estimatedTotalPrice)
@@ -79,11 +85,11 @@ fun HistoryView(
                             .background(MaterialTheme.colors.surface)
                             .padding(horizontal = 10.dp)
                     ) {
-                        items(recentCodes) { code ->
+                        items(recentCodes.value) { code ->
                             HistoryRow(code = code) {
                                 viewModel.performRecentDialing(it)
                             }
-                            if (code != recentCodes.last()) {
+                            if (code != recentCodes.value.last()) {
                                 Divider(Modifier.padding(start = 30.dp))
                             }
                         }

@@ -1,6 +1,6 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
-import com.cedricbahirwe.dialer.model.protocol.Identifiable
+import com.cedricbahirwe.dialer.data.protocol.Identifiable
 import java.util.*
 
 data class AlertDialog(

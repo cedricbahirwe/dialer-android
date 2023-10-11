@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer.model.protocol
+package com.cedricbahirwe.dialer.data.protocol
 
 import java.net.URL
 import java.util.UUID

@@ -1,16 +1,16 @@
-package com.cedricbahirwe.dialer.model
+package com.cedricbahirwe.dialer.data
 
-import com.cedricbahirwe.dialer.model.protocol.Identifiable
+import com.cedricbahirwe.dialer.data.protocol.Identifiable
+import com.google.gson.Gson
 import java.util.*
 
 data class RecentDialCode(
     override val id: UUID = UUID.randomUUID(),
     val detail: PurchaseDetailModel,
-    val count: Int = 1
+    var count: Int = 1
 ) : Identifiable<UUID> {
 
     val totalPrice: Int
         get() = detail.amount * count
 
 }
-
