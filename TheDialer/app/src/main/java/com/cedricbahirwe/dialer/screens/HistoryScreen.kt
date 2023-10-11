@@ -23,7 +23,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -65,8 +64,6 @@ fun HistoryView(
 
     val estimatedTotalPrice = recentCodes.value.sumOf { it.totalPrice }
 
-    val coroutineScope = rememberCoroutineScope()
-
     Scaffold(bottomBar = {
         HistoryBottomBar(estimatedTotalPrice)
     }) { innerPaddings ->
@@ -90,9 +87,7 @@ fun HistoryView(
                     ) {
                         items(recentCodes.value) { code ->
                             HistoryRow(code = code) {
-//                                coroutineScope.launch {
-                                    viewModel.performRecentDialing(it)
-//                                }
+                                viewModel.performRecentDialing(it)
                             }
                             if (code != recentCodes.value.last()) {
                                 Divider(Modifier.padding(start = 30.dp))

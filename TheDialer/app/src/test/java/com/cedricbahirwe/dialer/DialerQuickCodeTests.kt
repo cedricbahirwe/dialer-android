@@ -2,10 +2,10 @@ package com.cedricbahirwe.dialer
 
 import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.DialerQuickCode
-import org.junit.Test
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Test
 
 class DialerQuickCodeTests {
     @Before
@@ -37,6 +37,17 @@ class DialerQuickCodeTests {
     }
 
     @Test
+    fun testMomoQuickCode1() {
+        val pin = makeCodePin("25_000")
+        val code1 =  DialerQuickCode.MobileWalletBalance(code = pin)
+        assertEquals(code1.ussd, "*182*6*1*25000#")
+        assertEquals(code1.ussd, "*182*6*1*${pin.asString}#")
+
+        val code2 =  DialerQuickCode.MobileWalletBalance(code = null)
+        assertEquals(code2.ussd, "*182*6*1#")
+    }
+
+    @Test
     fun testElectricityQuickCode() {
         val pin = makeCodePin(10_000)
         val meter = "1000000"
@@ -53,6 +64,22 @@ class DialerQuickCodeTests {
         assertEquals(code2.ussd, "*182*2*2*1*1*1000000*1000#")
     }
 
+    @Test
+    fun testElectricityQuickCode1() {
+        val pin = makeCodePin(15_000)
+        val meter = "1000000"
+        val amount = 1_000
+        val code1 =  DialerQuickCode.Electricity(meter = meter,
+            amount = amount,
+            code = pin)
+        assertEquals(code1.ussd, "*182*2*2*1*1*1000000*1000*15000#")
+        assertEquals(code1.ussd, "*182*2*2*1*1*1000000*1000*${pin.asString}#")
+
+        val code2 =  DialerQuickCode.Electricity(meter = meter,
+            amount = amount,
+            code = null)
+        assertEquals(code2.ussd, "*182*2*2*1*1*1000000*1000#")
+    }
     @Test
     fun testOtherQuickCode() {
         val code1 =  DialerQuickCode.Other("*151#")

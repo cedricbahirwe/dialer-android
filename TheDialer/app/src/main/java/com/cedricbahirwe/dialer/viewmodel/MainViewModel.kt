@@ -1,16 +1,13 @@
 package com.cedricbahirwe.dialer.viewmodel
 
 import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cedricbahirwe.dialer.data.CodePin
-import com.cedricbahirwe.dialer.data.DialerQuickCode
 import com.cedricbahirwe.dialer.data.DialingError
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.RecentDialCode
-import com.cedricbahirwe.dialer.data.USSDCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +25,7 @@ data class PurchaseUiState (
 )
 
 open class MainViewModel(
-    private val context: Context,
+    context: Context,
     private val settings: AppSettingsRepository
 ): ViewModel() {
     private val phoneDialer = PhoneDialer.getInstance(context)
@@ -95,9 +92,9 @@ open class MainViewModel(
         }
     }
 
-    suspend fun storeCode(code: RecentDialCode) {
-        settings.saveRecentCode(code)
-    }
+//    suspend fun storeCode(code: RecentDialCode) {
+//        settings.saveRecentCode(code)
+//    }
 
     private fun getOptionalCodePin(): CodePin? {
         return try {
@@ -150,28 +147,28 @@ open class MainViewModel(
         }
     }
 
-    private fun getFullUSSDCode(purchase: PurchaseDetailModel): String {
-        return purchase.getFullUSSDCode(getCodePin())
-    }
+//    private fun getFullUSSDCode(purchase: PurchaseDetailModel): String {
+//        return purchase.getFullUSSDCode(getCodePin())
+//    }
 
-    private fun performQuickDial(quickCode: DialerQuickCode) {
-        phoneDialer.dial(quickCode.ussd)
-    }
+//    private fun performQuickDial(quickCode: DialerQuickCode) {
+//        phoneDialer.dial(quickCode.ussd)
+//    }
 
     /// Perform a quick dialing from the `History View Row.`
     /// - Parameter recentCode: the row code to be performed.
-    fun performRecentDialing(recentCode: RecentDialCode) {
-        dialCode(recentCode.detail) { success, failure ->
-            viewModelScope.launch {
-                if (success != null) {
-                    println("Code saved")
-                    settings.saveRecentCode(recentCode)
-                } else if (failure != null) {
-                    println(failure.message)
-                }
-            }
-        }
-    }
+//    fun performRecentDialing(recentCode: RecentDialCode) {
+//        dialCode(recentCode.detail) { success, failure ->
+//            viewModelScope.launch {
+//                if (success != null) {
+//                    println("Code saved")
+//                    settings.saveRecentCode(recentCode)
+//                } else if (failure != null) {
+//                    println(failure.message)
+//                }
+//            }
+//        }
+//    }
 
     /* MARK: Extension used for Quick USSD actions. */
 //    fun checkMobileWalletBalance() {
@@ -183,9 +180,9 @@ open class MainViewModel(
 //        }
 //    }
 
-    suspend fun saveUSSDCodesLocally(codes: List<USSDCode>) {
-        settings.saveUSSDCodes(codes)
-    }
+//    suspend fun saveUSSDCodesLocally(codes: List<USSDCode>) {
+//        settings.saveUSSDCodes(codes)
+//    }
 
     // Local Storage
     suspend fun saveCodePin(codePin: CodePin) {
@@ -209,14 +206,14 @@ open class MainViewModel(
 
 
 
-    private fun shareLink(context: Context, link: String) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, link)
-        }
-
-        context.startActivity(Intent.createChooser(intent, "Share Link"))
-    }
+//    private fun shareLink(context: Context, link: String) {
+//        val intent = Intent(Intent.ACTION_SEND).apply {
+//            type = "text/plain"
+//            putExtra(Intent.EXTRA_TEXT, link)
+//        }
+//
+//        context.startActivity(Intent.createChooser(intent, "Share Link"))
+//    }
 }
 
 class MainViewModelFactory(
