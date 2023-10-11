@@ -1,5 +1,8 @@
 package com.cedricbahirwe.dialer.screens
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,7 +53,9 @@ import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.data.SettingsOption
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import com.cedricbahirwe.dialer.utilities.AppLinks
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
 import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
 import kotlinx.coroutines.launch
@@ -83,6 +88,9 @@ fun SettingsScreen(
                 backgroundColor = MaterialTheme.colors.background,
                 elevation = 10.dp
             )
+        },
+        bottomBar = {
+            TermsAndConditions()
         }
     ) {
 
@@ -230,6 +238,50 @@ private fun SettingsItemRow(
         }
     }
 }
+
+@Composable
+fun TermsAndConditions() {
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "By using Dialer, you accept our",
+            style = TextStyle.Default.copy(fontWeight = FontWeight.Bold)
+        )
+
+        Row {
+            Text(
+                text = "Terms & Conditions",
+                style = TextStyle.Default.copy(color = AccentBlue, fontWeight = FontWeight.Bold),
+                modifier = Modifier.clickable {
+                    openWebLink(context, AppLinks.privacyPolicy)
+                }
+            )
+            Text(
+                text = " and ",
+                style = TextStyle.Default.copy(fontWeight = FontWeight.Bold)
+            )
+            Text(
+                text = "Privacy Policy.",
+                style = TextStyle.Default.copy(color = AccentBlue, fontWeight = FontWeight.Bold),
+                modifier = Modifier.clickable {
+                    openWebLink(context, AppLinks.privacyPolicy)
+                }
+            )
+        }
+    }
+}
+
+private fun openWebLink(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    context.startActivity(intent)
+}
+
 @Preview(showBackground = true)
 @Composable
 fun SettingsPreview() {
