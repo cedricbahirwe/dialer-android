@@ -6,7 +6,6 @@ Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id159
 
 ## ✨ TODOs :
 - Local Storage Implementation
-- Home Screen Quick Actions.
 - Contacts Filtering.
 - Transaction History
 
