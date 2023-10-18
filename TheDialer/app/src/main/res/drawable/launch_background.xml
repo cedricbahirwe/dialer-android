@@ -9,5 +9,7 @@
 
     <item
         android:drawable="@drawable/branding_name"
+        android:width="200dp"
+        android:height="50dp"
         android:gravity="center|bottom" />
 </layer-list>

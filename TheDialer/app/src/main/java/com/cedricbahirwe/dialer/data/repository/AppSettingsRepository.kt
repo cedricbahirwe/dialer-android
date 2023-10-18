@@ -140,11 +140,11 @@ class AppSettingsRepository private constructor(context: Context) {
 //        }
 //    }
 
-    suspend fun saveUSSDCodes(ussds: USSDCodes) {
-        context.dataStore.edit {
-            it[ALL_USSD_CODES] = ussds.map { item -> item.toString() }.toSet()
-        }
-    }
+//    suspend fun saveUSSDCodes(ussds: USSDCodes) {
+//        context.dataStore.edit {
+//            it[ALL_USSD_CODES] = ussds.map { item -> item.toString() }.toSet()
+//        }
+//    }
 
     companion object {
         @SuppressLint("StaticFieldLeak")
