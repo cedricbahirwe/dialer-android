@@ -69,7 +69,7 @@ fun SettingsScreen(
 
     val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
     val codePin = viewModel.getCodePin.collectAsState(initial = null)
-    val allUSSDCodes = viewModel.allUSSDCodes.collectAsState(initial = emptySet())
+//    val allUSSDCodes = viewModel.allUSSDCodes.collectAsState(initial = emptySet())
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -137,7 +137,7 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             println("Pin is ${codePin.value!!.asString}")
                             viewModel.removePinCode()
-                            Toast.makeText(context, "Your PIN has been deleve.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Your PIN has been deleted.", Toast.LENGTH_LONG).show()
                         }
                     }
                 }

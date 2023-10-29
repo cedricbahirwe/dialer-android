@@ -41,7 +41,7 @@ class PhoneDialer private constructor(thisContext: Context) {
         if (isPermissionsGranted(context = context)) {
             call(
                 context = context,
-                ussd = Uri.encode(ussd).toString(),
+                ussd = ussd,// Uri.encode(ussd).toString(),
                 simSlotIndex = simUtils?.getMTNRwandaSlotIndex()
             )
             completion(true)
@@ -57,7 +57,7 @@ fun dial(context: Context, ussd: String) {
     context.startActivity(dialIntent)
 }
 
-// calls the given number using the appropriate sim card
+// Calls the code number using the appropriate sim card
 fun call(context: Context, ussd: String, simSlotIndex: Int?) {
     simSlotIndex?.let {
         context.startActivity(

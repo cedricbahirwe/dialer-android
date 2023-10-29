@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +17,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -57,7 +57,6 @@ class QuickDialingActivity : ComponentActivity() {
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun QuickDialingView(navController: NavHostController) {
-    val gradientColors = listOf(Color.Red, Color.Blue)
     val context = LocalContext.current
 
     var showInValidMsg by remember { mutableStateOf(false) }
@@ -111,22 +110,24 @@ fun QuickDialingView(navController: NavHostController) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            AnimatedVisibility(visible = showInValidMsg) {
+            if (showInValidMsg) {
                 LaunchedEffect(true) {
                     delay(2000) // 2000 milliseconds delay
                     showInValidMsg = false
                 }
-                Text(
-                    "Invalid code. Check it and try again.",
-                    color = Color.Red
-                )
             }
+
+            Text(
+                "Invalid code. Check it and try again.",
+                color = Color.Red,
+                modifier = Modifier.alpha(if (showInValidMsg) 1f else 0f)
+            )
 
             Text(
                 text = composedCode,
                 style = TextStyle(
                     brush = Brush.linearGradient(
-                        colors = gradientColors
+                        colors = listOf(Color.Red, Color.Blue)
                     ),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
