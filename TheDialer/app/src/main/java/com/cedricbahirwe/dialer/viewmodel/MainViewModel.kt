@@ -135,15 +135,11 @@ open class MainViewModel(
 
         dialCode(purchase) { success, failure ->
             viewModelScope.launch {
-                println("Coroutine" + success + "and" + failure)
                 if (success != null) {
-                    println("Got in here baby")
                     settings.saveRecentCode(RecentDialCode(detail = purchase))
-                    println("finish in here baby")
                     _uiState.update {
                         it.copy(amount = 0)
                     }
-                    println("Success here here $success")
                 } else if (failure != null) {
                     println("Failure here ${failure.message}")
 //                    Toast.makeText("", Toast.LENGTH_SHORT)
@@ -208,10 +204,6 @@ open class MainViewModel(
         settings.saveCodePin(codePin)
     }
 
-    suspend fun saveBiometricsStatus(newValue: Boolean) {
-        settings.saveBiometricsStatus(newValue)
-    }
-
     private suspend fun saveWelcomeStatus(newValue: Boolean) {
         settings.saveWelcomeStatus(newValue)
     }
@@ -226,17 +218,6 @@ open class MainViewModel(
             it.copy(pin = "")
         }
     }
-
-
-
-//    private fun shareLink(context: Context, link: String) {
-//        val intent = Intent(Intent.ACTION_SEND).apply {
-//            type = "text/plain"
-//            putExtra(Intent.EXTRA_TEXT, link)
-//        }
-//
-//        context.startActivity(Intent.createChooser(intent, "Share Link"))
-//    }
 }
 
 class MainViewModelFactory(

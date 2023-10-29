@@ -17,35 +17,9 @@ class HistoryViewModel(
 
     private val phoneDialer = PhoneDialer.getInstance(context)
     private val codePin = settings.getCodePin
+    // Retrieve all locally stored recent codes.
     val recentCodes = settings.getRecentCodes
 //    val allUSSDCodes = settings.getUSSDCodes
-
-    init {
-        retrieveHistoryCodes()
-    }
-
-    // Save RecentCode(s) locally.
-//    private suspend fun saveRecentCodesLocally() {
-//        val list = emptyList<RecentDialCode>()
-//        settings.saveRecentCodes(list)
-//    }
-
-    // Retrieve all locally stored recent codes.
-    private fun retrieveHistoryCodes() {
-        // TODO: Retrieve stored codes
-//         recentCodes = DialerStorage.shared.getSortedRecentCodes()
-
-//        val recentCodes = List(size = 6) {
-//            RecentDialCode(
-//                UUID.randomUUID(),
-//                PurchaseDetailModel(Random.Default.nextInt(0, 2_000))
-//            )
-//        }
-
-//        viewModelScope.launch {
-//            settings.saveRecentCodes(recentCodes)
-//        }
-    }
 
     /// Perform a quick dialing from the `HistoryRow.`
     /// - Parameter recentCode: the row code to be performed.
