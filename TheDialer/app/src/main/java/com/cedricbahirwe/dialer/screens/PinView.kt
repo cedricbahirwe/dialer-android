@@ -18,10 +18,11 @@ import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 
 @Composable
 fun PinView(isFullMode: Boolean = false,
-            showDeleteBtn: Boolean = true,
+            showDeleteBtn: Boolean = false,
             btnSize: Float = 50f,
             btnColors: ButtonColors = ButtonDefaults.outlinedButtonColors(
-                backgroundColor = Color.Gray.copy(0.2f)
+                backgroundColor = Color.Gray.copy(0.2f),
+                contentColor = MaterialTheme.colors.primary
             ), onEditChanged: (String) -> Unit
 ) {
 
@@ -52,26 +53,36 @@ fun PinView(isFullMode: Boolean = false,
     ) {
         items(buttons.size) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                if (!isFullMode && buttons[it] != "*" ) {
-                    if (buttons[it] != "X" || showDeleteBtn) {
-                        CircleButton(
-                            title = buttons[it],
-                            size = btnSize,
-                            btnColors = ButtonDefaults.outlinedButtonColors(
-                                backgroundColor = btnColors.backgroundColor(true).value,
-                                contentColor = if (buttons[it] == "X") Color.Red else MaterialTheme.colors.primary
-                            )
-                        ) {
-                            addKey(buttons[it])
-                        }
+                if ((isFullMode || buttons[it] != "*") && (showDeleteBtn || buttons[it] != "X")) {
+                    CircleButton(
+                        title = buttons[it],
+                        size = btnSize,
+                        btnColors = ButtonDefaults.outlinedButtonColors(
+                            backgroundColor = btnColors.backgroundColor(true).value,
+                            contentColor = if (buttons[it] == "X") Color.Red else btnColors.contentColor(true).value
+                        )
+                    ) {
+                        addKey(buttons[it])
                     }
                 }
-
+//                if ((!isFullMode && buttons[it] == "*") || (!showDeleteBtn && buttons[it] == "X")) {
+//                } else {
+//                    CircleButton(
+//                            title = buttons[it],
+//                            size = btnSize,
+//                            btnColors = ButtonDefaults.outlinedButtonColors(
+//                                backgroundColor = btnColors.backgroundColor(true).value,
+//                                contentColor = if (buttons[it] == "X") Color.Red else btnColors.contentColor(true).value
+//                            )
+//                        ) {
+//                            addKey(buttons[it])
+//                        }
+////                    }
+//                }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

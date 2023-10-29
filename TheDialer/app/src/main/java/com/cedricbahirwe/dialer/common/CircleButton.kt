@@ -26,7 +26,7 @@ fun CircleButton(title: String, size: Float, btnColors: ButtonColors, action: ()
         Text(
             text = title,
             Modifier.padding(start = 1.dp),
-            fontSize = 20.sp,
+            fontSize = (size/2.5).sp,
             fontWeight = FontWeight.SemiBold
         )
     }

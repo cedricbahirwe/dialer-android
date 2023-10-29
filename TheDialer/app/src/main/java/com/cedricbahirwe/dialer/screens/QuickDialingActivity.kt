@@ -1,4 +1,4 @@
-package com.cedricbahirwe.dialer
+package com.cedricbahirwe.dialer.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.cedricbahirwe.dialer.screens.PinView
+import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
@@ -103,11 +103,15 @@ fun QuickDialingView(navController: NavHostController) {
             Spacer(modifier = Modifier.weight(1f))
 
             PinView(
-                isFullMode = true,
-                btnSize = 80f,
+                isFullMode = false,
+                showDeleteBtn = false,
+                btnSize = 70f,
                 btnColors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = Color.Gray.copy(0.2f), contentColor = Color.White
-                ), onEditChanged = { codeChanged(it) })
+                    backgroundColor = Color.Gray.copy(0.4f),
+                    contentColor = Color.White
+                ),
+                onEditChanged = { codeChanged(it) }
+            )
 
             Spacer(Modifier.padding(vertical = 20.dp))
 

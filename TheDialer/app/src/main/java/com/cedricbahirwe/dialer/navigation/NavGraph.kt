@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.cedricbahirwe.dialer.BuildConfig
-import com.cedricbahirwe.dialer.QuickDialingView
+import com.cedricbahirwe.dialer.screens.QuickDialingView
 import com.cedricbahirwe.dialer.screens.AboutScreen
 import com.cedricbahirwe.dialer.screens.DashBoardContainer
 import com.cedricbahirwe.dialer.screens.HistoryView
