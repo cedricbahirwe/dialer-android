@@ -19,8 +19,8 @@ enum class EditedField {
     AMOUNT, PIN
 }
 data class PurchaseUiState (
-    val amount: Int = 0,
-    val pin: String = "",
+    val amount: Int = 100,
+    val pin: String = "12345",
     val editedField: EditedField = EditedField.AMOUNT
 )
 
@@ -123,18 +123,29 @@ open class MainViewModel(
             throw  e
         }
     }
+
+    fun saveRecent() {
+        viewModelScope.launch {
+            val purchase = PurchaseDetailModel(100)
+            settings.saveRecentCode(RecentDialCode(detail = purchase))
+        }
+    }
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
 
         dialCode(purchase) { success, failure ->
             viewModelScope.launch {
+                println("Coroutine" + success + "and" + failure)
                 if (success != null) {
+                    println("Got in here baby")
                     settings.saveRecentCode(RecentDialCode(detail = purchase))
+                    println("finish in here baby")
                     _uiState.update {
                         it.copy(amount = 0)
                     }
+                    println("Success here here $success")
                 } else if (failure != null) {
-                    println(failure.message)
+                    println("Failure here ${failure.message}")
 //                    Toast.makeText("", Toast.LENGTH_SHORT)
                 }
             }

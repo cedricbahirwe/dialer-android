@@ -44,10 +44,10 @@ class PhoneDialer private constructor(thisContext: Context) {
                 ussd = Uri.encode(ussd).toString(),
                 simSlotIndex = simUtils?.getMTNRwandaSlotIndex()
             )
-            completion.invoke(true)
+            completion(true)
         } else {
             requestPermissions(activity = context as Activity, permissions = permissions)
-            completion.invoke(false)
+            completion(false)
         }
     }
 }
@@ -66,7 +66,7 @@ fun call(context: Context, ussd: String, simSlotIndex: Int?) {
                 simSlotIndex
             )
         )
-        Log.d("TelephonyUtils", "Called Number : $ussd")
+        Log.d("TelephonyUtils", "Dialing USSD : $ussd")
     } ?: dial(context, ussd)
 }
 

@@ -152,10 +152,11 @@ fun DashBoardContainer(
                         stringResource(R.string.buy_airtime),
                         modifier = itemModifier
                     ) {
-                        coroutineScope.launch {
-                            isMySpaceFlowActive.value = false
-                            purchaseSheetState.show()
-                        }
+                        viewModel.saveRecent()
+//                        coroutineScope.launch {
+//                            isMySpaceFlowActive.value = false
+//                            purchaseSheetState.show()
+//                        }
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     DashBoardItem(
