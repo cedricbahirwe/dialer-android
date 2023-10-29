@@ -19,8 +19,8 @@ enum class EditedField {
     AMOUNT, PIN
 }
 data class PurchaseUiState (
-    val amount: Int = 100,
-    val pin: String = "12345",
+    val amount: Int = 0,
+    val pin: String = "",
     val editedField: EditedField = EditedField.AMOUNT
 )
 
