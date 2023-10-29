@@ -5,13 +5,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import java.util.UUID
-import kotlin.random.Random
 
 class HistoryViewModel(
     context: Context,
@@ -36,18 +33,18 @@ class HistoryViewModel(
     // Retrieve all locally stored recent codes.
     private fun retrieveHistoryCodes() {
         // TODO: Retrieve stored codes
-        // recentCodes = DialerStorage.shared.getSortedRecentCodes()
+//         recentCodes = DialerStorage.shared.getSortedRecentCodes()
 
-        val recentCodes = List(size = 6) {
-            RecentDialCode(
-                UUID.randomUUID(),
-                PurchaseDetailModel(Random.Default.nextInt(0, 2_000))
-            )
-        }
+//        val recentCodes = List(size = 6) {
+//            RecentDialCode(
+//                UUID.randomUUID(),
+//                PurchaseDetailModel(Random.Default.nextInt(0, 2_000))
+//            )
+//        }
 
-        viewModelScope.launch {
-            settings.saveRecentCodes(recentCodes)
-        }
+//        viewModelScope.launch {
+//            settings.saveRecentCodes(recentCodes)
+//        }
     }
 
     /// Perform a quick dialing from the `HistoryRow.`
