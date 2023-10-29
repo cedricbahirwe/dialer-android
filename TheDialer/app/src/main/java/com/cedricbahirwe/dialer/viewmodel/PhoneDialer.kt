@@ -41,7 +41,7 @@ class PhoneDialer private constructor(thisContext: Context) {
         if (isPermissionsGranted(context = context)) {
             call(
                 context = context,
-                ussd = ussd,// Uri.encode(ussd).toString(),
+                ussd = ussd,
                 simSlotIndex = simUtils?.getMTNRwandaSlotIndex()
             )
             completion(true)
