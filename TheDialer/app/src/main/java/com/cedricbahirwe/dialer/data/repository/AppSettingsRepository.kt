@@ -34,6 +34,10 @@ class AppSettingsRepository private constructor(context: Context) {
         if (item.isNullOrEmpty()) null else CodePin(item)
     }
 
+    val showWelcomeView: Flow<Boolean> = context.dataStore.data.map {
+        it[SHOW_WELCOME_VIEW] ?: true
+    }
+
 //    val getSyncDate: Flow<String> = context.dataStore.data.map {
 //        it[SYNC_DATE] ?: ""
 //    }
@@ -50,6 +54,12 @@ class AppSettingsRepository private constructor(context: Context) {
     suspend fun saveBiometricsStatus(status: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[ALLOW_BIOMETRICS] = status
+        }
+    }
+
+    suspend fun saveWelcomeStatus(status: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[SHOW_WELCOME_VIEW] = status
         }
     }
 
@@ -159,6 +169,7 @@ class AppSettingsRepository private constructor(context: Context) {
         private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.customUSSDCodes)
         private  val RECENT_CODES = stringSetPreferencesKey(LocalKeys.recentCodes)
 
+        private val SHOW_WELCOME_VIEW = booleanPreferencesKey(LocalKeys.showWelcomeView)
 //        const val MAX_DAYS_BEFORE_SYNC = 30
 
         fun getInstance(context: Context): AppSettingsRepository {

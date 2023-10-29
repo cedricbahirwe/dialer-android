@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -86,6 +88,8 @@ fun DashBoardContainer(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val showWelcomeState = viewModel.showWelcomeState.collectAsState(initial = true)
+
     BackHandler(purchaseSheetState.isVisible) {
         coroutineScope.launch { purchaseSheetState.hide() }
     }
@@ -109,6 +113,7 @@ fun DashBoardContainer(
         sheetShape = RoundedCornerShape(15.dp)
     ) {
 
+        Box {
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colors.background)
@@ -142,7 +147,11 @@ fun DashBoardContainer(
                 .background(MaterialTheme.colors.background)
                 .padding(10.dp)
             Row {
-                DashBoardItem(R.drawable.wallet_pass, stringResource(R.string.buy_airtime), modifier = itemModifier) {
+                DashBoardItem(
+                    R.drawable.wallet_pass,
+                    stringResource(R.string.buy_airtime),
+                    modifier = itemModifier
+                ) {
                     coroutineScope.launch {
                         isMySpaceFlowActive.value = false
                         purchaseSheetState.show()
@@ -203,6 +212,13 @@ fun DashBoardContainer(
                 }
                 Spacer(modifier = Modifier.weight(1.0f))
 
+            }
+        }
+
+            if (showWelcomeState.value) {
+                WhatsNewScreen(onContinueClicked = {
+                    viewModel.finishOnBoarding()
+                })
             }
         }
     }

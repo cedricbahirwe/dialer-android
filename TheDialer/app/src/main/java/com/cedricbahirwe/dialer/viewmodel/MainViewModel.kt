@@ -28,9 +28,11 @@ open class MainViewModel(
     context: Context,
     private val settings: AppSettingsRepository
 ): ViewModel() {
+
     private val phoneDialer = PhoneDialer.getInstance(context)
 
     val biometricsState = settings.getBiometrics
+    val showWelcomeState = settings.showWelcomeView
     val getCodePin = settings.getCodePin
     val allUSSDCodes = settings.getUSSDCodes
 
@@ -39,6 +41,12 @@ open class MainViewModel(
 
     val hasValidAmount: Boolean get() = _uiState.value.amount > 0
     val isPinCodeValid: Boolean get() = _uiState.value.pin.length == 5
+
+    fun finishOnBoarding() {
+        viewModelScope.launch {
+            saveWelcomeStatus(false)
+        }
+    }
 
     fun shouldShowDeleteBtn() : Boolean {
         return when (_uiState.value.editedField) {
@@ -191,6 +199,10 @@ open class MainViewModel(
 
     suspend fun saveBiometricsStatus(newValue: Boolean) {
         settings.saveBiometricsStatus(newValue)
+    }
+
+    private suspend fun saveWelcomeStatus(newValue: Boolean) {
+        settings.saveWelcomeStatus(newValue)
     }
 
     suspend fun removeAllUSSDCodes() {

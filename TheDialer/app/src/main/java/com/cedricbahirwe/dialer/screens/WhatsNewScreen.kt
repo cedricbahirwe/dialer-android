@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,9 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +40,9 @@ import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.MainRed
 
 @Composable
-fun WhatsNewScreen(isPresented: Boolean) {
+fun WhatsNewScreen(
+    onContinueClicked: () -> Unit
+) {
     val changeLogs = ChangeLog.latestLogs
 
     Column(
@@ -100,17 +104,30 @@ fun WhatsNewScreen(isPresented: Boolean) {
             }
         }
 
+        val fieldBorderGradient = Brush.linearGradient(
+            colors = listOf(MainRed, AccentBlue)
+        )
+
         Button(
-            onClick = {},
+            onClick = {
+                onContinueClicked()
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Transparent,
+                contentColor = Color.White
+            ),
+            elevation = null,
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .fillMaxWidth()
                 .height(50.dp)
-                .shadow(3.dp, RoundedCornerShape(15.dp))
-                .background(color = AccentBlue),
+                .background(
+                    brush = fieldBorderGradient,
+                    shape = RoundedCornerShape(15.dp)
+                )
         ) {
             Text(
-                text = "Continue",
+                text = stringResource(R.string.common_continue),
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 color = Color.White,
@@ -160,7 +177,7 @@ private fun ChangeLogView(log: ChangeLog) {
 @Composable
 @Preview
 fun WhatsNewViewPreview() {
-    WhatsNewScreen(isPresented = true)
+    WhatsNewScreen(onContinueClicked = {  })
 }
 
 private data class ChangeLog(
