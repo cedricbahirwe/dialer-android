@@ -1,8 +1,11 @@
 package com.cedricbahirwe.dialer.screens
 
+import android.content.Context
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +35,8 @@ import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.ui.theme.MainRed
+import com.cedricbahirwe.dialer.viewmodel.PhoneDialer
+import kotlinx.coroutines.delay
 
 class QuickDialingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,19 +58,37 @@ class QuickDialingActivity : ComponentActivity() {
 @Composable
 fun QuickDialingView(navController: NavHostController) {
     val gradientColors = listOf(Color.Red, Color.Blue)
-    var composedCode by remember { mutableStateOf("") }
-    fun dialCode() {
-        println("0782628511")
-    }
+    val context = LocalContext.current
 
-    fun codeChanged(newKey: String) {
-        println("New Key: $newKey")
+    var showInValidMsg by remember { mutableStateOf(false) }
+    var composedCode by remember { mutableStateOf("") }
+
+    fun handleNewPinInput(newKey: String) {
         if (newKey == "X" && composedCode.isNotEmpty()) {
             composedCode = composedCode.dropLast(1)
         } else {
             composedCode += newKey
         }
     }
+
+    fun manageInvalidCode() {
+        showInValidMsg = true
+    }
+
+    fun performQuickDial(context: Context, ussd: String)  {
+        if (ussd.contains("*") && ussd.contains("#") && ussd.length >= 5) {
+            PhoneDialer.getInstance(context)
+                .dial(ussd) {
+                    when (it) {
+                        true -> Unit//Toast.makeText(context, "USSD dialled successfully", Toast.LENGTH_SHORT).show()
+                        false -> Toast.makeText(context, "Sorry, Unable to perform the operation", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } else {
+            manageInvalidCode()
+        }
+    }
+
     Surface(contentColor = Color.White) {
         Column(
             modifier = Modifier
@@ -87,6 +111,17 @@ fun QuickDialingView(navController: NavHostController) {
 
             Spacer(modifier = Modifier.weight(1f))
 
+            AnimatedVisibility(visible = showInValidMsg) {
+                LaunchedEffect(true) {
+                    delay(2000) // 2000 milliseconds delay
+                    showInValidMsg = false
+                }
+                Text(
+                    "Invalid code. Check it and try again.",
+                    color = Color.Red
+                )
+            }
+
             Text(
                 text = composedCode,
                 style = TextStyle(
@@ -103,14 +138,14 @@ fun QuickDialingView(navController: NavHostController) {
             Spacer(modifier = Modifier.weight(1f))
 
             PinView(
-                isFullMode = false,
+                isFullMode = true,
                 showDeleteBtn = false,
                 btnSize = 70f,
                 btnColors = ButtonDefaults.outlinedButtonColors(
                     backgroundColor = Color.Gray.copy(0.4f),
                     contentColor = Color.White
                 ),
-                onEditChanged = { codeChanged(it) }
+                onEditChanged = { handleNewPinInput(it) }
             )
 
             Spacer(Modifier.padding(vertical = 20.dp))
@@ -145,7 +180,7 @@ fun QuickDialingView(navController: NavHostController) {
                     if (composedCode.isNotEmpty()) {
                         OutlinedButton(
                             onClick = {
-                                codeChanged("X")
+                                handleNewPinInput("X")
                             },
                             modifier = Modifier
                                 .size(30.dp)
@@ -166,8 +201,8 @@ fun QuickDialingView(navController: NavHostController) {
                 }
 
                 OutlinedButton(
-                    onClick = { dialCode() },
-                    modifier = Modifier.size(55.dp),
+                    onClick = { performQuickDial(context, composedCode) },
+                    modifier = Modifier.size(65.dp),
                     shape = CircleShape,
                     border = null,
                     contentPadding = PaddingValues(0.dp),
@@ -176,7 +211,7 @@ fun QuickDialingView(navController: NavHostController) {
                     Icon(
                         Icons.Default.Call,
                         contentDescription = "Dial icon",
-                        Modifier.size(30.dp)
+                        Modifier.size(40.dp)
                     )
                 }
             }
