@@ -35,7 +35,7 @@ fun NavGraph(navController: NavHostController) {
 
         addSettingsScreen(navController, this)
 
-        addAboutScreen(this)
+        addAboutScreen(navController, this)
     }
 }
 
@@ -77,9 +77,16 @@ private fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     }
 }
 
-private fun addAboutScreen(navGraphBuilder: NavGraphBuilder) {
+private fun addAboutScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder
+) {
     navGraphBuilder.composable(route = NavRoute.AboutApp.path) {
-        AboutScreen(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
+        AboutScreen(
+            navController,
+            BuildConfig.VERSION_NAME,
+            BuildConfig.VERSION_CODE
+        )
     }
 }
 
