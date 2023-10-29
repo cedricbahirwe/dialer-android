@@ -88,7 +88,7 @@ fun DashBoardContainer(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val showWelcomeState = viewModel.showWelcomeState.collectAsState(initial = true)
+    val showWelcomeState = viewModel.showWelcomeState.collectAsState(initial = false)
 
     BackHandler(purchaseSheetState.isVisible) {
         coroutineScope.launch { purchaseSheetState.hide() }
