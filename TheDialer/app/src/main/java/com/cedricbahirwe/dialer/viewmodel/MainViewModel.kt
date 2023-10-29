@@ -28,9 +28,11 @@ open class MainViewModel(
     context: Context,
     private val settings: AppSettingsRepository
 ): ViewModel() {
+
     private val phoneDialer = PhoneDialer.getInstance(context)
 
     val biometricsState = settings.getBiometrics
+    val showWelcomeState = settings.showWelcomeView
     val getCodePin = settings.getCodePin
     val allUSSDCodes = settings.getUSSDCodes
 
@@ -39,6 +41,12 @@ open class MainViewModel(
 
     val hasValidAmount: Boolean get() = _uiState.value.amount > 0
     val isPinCodeValid: Boolean get() = _uiState.value.pin.length == 5
+
+    fun finishOnBoarding() {
+        viewModelScope.launch {
+            saveWelcomeStatus(false)
+        }
+    }
 
     fun shouldShowDeleteBtn() : Boolean {
         return when (_uiState.value.editedField) {
@@ -115,6 +123,13 @@ open class MainViewModel(
             throw  e
         }
     }
+
+    fun saveRecent() {
+        viewModelScope.launch {
+            val purchase = PurchaseDetailModel(100)
+            settings.saveRecentCode(RecentDialCode(detail = purchase))
+        }
+    }
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
 
@@ -126,7 +141,7 @@ open class MainViewModel(
                         it.copy(amount = 0)
                     }
                 } else if (failure != null) {
-                    println(failure.message)
+                    println("Failure here ${failure.message}")
 //                    Toast.makeText("", Toast.LENGTH_SHORT)
                 }
             }
@@ -189,8 +204,8 @@ open class MainViewModel(
         settings.saveCodePin(codePin)
     }
 
-    suspend fun saveBiometricsStatus(newValue: Boolean) {
-        settings.saveBiometricsStatus(newValue)
+    private suspend fun saveWelcomeStatus(newValue: Boolean) {
+        settings.saveWelcomeStatus(newValue)
     }
 
     suspend fun removeAllUSSDCodes() {
@@ -203,17 +218,6 @@ open class MainViewModel(
             it.copy(pin = "")
         }
     }
-
-
-
-//    private fun shareLink(context: Context, link: String) {
-//        val intent = Intent(Intent.ACTION_SEND).apply {
-//            type = "text/plain"
-//            putExtra(Intent.EXTRA_TEXT, link)
-//        }
-//
-//        context.startActivity(Intent.createChooser(intent, "Share Link"))
-//    }
 }
 
 class MainViewModelFactory(

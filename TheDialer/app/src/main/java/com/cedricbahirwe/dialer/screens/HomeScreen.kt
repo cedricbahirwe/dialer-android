@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -86,6 +88,8 @@ fun DashBoardContainer(
 
     val coroutineScope = rememberCoroutineScope()
 
+    val showWelcomeState = viewModel.showWelcomeState.collectAsState(initial = false)
+
     BackHandler(purchaseSheetState.isVisible) {
         coroutineScope.launch { purchaseSheetState.hide() }
     }
@@ -109,100 +113,112 @@ fun DashBoardContainer(
         sheetShape = RoundedCornerShape(15.dp)
     ) {
 
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colors.background)
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.SpaceBetween
+        Box {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colors.background)
+                    .fillMaxWidth()
+                    .padding(10.dp)
             ) {
-                TitleView("Dialer")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TitleView("Dialer")
 
-                IconButton(onClick = {
-                    navController.navigate(NavRoute.Settings.path)
-                }) {
-                    Icon(
-                        Icons.Filled.Settings,
-                        "backIcon",
-                        tint = AccentBlue
-                    )
-                }
-            }
-
-            val itemModifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp)
-                .weight(1f)
-                .align(Alignment.Start)
-                .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
-                .background(MaterialTheme.colors.background)
-                .padding(10.dp)
-            Row {
-                DashBoardItem(R.drawable.wallet_pass, stringResource(R.string.buy_airtime), modifier = itemModifier) {
-                    coroutineScope.launch {
-                        isMySpaceFlowActive.value = false
-                        purchaseSheetState.show()
+                    IconButton(onClick = {
+                        navController.navigate(NavRoute.Settings.path)
+                    }) {
+                        Icon(
+                            Icons.Filled.Settings,
+                            "backIcon",
+                            tint = AccentBlue
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.width(16.dp))
-                DashBoardItem(
-                    R.drawable.paperplane_circle,
-                    stringResource(R.string.transfer_pay),
-                    modifier = itemModifier
-                ) {
-                    navController.navigate(NavRoute.Send.path)
-                }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                DashBoardItem(
-                    R.drawable.clock_arrow_circlepath,
-                    stringResource(R.string.common_history),
-                    modifier = itemModifier
-                ) {
-                    navController.navigate(NavRoute.History.path)
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                DashBoardItem(
-                    R.drawable.wrench_and_screwdriver,
-                    stringResource(R.string.my_space),
-                    modifier = itemModifier
-                ) {
-                    coroutineScope.launch {
-                        isMySpaceFlowActive.value = true
-                        mySpaceSheetState.show()
+                val itemModifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp)
+                    .weight(1f)
+                    .align(Alignment.Start)
+                    .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
+                    .background(MaterialTheme.colors.background)
+                    .padding(10.dp)
+                Row {
+                    DashBoardItem(
+                        R.drawable.wallet_pass,
+                        stringResource(R.string.buy_airtime),
+                        modifier = itemModifier
+                    ) {
+                        coroutineScope.launch {
+                            isMySpaceFlowActive.value = false
+                            purchaseSheetState.show()
+                        }
                     }
-
+                    Spacer(modifier = Modifier.width(16.dp))
+                    DashBoardItem(
+                        R.drawable.paperplane_circle,
+                        stringResource(R.string.transfer_pay),
+                        modifier = itemModifier
+                    ) {
+                        navController.navigate(NavRoute.Send.path)
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.weight(1.0f))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                Button(
-                    onClick = {
-                        navController.navigate(NavRoute.QuickDialing.path)
-                    },
-                    enabled = true,
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MainRed,
-                        contentColor = Color.White
-                    ),
-                ) {
-                    Icon(
-                        Icons.Rounded.AddCircle,
-                        contentDescription = stringResource(R.string.quick_dial_icon)
-                    )
-                    Text(stringResource(R.string.quick_dial), Modifier.padding(start = 10.dp))
+                Row {
+                    DashBoardItem(
+                        R.drawable.clock_arrow_circlepath,
+                        stringResource(R.string.common_history),
+                        modifier = itemModifier
+                    ) {
+                        navController.navigate(NavRoute.History.path)
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    DashBoardItem(
+                        R.drawable.wrench_and_screwdriver,
+                        stringResource(R.string.my_space),
+                        modifier = itemModifier
+                    ) {
+                        coroutineScope.launch {
+                            isMySpaceFlowActive.value = true
+                            mySpaceSheetState.show()
+                        }
+
+                    }
                 }
+
                 Spacer(modifier = Modifier.weight(1.0f))
 
+                Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Button(
+                        onClick = {
+                            navController.navigate(NavRoute.QuickDialing.path)
+                        },
+                        enabled = true,
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MainRed,
+                            contentColor = Color.White
+                        ),
+                    ) {
+                        Icon(
+                            Icons.Rounded.AddCircle,
+                            contentDescription = stringResource(R.string.quick_dial_icon)
+                        )
+                        Text(stringResource(R.string.quick_dial), Modifier.padding(start = 10.dp))
+                    }
+                    Spacer(modifier = Modifier.weight(1.0f))
+
+                }
+            }
+
+            if (showWelcomeState.value) {
+                WhatsNewScreen(onContinueClicked = {
+                    viewModel.finishOnBoarding()
+                })
             }
         }
     }

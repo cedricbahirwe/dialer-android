@@ -1,11 +1,14 @@
 package com.cedricbahirwe.dialer
 
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
+import androidx.navigation.compose.rememberNavController
 import androidx.test.runner.AndroidJUnitRunner
 import com.cedricbahirwe.dialer.screens.DashBoardContainer
+import com.cedricbahirwe.dialer.screens.TransferView
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import org.junit.Rule
 import org.junit.Test
@@ -15,17 +18,17 @@ class DialerUITests : AndroidJUnitRunner() {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun dial_ussd() {
+    fun testDialUSSD() {
         composeTestRule.setContent {
             DialerTheme {
-                FieldsContainer()
+                TransferView()
             }
         }
+        val dialButton = composeTestRule.onNodeWithText("Dial USSD")
+        dialButton.assertIsNotEnabled()
         composeTestRule.onNodeWithText("Amount").performTextInput("1000")
-        composeTestRule.onNodeWithText("Phone Number").performTextInput("0782628511")
-        composeTestRule.onNodeWithText("Valid Input").assertExists(
-            "No node with this text was found."
-        )
+        composeTestRule.onNodeWithText("Merchant Code").performTextInput("12345")
+        dialButton.assertIsEnabled()
     }
 
     @Test
@@ -40,20 +43,12 @@ class DialerUITests : AndroidJUnitRunner() {
         composeTestRule.onNodeWithText("Transfer/Pay").assertExists()
         composeTestRule.onNodeWithText("History").assertExists()
         composeTestRule.onNodeWithText("My Space").assertExists()
-
-    }
-
-    @Test
-    fun testDialButtonDisplay() {
-        loadHomeContent()
-        composeTestRule.onNodeWithText("Quick Dial").assertExists()
-        composeTestRule.onNodeWithText("Quick Dial").assertIsNotEnabled()
     }
 
     private fun loadHomeContent() {
         composeTestRule.setContent {
             DialerTheme {
-                DashBoardContainer()
+                DashBoardContainer(navController = rememberNavController())
             }
         }
     }

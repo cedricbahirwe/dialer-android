@@ -78,19 +78,38 @@ fun HistoryView(
                         .padding(10.dp)
                 ) {
                     TitleView(stringResource(R.string.common_history))
-                    LazyColumn(
-                        Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colors.surface)
-                            .padding(horizontal = 10.dp)
-                    ) {
-                        items(recentCodes.value) { code ->
-                            HistoryRow(code = code) {
-                                viewModel.performRecentDialing(it)
-                            }
-                            if (code != recentCodes.value.last()) {
-                                Divider(Modifier.padding(start = 30.dp))
+
+                    if (recentCodes.value.isEmpty()) {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxSize()
+
+                        ) {
+                            Text("No History Yet",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text("Come back later.",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(MaterialTheme.colors.surface)
+                                .padding(horizontal = 10.dp)
+                        ) {
+                            items(recentCodes.value) { code ->
+                                HistoryRow(code = code) {
+                                    viewModel.performRecentDialing(it)
+                                }
+                                if (code != recentCodes.value.last()) {
+                                    Divider(Modifier.padding(start = 30.dp))
+                                }
                             }
                         }
                     }

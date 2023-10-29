@@ -13,9 +13,8 @@ import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.USSDCode
 import com.cedricbahirwe.dialer.utilities.LocalKeys
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.flow.singleOrNull
 
 private typealias RecentCodes = List<RecentDialCode>
 private typealias USSDCodes = List<USSDCode>
@@ -34,6 +33,10 @@ class AppSettingsRepository private constructor(context: Context) {
         if (item.isNullOrEmpty()) null else CodePin(item)
     }
 
+    val showWelcomeView: Flow<Boolean> = context.dataStore.data.map {
+        it[SHOW_WELCOME_VIEW] ?: true
+    }
+
 //    val getSyncDate: Flow<String> = context.dataStore.data.map {
 //        it[SYNC_DATE] ?: ""
 //    }
@@ -50,6 +53,12 @@ class AppSettingsRepository private constructor(context: Context) {
     suspend fun saveBiometricsStatus(status: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[ALLOW_BIOMETRICS] = status
+        }
+    }
+
+    suspend fun saveWelcomeStatus(status: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[SHOW_WELCOME_VIEW] = status
         }
     }
 
@@ -111,21 +120,21 @@ class AppSettingsRepository private constructor(context: Context) {
 //        }
 //    }
 
-    // Warning: Weird logic requires update
     suspend fun saveRecentCode(code: RecentDialCode) {
-        context.dataStore.edit {
-            var itemToUpdate = getRecentCodes
-                .map { set -> set.find { item -> item.detail.amount == code.detail.amount } }
-                .singleOrNull()
+        context.dataStore.edit { preferences ->
+            val recentCodes = getRecentCodes.firstOrNull() ?: emptyList()
+            val indexToUpdate = recentCodes.indexOfFirst { it.detail.amount == code.detail.amount }
 
-            if (itemToUpdate == null) {
-                itemToUpdate = code
+            val resultItems: List<RecentDialCode> = if (indexToUpdate == -1) {
+                recentCodes + code
             } else {
-                itemToUpdate.count += 1
+                val items = recentCodes.toMutableList()
+                items[indexToUpdate].count += 1
+                items.toList()
             }
-            val resultItems = getRecentCodes.single() + itemToUpdate
-            val resultItemsSet = resultItems.map { item -> DialerSerializer.toJson(item) }.toSet()
-            it[RECENT_CODES] = resultItemsSet
+
+            val resultItemsSet = resultItems.map { DialerSerializer.toJson(it) }.toSet()
+            preferences[RECENT_CODES] = resultItemsSet
         }
     }
     suspend fun saveRecentCodes(codes: RecentCodes) {
@@ -140,11 +149,11 @@ class AppSettingsRepository private constructor(context: Context) {
 //        }
 //    }
 
-    suspend fun saveUSSDCodes(ussds: USSDCodes) {
-        context.dataStore.edit {
-            it[ALL_USSD_CODES] = ussds.map { item -> item.toString() }.toSet()
-        }
-    }
+//    suspend fun saveUSSDCodes(ussds: USSDCodes) {
+//        context.dataStore.edit {
+//            it[ALL_USSD_CODES] = ussds.map { item -> item.toString() }.toSet()
+//        }
+//    }
 
     companion object {
         @SuppressLint("StaticFieldLeak")
@@ -159,6 +168,7 @@ class AppSettingsRepository private constructor(context: Context) {
         private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.customUSSDCodes)
         private  val RECENT_CODES = stringSetPreferencesKey(LocalKeys.recentCodes)
 
+        private val SHOW_WELCOME_VIEW = booleanPreferencesKey(LocalKeys.showWelcomeView)
 //        const val MAX_DAYS_BEFORE_SYNC = 30
 
         fun getInstance(context: Context): AppSettingsRepository {

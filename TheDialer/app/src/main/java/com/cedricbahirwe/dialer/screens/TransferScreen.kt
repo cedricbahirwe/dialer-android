@@ -14,14 +14,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,14 +40,17 @@ import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
-import com.cedricbahirwe.dialer.viewmodel.MainViewModelFactory
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
+import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
 @Preview(showBackground = true)
 @Composable
 fun TransferView(
     viewModel: TransferViewModel = viewModel(
-        factory = MainViewModelFactory(LocalContext.current, AppSettingsRepository.getInstance(LocalContext.current))
+        factory = TransferViewModelFactory(
+            LocalContext.current,
+            AppSettingsRepository.getInstance(LocalContext.current)
+        )
     )
 ) {
     val focusManager = LocalFocusManager.current
@@ -197,31 +197,33 @@ fun TransferView(
             )
 
             Column(Modifier.padding(vertical = 16.dp)) {
-                AnimatedVisibility(
-                    visible = !isMerchantTransfer
-                ) {
-                    Button(
-                        onClick = {},
-                        Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White,
-                            contentColor = AccentBlue
-                        ),
-                        elevation = btnElevation,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Icon(
-                            Icons.Rounded.Person,
-                            contentDescription = "Pick Contact icon"
-                        )
-                        Text(
-                            stringResource(R.string.pick_contact_text),
-                            Modifier.padding(start = 10.dp)
-                        )
-                    }
-                }
+                // TODO: Waiting for future version?
+//                AnimatedVisibility(
+//                    visible = !isMerchantTransfer
+//                ) {
+//                    Button(
+//                        onClick = {},
+//                        Modifier
+//                            .fillMaxWidth()
+//                            .height(48.dp),
+//                        colors = ButtonDefaults.buttonColors(
+//                            backgroundColor = Color.White,
+//                            contentColor = AccentBlue
+//                        ),
+//                        elevation = btnElevation,
+//                        shape = RoundedCornerShape(8.dp)
+//                    ) {
+//                        Icon(
+//                            Icons.Rounded.Person,
+//                            contentDescription = "Pick Contact icon"
+//                        )
+//                        Text(
+//                            stringResource(R.string.pick_contact_text),
+//                            Modifier.padding(start = 10.dp)
+//                        )
+//                    }
+//                }
+
 
                 Spacer(Modifier.padding(10.dp))
 

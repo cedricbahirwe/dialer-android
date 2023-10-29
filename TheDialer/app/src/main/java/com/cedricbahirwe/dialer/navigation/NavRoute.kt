@@ -1,18 +1,18 @@
 package com.cedricbahirwe.dialer.navigation
 
 
-sealed class NavRoute(val path: String) {
-    object HomeScreen : NavRoute("Home Screen")
+enum class NavRoute(val path: String) {
+    HomeScreen("Home Screen"),
 
-    object AirtimePurchase : NavRoute("Airtime Purchase")
+    AirtimePurchase("Airtime Purchase"),
 
-    object Send : NavRoute("Send")
+    Send("Send"),
 
-    object History : NavRoute("History")
+    History("History"),
 
-    object MySpace: NavRoute("My Space")
+    QuickDialing("Quick Dialing"),
 
-    object QuickDialing: NavRoute("Quick Dialing")
+    Settings("Settings Screen"),
 
-    object Settings : NavRoute("Settings Screen")
+     AboutApp("About")
 }
