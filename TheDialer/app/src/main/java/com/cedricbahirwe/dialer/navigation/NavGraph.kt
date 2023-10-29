@@ -6,9 +6,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.cedricbahirwe.dialer.BuildConfig
 import com.cedricbahirwe.dialer.QuickDialingView
+import com.cedricbahirwe.dialer.screens.AboutScreen
 import com.cedricbahirwe.dialer.screens.DashBoardContainer
-import com.cedricbahirwe.dialer.screens.*
+import com.cedricbahirwe.dialer.screens.HistoryView
+import com.cedricbahirwe.dialer.screens.PurchaseDetailView
+import com.cedricbahirwe.dialer.screens.SettingsScreen
+import com.cedricbahirwe.dialer.screens.TransferView
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -29,6 +34,8 @@ fun NavGraph(navController: NavHostController) {
         addQuickDialingScreen(navController, this)
 
         addSettingsScreen(navController, this)
+
+        addAboutScreen(this)
     }
 }
 
@@ -67,6 +74,12 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
 private fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         TransferView()
+    }
+}
+
+private fun addAboutScreen(navGraphBuilder: NavGraphBuilder) {
+    navGraphBuilder.composable(route = NavRoute.AboutApp.path) {
+        AboutScreen(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
     }
 }
 

@@ -10,9 +10,11 @@ sealed class NavRoute(val path: String) {
 
     object History : NavRoute("History")
 
-    object MySpace: NavRoute("My Space")
+//    object MySpace: NavRoute("My Space")
 
     object QuickDialing: NavRoute("Quick Dialing")
 
     object Settings : NavRoute("Settings Screen")
+
+    object  AboutApp: NavRoute("About")
 }

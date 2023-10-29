@@ -58,7 +58,7 @@ fun WhatsNewScreen(
             item {
                 Column(
                     modifier = Modifier.padding(top = 20.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
@@ -71,7 +71,7 @@ fun WhatsNewScreen(
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "Dialer",
+                            text = stringResource(R.string.app_name),
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                         )

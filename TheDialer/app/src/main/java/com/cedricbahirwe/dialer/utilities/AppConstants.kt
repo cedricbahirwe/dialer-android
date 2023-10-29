@@ -8,4 +8,6 @@ object AppConstants {
 
 object AppLinks {
     const val privacyPolicy = "https://cedricbahirwe.github.io/html/privacy.html"
+    const val cedricGithub = "https://github.com/cedricbahirwe"
+    const val estherGithub = "https://github.com/esthcarelle"
 }

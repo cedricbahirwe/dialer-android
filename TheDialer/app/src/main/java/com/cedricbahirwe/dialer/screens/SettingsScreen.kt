@@ -53,6 +53,7 @@ import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.data.SettingsOption
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import com.cedricbahirwe.dialer.navigation.NavRoute
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.utilities.AppLinks
@@ -156,7 +157,9 @@ fun SettingsScreen(
             }
 
             Section(R.string.common_colophon) {
-                SettingsItemRow(SettingsOption.ABOUT) {}
+                SettingsItemRow(SettingsOption.ABOUT) {
+                    navController.navigate(NavRoute.AboutApp.path)
+                }
                 Divider(startIndent = 60.dp)
                 SettingsItemRow(SettingsOption.REVIEW)
             }
@@ -277,7 +280,7 @@ fun TermsAndConditions() {
     }
 }
 
-private fun openWebLink(context: Context, url: String) {
+fun openWebLink(context: Context, url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     context.startActivity(intent)
 }
