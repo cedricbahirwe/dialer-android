@@ -77,7 +77,7 @@ fun AboutScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.help_more)) },
+                title = { Text(stringResource(R.string.about)) },
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.navigateUp()
@@ -88,9 +88,6 @@ fun AboutScreen(
                 backgroundColor = MaterialTheme.colors.background,
                 elevation = 10.dp
             )
-        },
-        bottomBar = {
-            TermsAndConditions()
         }
     ) {
         Column(

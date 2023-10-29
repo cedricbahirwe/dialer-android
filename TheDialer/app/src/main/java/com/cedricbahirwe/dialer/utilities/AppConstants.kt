@@ -10,4 +10,6 @@ object AppLinks {
     const val privacyPolicy = "https://cedricbahirwe.github.io/html/privacy.html"
     const val cedricGithub = "https://github.com/cedricbahirwe"
     const val estherGithub = "https://github.com/esthcarelle"
+    const val dialerTwitter =  "https://twitter.com/TheDialerApp"
+    const val emailLink = "mailto:abc.incs.001@gmail.com"
 }

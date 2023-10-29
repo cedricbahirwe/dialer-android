@@ -65,6 +65,7 @@
     <string name="pin_not_covered">Your pin will not be saved unless you save it.</string>
     <string name="toast_ussd_permission_is_not_granted">USSD Permission is not granted</string>
     <string name="common_continue">Continue</string>
+    <string name="about">About</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>

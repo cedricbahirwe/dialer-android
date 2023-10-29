@@ -3,12 +3,12 @@ package com.cedricbahirwe.dialer.screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +25,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -74,6 +72,7 @@ fun SettingsScreen(
     val allUSSDCodes = viewModel.allUSSDCodes.collectAsState(initial = emptySet())
 
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -109,26 +108,28 @@ fun SettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             Section(R.string.common_general) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier.weight(1f)) {
-                        SettingsItemRow(SettingsOption.BIOMETRICS)
-                    }
-                    Switch(
-                        checked = biometricsState.value,
-                        onCheckedChange = { newValue ->
-                            coroutineScope.launch {
-                                viewModel.saveBiometricsStatus(newValue)
-                            }
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = Color.Green,
-                            uncheckedThumbColor = Color.White,
-                            checkedTrackColor = Color.Gray,
-                            uncheckedTrackColor = Color.LightGray
-                        )
-                    )
-                }
+                // TODO: Waiting for future version?
+
+//                Row(verticalAlignment = Alignment.CenterVertically) {
+//                    Box(
+//                        modifier = Modifier.weight(1f)) {
+//                        SettingsItemRow(SettingsOption.BIOMETRICS)
+//                    }
+//                    Switch(
+//                        checked = biometricsState.value,
+//                        onCheckedChange = { newValue ->
+//                            coroutineScope.launch {
+//                                viewModel.saveBiometricsStatus(newValue)
+//                            }
+//                        },
+//                        colors = SwitchDefaults.colors(
+//                            checkedThumbColor = Color.Green,
+//                            uncheckedThumbColor = Color.White,
+//                            checkedTrackColor = Color.Gray,
+//                            uncheckedTrackColor = Color.LightGray
+//                        )
+//                    )
+//                }
 
                 AnimatedVisibility(visible = codePin.value != null) {
                     Divider(startIndent = 60.dp)
@@ -136,24 +137,29 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             println("Pin is ${codePin.value!!.asString}")
                             viewModel.removePinCode()
+                            Toast.makeText(context, "Your PIN has been deleve.", Toast.LENGTH_LONG).show()
                         }
                     }
                 }
 
-                AnimatedVisibility(visible = allUSSDCodes.value.isNotEmpty()) {
-                    Divider(startIndent = 60.dp)
-                    SettingsItemRow(SettingsOption.DELETE_ALL_USSD) {
-                        coroutineScope.launch {
-                            viewModel.removeAllUSSDCodes()
-                        }
+
+                Divider(startIndent = 60.dp)
+                SettingsItemRow(SettingsOption.DELETE_ALL_USSD) {
+                    coroutineScope.launch {
+                        viewModel.removeAllUSSDCodes()
+                        Toast.makeText(context, "Recent USSD Codes have been deleted.", Toast.LENGTH_LONG).show()
                     }
                 }
             }
 
             Section(R.string.reach_out) {
-                SettingsItemRow(SettingsOption.CONTACT_US) {}
+                SettingsItemRow(SettingsOption.CONTACT_US) {
+                    openWebLink(context, AppLinks.emailLink)
+                }
                 Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.TWEET_US) {}
+                SettingsItemRow(SettingsOption.TWEET_US) {
+                    openWebLink(context, AppLinks.dialerTwitter)
+                }
             }
 
             Section(R.string.common_colophon) {
@@ -226,7 +232,6 @@ private fun SettingsItemRow(
         )
 
         Column(
-//            modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center
         ) {
             Text(
