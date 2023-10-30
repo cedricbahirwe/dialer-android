@@ -43,7 +43,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
-import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
@@ -54,8 +53,7 @@ import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 fun TransferView(
     viewModel: TransferViewModel = viewModel(
         factory = TransferViewModelFactory(
-            LocalContext.current,
-            AppSettingsRepository.getInstance(LocalContext.current)
+            LocalContext.current
         )
     )
 ) {

@@ -7,7 +7,6 @@ import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.data.DialerQuickCode
 import com.cedricbahirwe.dialer.data.Transaction
 import com.cedricbahirwe.dialer.data.TransactionType
-import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.service.AnalyticsTracker
 import com.cedricbahirwe.dialer.service.MixPanelTracker
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +16,7 @@ import kotlinx.coroutines.flow.update
 
 
 class TransferViewModel(
-    context: Context,
-    private val settings: AppSettingsRepository
+    context: Context
 ): ViewModel() {
     private val _uiState = MutableStateFlow(Transaction("", "", TransactionType.MERCHANT))
     val uiState: StateFlow<Transaction> = _uiState.asStateFlow()
@@ -88,14 +86,13 @@ class TransferViewModel(
 }
 
 class TransferViewModelFactory(
-    private val context: Context,
-    private val settingsRepository: AppSettingsRepository
+    private val context: Context
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TransferViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return TransferViewModel(context, settingsRepository) as T
+            return TransferViewModel(context) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -7,8 +7,6 @@ enum class AppAnalyticsEventType : AnalyticsEventType {
     HISTORY_OPENED,
     MY_SPACE_OPENED,
     TRANSACTION;
-//    MERCHANT_CODE_SELECTED;
-
     override val stringValue: String
         get() = name.lowercase().replace("_", "")
 }
