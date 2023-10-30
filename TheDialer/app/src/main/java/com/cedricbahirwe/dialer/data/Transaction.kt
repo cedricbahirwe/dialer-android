@@ -1,7 +1,7 @@
 package com.cedricbahirwe.dialer.data
 
 import com.cedricbahirwe.dialer.data.protocol.Identifiable
-import java.util.*
+import java.util.Date
 
 
 data class Transaction(
@@ -34,7 +34,7 @@ data class Transaction(
         }
 
     val fullCode: String
-        get() = "*182*1*1*$trailingCode#"
+        get() = if (isMerchantTransfer) "*182*8*1*$trailingCode#" else "*182*1*1*$trailingCode#"
 
     val isValid: Boolean
         get() = when (type) {

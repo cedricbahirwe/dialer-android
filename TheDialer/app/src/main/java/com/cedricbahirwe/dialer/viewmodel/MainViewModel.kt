@@ -166,9 +166,7 @@ open class MainViewModel(
 //        return purchase.getFullUSSDCode(getCodePin())
 //    }
 
-//    private fun performQuickDial(quickCode: DialerQuickCode) {
-//        phoneDialer.dial(quickCode.ussd)
-//    }
+
 
     /// Perform a quick dialing from the `History View Row.`
     /// - Parameter recentCode: the row code to be performed.

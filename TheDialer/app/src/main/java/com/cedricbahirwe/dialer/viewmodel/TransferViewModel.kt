@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.cedricbahirwe.dialer.data.Contact
+import com.cedricbahirwe.dialer.data.DialerQuickCode
 import com.cedricbahirwe.dialer.data.Transaction
 import com.cedricbahirwe.dialer.data.TransactionType
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
@@ -18,7 +19,8 @@ class TransferViewModel(
 ): ViewModel() {
     private val _uiState = MutableStateFlow(Transaction("", "", TransactionType.MERCHANT))
     val uiState: StateFlow<Transaction> = _uiState.asStateFlow()
-    
+
+    private val phoneDialer = PhoneDialer.getInstance(context)
     // TODO: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
     private var selectedContact: Contact? = null
@@ -71,8 +73,12 @@ class TransferViewModel(
     fun transferMoney() {
         if (!_uiState.value.isValid) return
         println("Transaction triggered ${_uiState.value.fullCode}")
-        // TODO: Perform the money transfer (transaction service...?!)
+        performQuickDial(DialerQuickCode.Other(_uiState.value.fullCode))
         // TODO: Log to analytics...
+    }
+
+    private fun performQuickDial(quickCode: DialerQuickCode) {
+        phoneDialer.dial(quickCode.ussd)
     }
 }
 
