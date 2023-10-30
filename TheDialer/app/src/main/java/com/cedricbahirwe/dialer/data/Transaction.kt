@@ -13,7 +13,7 @@ data class Transaction(
     private val trailingCode: String
         get() = number.replace(" ", "") + "*" + amount
 
-    private val doubleAmount: Double
+    val doubleAmount: Double
         get() = amount.toDoubleOrNull() ?: 0.0
 
     val estimatedFee: Int

@@ -8,10 +8,13 @@ import com.cedricbahirwe.dialer.data.DialerQuickCode
 import com.cedricbahirwe.dialer.data.Transaction
 import com.cedricbahirwe.dialer.data.TransactionType
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import com.cedricbahirwe.dialer.service.AnalyticsTracker
+import com.cedricbahirwe.dialer.service.MixPanelTracker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+
 
 class TransferViewModel(
     context: Context,
@@ -24,6 +27,8 @@ class TransferViewModel(
     // TODO: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
     private var selectedContact: Contact? = null
+
+    private val tracker: AnalyticsTracker = MixPanelTracker.getInstance(context)
 
     fun switchTransactionType() {
         _uiState.update { currentState ->
@@ -74,7 +79,7 @@ class TransferViewModel(
         if (!_uiState.value.isValid) return
         println("Transaction triggered ${_uiState.value.fullCode}")
         performQuickDial(DialerQuickCode.Other(_uiState.value.fullCode))
-        // TODO: Log to analytics...
+        tracker.logTransaction(_uiState.value)
     }
 
     private fun performQuickDial(quickCode: DialerQuickCode) {
