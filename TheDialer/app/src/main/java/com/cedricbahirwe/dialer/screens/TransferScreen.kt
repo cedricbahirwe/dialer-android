@@ -20,15 +20,20 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,22 +43,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
-import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview(showBackground = true)
 @Composable
 fun TransferView(
     viewModel: TransferViewModel = viewModel(
         factory = TransferViewModelFactory(
-            LocalContext.current,
-            AppSettingsRepository.getInstance(LocalContext.current)
+            LocalContext.current
         )
     )
 ) {
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -71,6 +77,13 @@ fun TransferView(
         stringResource(R.string.beyond_range_fee_msg)
     } else {
         stringResource(R.string.estimated_fee_message, uiState.estimatedFee)
+    }
+
+    DisposableEffect(Unit) {
+        focusRequester.requestFocus()
+        onDispose {
+            keyboardController?.hide()
+        }
     }
 
     Box {
@@ -128,7 +141,7 @@ fun TransferView(
                     onValueChange = {
                         viewModel.handleTransactionAmountChange(it)
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                     label = {
                         Text(stringResource(R.string.common_amount))
                     },

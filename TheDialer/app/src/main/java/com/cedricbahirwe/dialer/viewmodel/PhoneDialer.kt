@@ -62,7 +62,7 @@ fun call(context: Context, ussd: String, simSlotIndex: Int?) {
     simSlotIndex?.let {
         context.startActivity(
             getActionCallIntent(
-                context, Uri.parse("tel:$ussd"),
+                context, Uri.parse("tel:${Uri.encode(ussd)}"),
                 simSlotIndex
             )
         )

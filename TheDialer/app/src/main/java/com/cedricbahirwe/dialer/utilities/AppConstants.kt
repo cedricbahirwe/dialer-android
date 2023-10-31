@@ -3,6 +3,7 @@ package com.cedricbahirwe.dialer.utilities
 object AppConstants {
     // Airtime USSD Dial constants
     const val minAmount = 1
+    const val mixPanelToken = "9363b9aaa8571bcb0c7b69e52861c017"
     val allowedAmountRangeForPin = 10..100
 }
 

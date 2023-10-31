@@ -9,6 +9,9 @@ import com.cedricbahirwe.dialer.data.DialingError
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import com.cedricbahirwe.dialer.service.AnalyticsTracker
+import com.cedricbahirwe.dialer.service.AppAnalyticsEventType
+import com.cedricbahirwe.dialer.service.MixPanelTracker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,6 +33,7 @@ open class MainViewModel(
 ): ViewModel() {
 
     private val phoneDialer = PhoneDialer.getInstance(context)
+    private val tracker: AnalyticsTracker = MixPanelTracker.getInstance(context)
 
     val biometricsState = settings.getBiometrics
     val showWelcomeState = settings.showWelcomeView
@@ -124,12 +128,6 @@ open class MainViewModel(
         }
     }
 
-    fun saveRecent() {
-        viewModelScope.launch {
-            val purchase = PurchaseDetailModel(100)
-            settings.saveRecentCode(RecentDialCode(detail = purchase))
-        }
-    }
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
 
@@ -166,9 +164,7 @@ open class MainViewModel(
 //        return purchase.getFullUSSDCode(getCodePin())
 //    }
 
-//    private fun performQuickDial(quickCode: DialerQuickCode) {
-//        phoneDialer.dial(quickCode.ussd)
-//    }
+
 
     /// Perform a quick dialing from the `History View Row.`
     /// - Parameter recentCode: the row code to be performed.
@@ -217,6 +213,26 @@ open class MainViewModel(
         _uiState.update {
             it.copy(pin = "")
         }
+    }
+
+
+    fun trackAirtimeOpen() {
+        tracker.logEvent(AppAnalyticsEventType.AIRTIME_OPENED)
+    }
+
+    fun trackMySpaceOpened() {
+        tracker.logEvent(AppAnalyticsEventType.MY_SPACE_OPENED)
+    }
+
+    fun trackTransferOpen() {
+        tracker.logEvent(AppAnalyticsEventType.TRANSFER_OPENED)
+    }
+    fun trackSettingsOpen() {
+        tracker.logEvent(AppAnalyticsEventType.SETTINGS_OPENED)
+    }
+
+    fun trackHistoryOpen() {
+        tracker.logEvent(AppAnalyticsEventType.HISTORY_OPENED)
     }
 }
 

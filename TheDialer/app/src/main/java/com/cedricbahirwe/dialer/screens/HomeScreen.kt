@@ -128,6 +128,7 @@ fun DashBoardContainer(
                     TitleView("Dialer")
 
                     IconButton(onClick = {
+                        viewModel.trackSettingsOpen()
                         navController.navigate(NavRoute.Settings.path)
                     }) {
                         Icon(
@@ -152,6 +153,7 @@ fun DashBoardContainer(
                         stringResource(R.string.buy_airtime),
                         modifier = itemModifier
                     ) {
+                        viewModel.trackAirtimeOpen()
                         coroutineScope.launch {
                             isMySpaceFlowActive.value = false
                             purchaseSheetState.show()
@@ -163,6 +165,7 @@ fun DashBoardContainer(
                         stringResource(R.string.transfer_pay),
                         modifier = itemModifier
                     ) {
+                        viewModel.trackTransferOpen()
                         navController.navigate(NavRoute.Send.path)
                     }
                 }
@@ -175,6 +178,7 @@ fun DashBoardContainer(
                         stringResource(R.string.common_history),
                         modifier = itemModifier
                     ) {
+                        viewModel.trackHistoryOpen()
                         navController.navigate(NavRoute.History.path)
                     }
                     Spacer(modifier = Modifier.width(16.dp))
@@ -183,6 +187,7 @@ fun DashBoardContainer(
                         stringResource(R.string.my_space),
                         modifier = itemModifier
                     ) {
+                        viewModel.trackMySpaceOpened()
                         coroutineScope.launch {
                             isMySpaceFlowActive.value = true
                             mySpaceSheetState.show()
