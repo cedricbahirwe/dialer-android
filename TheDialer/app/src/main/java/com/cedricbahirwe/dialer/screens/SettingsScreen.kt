@@ -45,9 +45,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.cedricbahirwe.dialer.BuildConfig
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.data.SettingsOption
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
@@ -67,12 +69,16 @@ fun SettingsScreen(
     )
 ) {
 
-    val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
-    val codePin = viewModel.getCodePin.collectAsState(initial = null)
-//    val allUSSDCodes = viewModel.allUSSDCodes.collectAsState(initial = emptySet())
-
-    val coroutineScope = rememberCoroutineScope()
+//    val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
     val context = LocalContext.current
+    val codePin = viewModel.getCodePin.collectAsState(initial = null)
+    val coroutineScope = rememberCoroutineScope()
+
+//    val reviewManager = remember {
+//        ReviewManagerFactory.create(context)
+//    }
+
+//    val reviewInfo = rememberReviewTask(reviewManager)
 
     Scaffold(
         topBar = {
@@ -167,7 +173,20 @@ fun SettingsScreen(
                     navController.navigate(NavRoute.AboutApp.path)
                 }
                 Divider(startIndent = 60.dp)
-                SettingsItemRow(SettingsOption.REVIEW)
+                SettingsItemRow(SettingsOption.REVIEW) {
+                    val appPackageName = BuildConfig.APPLICATION_ID
+
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName"))
+                        startActivity(context, intent , null)
+                    } catch (e: android.content.ActivityNotFoundException) {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName"))
+                        startActivity(context, intent, null)
+                    }
+//                    reviewInfo?.let {
+//                        reviewManager.launchReviewFlow(context as Activity, reviewInfo)
+//                    } ?: println("Value is null")
+                }
             }
         }
     }
@@ -298,3 +317,18 @@ fun SettingsPreview() {
         SettingsScreen(navController = navController)
     }
 }
+
+//@Composable
+//fun rememberReviewTask(reviewManager: ReviewManager): ReviewInfo? {
+//    val reviewInfo: MutableState<ReviewInfo?> = remember {
+//        mutableStateOf(null)
+//    }
+//
+//    reviewManager.requestReviewFlow().addOnCompleteListener {
+//        if (it.isSuccessful) {
+//            reviewInfo.value = it.result
+//        }
+//    }
+//
+//    return reviewInfo.value
+//}
