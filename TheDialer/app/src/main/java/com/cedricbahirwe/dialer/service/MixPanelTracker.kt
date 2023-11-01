@@ -29,7 +29,6 @@ class MixPanelTracker private constructor(context: Context): AnalyticsTracker {
 
     override fun logEvent(name: AnalyticsEventType, props: JSONObject) {
         mp.track(name.stringValue, props)
-        mp.deviceInfo
     }
 
     override fun logEvent(name: AnalyticsEventType) {
@@ -48,7 +47,6 @@ class MixPanelTracker private constructor(context: Context): AnalyticsTracker {
         props.put("Trans Code", transaction.fullCode)
         props.put("Trans Date", current)
         mp.track(AppAnalyticsEventType.TRANSACTION.stringValue, props)
-        print("Trans Event")
     }
 
     override fun logError(error: Error) {
