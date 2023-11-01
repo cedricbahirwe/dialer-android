@@ -12,6 +12,10 @@
     <!--Required to allow the application to send events to Mixpanel.-->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--Required to allow the In-App Review.-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+
     <!--Optional, but recommended so we can send data intelligently based on network conditions -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
