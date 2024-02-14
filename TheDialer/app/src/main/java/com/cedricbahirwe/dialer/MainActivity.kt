@@ -79,8 +79,8 @@ class MainActivity : ComponentActivity() {
                 cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
 
             // on the below line we are setting values.
-            mainViewModel.contactName = (name)
-            mainViewModel.contactNumber = (number)
+            mainViewModel.setContactName(name)
+            mainViewModel.setContactNumber(number)
         }
     }
 }
