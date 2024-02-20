@@ -47,28 +47,30 @@ class TransferViewModel(
     }
 
     fun handleTransactionNumberChange(value: String) {
-        val filteredValue = value.filter { it.isDigit() }
+        if(value != _uiState.value.number) {
+            val filteredValue = value.filter { it.isDigit() }
 
-        if (_uiState.value.type == TransactionType.MERCHANT) {
-            _uiState.update {
-                it.copy(
-                    number = filteredValue.take(6)
-                )
-            }
-        } else {
-            _uiState.update {
-                it.copy(
-                    number = filteredValue
-                )
-            }
-            val matchedContacts = _uiContacts.value.filter { contact ->
-                contact.phoneNumberList.any { it.equals(filteredValue, ignoreCase = true) }
-            }
-
-            selectedContact = if (matchedContacts.isEmpty()) {
-                Contact("", emptyList())
+            if (_uiState.value.type == TransactionType.MERCHANT) {
+                _uiState.update {
+                    it.copy(
+                        number = filteredValue.take(6)
+                    )
+                }
             } else {
-                matchedContacts.first()
+                _uiState.update {
+                    it.copy(
+                        number = filteredValue
+                    )
+                }
+                val matchedContacts = _uiContacts.value.filter { contact ->
+                    contact.phoneNumberList.any { it.equals(filteredValue, ignoreCase = true) }
+                }
+
+                selectedContact = if (matchedContacts.isEmpty()) {
+                    Contact("", emptyList())
+                } else {
+                    matchedContacts.first()
+                }
             }
         }
     }

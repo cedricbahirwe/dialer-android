@@ -1,5 +1,13 @@
 package com.cedricbahirwe.dialer.screens
 
+import android.Manifest
+import android.app.Activity
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.provider.ContactsContract
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,11 +22,14 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +50,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
@@ -55,17 +69,25 @@ fun TransferView(
         factory = TransferViewModelFactory(
             LocalContext.current
         )
-    )
+    ),
+    contactName: String,
+    contactNumber: String
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val activity = LocalContext.current as Activity
+    val context = LocalContext.current
 
     val uiState by viewModel.uiState.collectAsState()
 
     val isMerchantTransfer = remember(uiState.isMerchantTransfer) {
         uiState.isMerchantTransfer
     }
+
+    viewModel.handleTransactionNumberChange(contactNumber)
+
+    Log.e(TAG, "TransferView: "+contactNumber )
 
     val pageTitle = if (isMerchantTransfer) {
         stringResource(id = R.string.pay_merchant)
@@ -141,7 +163,9 @@ fun TransferView(
                     onValueChange = {
                         viewModel.handleTransactionAmountChange(it)
                     },
-                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
                     label = {
                         Text(stringResource(R.string.common_amount))
                     },
@@ -211,31 +235,42 @@ fun TransferView(
 
             Column(Modifier.padding(vertical = 16.dp)) {
                 // TODO: Waiting for future version?
-//                AnimatedVisibility(
-//                    visible = !isMerchantTransfer
-//                ) {
-//                    Button(
-//                        onClick = {},
-//                        Modifier
-//                            .fillMaxWidth()
-//                            .height(48.dp),
-//                        colors = ButtonDefaults.buttonColors(
-//                            backgroundColor = Color.White,
-//                            contentColor = AccentBlue
-//                        ),
-//                        elevation = btnElevation,
-//                        shape = RoundedCornerShape(8.dp)
-//                    ) {
-//                        Icon(
-//                            Icons.Rounded.Person,
-//                            contentDescription = "Pick Contact icon"
-//                        )
-//                        Text(
-//                            stringResource(R.string.pick_contact_text),
-//                            Modifier.padding(start = 10.dp)
-//                        )
-//                    }
-//                }
+                AnimatedVisibility(
+                    visible = !isMerchantTransfer
+                ) {
+                    Button(
+                        onClick = {
+                            // on below line checking if permission is granted.
+                            if (hasContactPermission(context)) {
+                                // if permission granted open intent to pick contact/
+                                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                                intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                                startActivityForResult(activity, intent, 1, null)
+                            } else {
+                                // if permission not granted requesting permission .
+                                requestContactPermission(context, activity)
+                            }
+                        },
+                        Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.White,
+                            contentColor = AccentBlue
+                        ),
+                        elevation = btnElevation,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Icon(
+                            Icons.Rounded.Person,
+                            contentDescription = "Pick Contact icon"
+                        )
+                        Text(
+                            stringResource(R.string.pick_contact_text),
+                            Modifier.padding(start = 10.dp)
+                        )
+                    }
+                }
 
 
                 Spacer(Modifier.padding(10.dp))
@@ -263,5 +298,22 @@ fun TransferView(
             Spacer(modifier = Modifier.weight(1.0f))
         }
     }
+
 }
+
+// Function to open the contact picker and handle the result
+fun hasContactPermission(context: Context): Boolean {
+    // on below line checking if permission is present or not.
+    return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
+            PackageManager.PERMISSION_GRANTED;
+}
+
+fun requestContactPermission(context: Context, activity: Activity) {
+    // on below line if permission is not granted requesting permissions.
+    if (!hasContactPermission(context)) {
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), 1)
+    }
+}
+
+
 
