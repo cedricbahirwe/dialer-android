@@ -79,7 +79,7 @@ fun PurchaseDetailView(
 
         Spacer(Modifier.padding(bottom = 5.dp))
 
-        Column {
+        Column(Modifier.padding(vertical = 5.dp)) {
             val fieldBorderGradient = remember {
                 Brush.linearGradient(
                     colors = listOf(Color.Green, Color.Blue)
@@ -120,7 +120,7 @@ fun PurchaseDetailView(
                     )
             )
 
-            AnimatedVisibility(visible = codePin.value == null) {
+            AnimatedVisibility(visible = false) {
                 Column {
                     Spacer(Modifier.padding(vertical = 10.dp))
                     Box(

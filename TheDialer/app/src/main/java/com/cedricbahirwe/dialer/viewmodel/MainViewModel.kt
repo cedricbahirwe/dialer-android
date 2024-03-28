@@ -131,6 +131,8 @@ open class MainViewModel(
     fun confirmPurchase() {
         val purchase = PurchaseDetailModel(_uiState.value.amount)
 
+        println("Failure here ${_uiState.value}")
+//        return;
         dialCode(purchase) { success, failure ->
             viewModelScope.launch {
                 if (success != null) {
