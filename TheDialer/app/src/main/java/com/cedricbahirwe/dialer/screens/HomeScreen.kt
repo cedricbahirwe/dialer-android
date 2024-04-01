@@ -156,7 +156,7 @@ fun DashBoardContainer(
                         viewModel.trackAirtimeOpen()
                         coroutineScope.launch {
                             isMySpaceFlowActive.value = false
-                            purchaseSheetState.show()
+                            purchaseSheetState.animateTo(ModalBottomSheetValue.Expanded)
                         }
                     }
                     Spacer(modifier = Modifier.width(16.dp))
