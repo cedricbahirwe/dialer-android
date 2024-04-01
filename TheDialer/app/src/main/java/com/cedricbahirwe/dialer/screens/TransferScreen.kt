@@ -34,7 +34,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -79,15 +81,15 @@ fun TransferView(
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
 
+    var contactNumberState by remember(contactNumber) {
+        mutableStateOf(contactNumber)
+    }
+
     val uiState by viewModel.uiState.collectAsState()
 
     val isMerchantTransfer = remember(uiState.isMerchantTransfer) {
         uiState.isMerchantTransfer
     }
-
-    viewModel.handleTransactionNumberChange(contactNumber)
-
-    Log.e(TAG, "TransferView: "+contactNumber )
 
     val pageTitle = if (isMerchantTransfer) {
         stringResource(id = R.string.pay_merchant)
@@ -118,7 +120,7 @@ fun TransferView(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-            ){
+            ) {
 
                 TitleView(
                     title = pageTitle,
@@ -188,8 +190,9 @@ fun TransferView(
 
                 Spacer(Modifier.padding(vertical = 8.dp))
                 OutlinedTextField(
-                    value = uiState.number,
+                    value = contactNumberState.replace("+","").replace(" ","").trim(),
                     onValueChange = {
+                        contactNumberState = it.trim()
                         viewModel.handleTransactionNumberChange(it)
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -244,7 +247,8 @@ fun TransferView(
                             if (hasContactPermission(context)) {
                                 // if permission granted open intent to pick contact/
                                 val intent = Intent(Intent.ACTION_GET_CONTENT)
-                                intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                                intent.type =
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
                                 startActivityForResult(activity, intent, 1, null)
                             } else {
                                 // if permission not granted requesting permission .
