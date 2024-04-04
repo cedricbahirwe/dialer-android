@@ -1,11 +1,5 @@
 package com.cedricbahirwe.dialer.screens
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.provider.ContactsContract
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -48,11 +42,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
@@ -62,7 +52,6 @@ import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview(showBackground = true)
 @Composable
 fun TransferView(
     viewModel: TransferViewModel = viewModel(
@@ -77,8 +66,6 @@ fun TransferView(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val activity = LocalContext.current as Activity
-    val context = LocalContext.current
 
     var selectedContactNumber by remember(contactNumber) {
         mutableStateOf(contactNumber)
@@ -189,7 +176,7 @@ fun TransferView(
 
                 Spacer(Modifier.padding(vertical = 8.dp))
                 OutlinedTextField(
-                    value = selectedContactNumber.replace("+","").replace(" ","").trim(),
+                    value = selectedContactNumber.replace("+", "").replace(" ", "").trim(),
                     onValueChange = {
                         selectedContactNumber = it
                         viewModel.handleTransactionNumberChange(it)
@@ -242,17 +229,7 @@ fun TransferView(
                 ) {
                     Button(
                         onClick = {
-                            // on below line checking if permission is granted.
-                            if (hasContactPermission(context)) {
-                                // if permission granted open intent to pick contact/
-                                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                                intent.type =
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-                                startActivityForResult(activity, intent, 1, null)
-                            } else {
-                                // if permission not granted requesting permission .
-                                requestContactPermission(context, activity)
-                            }
+                            openContactList.invoke()
                         },
                         Modifier
                             .fillMaxWidth()
@@ -302,20 +279,6 @@ fun TransferView(
         }
     }
 
-}
-
-// Function to open the contact picker and handle the result
-fun hasContactPermission(context: Context): Boolean {
-    // on below line checking if permission is present or not.
-    return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
-            PackageManager.PERMISSION_GRANTED;
-}
-
-fun requestContactPermission(context: Context, activity: Activity) {
-    // on below line if permission is not granted requesting permissions.
-    if (!hasContactPermission(context)) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), 1)
-    }
 }
 
 

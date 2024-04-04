@@ -1,7 +1,10 @@
 package com.cedricbahirwe.dialer
 
+import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -13,12 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.navigation.NavGraph
-import com.cedricbahirwe.dialer.screens.hasContactPermission
-import com.cedricbahirwe.dialer.screens.requestContactPermission
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
 import com.cedricbahirwe.dialer.viewmodel.isPermissionGranted
@@ -139,3 +141,16 @@ fun DefaultPreview() {
     }
 }
 
+// Function to open the contact picker and handle the result
+fun hasContactPermission(context: Context): Boolean {
+    // on below line checking if permission is present or not.
+    return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
+            PackageManager.PERMISSION_GRANTED;
+}
+
+fun requestContactPermission(context: Context, activity: Activity) {
+    // on below line if permission is not granted requesting permissions.
+    if (!hasContactPermission(context)) {
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), 1)
+    }
+}
