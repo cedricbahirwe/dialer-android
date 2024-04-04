@@ -50,7 +50,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Preview(showBackground = true)
 @Composable
 fun HistoryView(
     viewModel: HistoryViewModel = viewModel(
@@ -246,4 +245,13 @@ private fun HistoryBottomBar(estimatedTotalPrice: Int) {
             maxLines = 1
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun HistoryScreenPreview() {
+    val context = LocalContext.current
+    val appSettingsRepository = AppSettingsRepository.getInstance(context)
+    val viewModel = HistoryViewModel(context, appSettingsRepository)
+    HistoryView(viewModel = viewModel)
 }

@@ -75,7 +75,7 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     }
 }
 
-private fun addSendScreen(navGraphBuilder: NavGraphBuilder,mainViewModel: MainViewModel) {
+private fun addSendScreen(navGraphBuilder: NavGraphBuilder, mainViewModel: MainViewModel) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         TransferView(contactName = mainViewModel.contactName.value, contactNumber = mainViewModel.contactNumber.value)
     }

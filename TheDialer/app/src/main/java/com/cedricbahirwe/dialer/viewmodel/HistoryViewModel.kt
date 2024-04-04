@@ -12,13 +12,18 @@ import kotlinx.coroutines.launch
 
 class HistoryViewModel(
     context: Context,
-    private val settings: AppSettingsRepository
+    settings: AppSettingsRepository
 ): ViewModel() {
 
-    private val phoneDialer = PhoneDialer.getInstance(context)
+    // TODO: This could be an interface
+    private val phoneDialer: PhoneDialer by lazy {
+        PhoneDialer.getInstance(context)
+    }
+
     private val codePin = settings.getCodePin
     // Retrieve all locally stored recent codes.
     val recentCodes = settings.getRecentCodes
+
 //    val allUSSDCodes = settings.getUSSDCodes
 
     /// Perform a quick dialing from the `HistoryRow.`
