@@ -33,13 +33,17 @@ open class MainViewModel(
     private val settings: AppSettingsRepository
 ): ViewModel() {
 
-    private val phoneDialer = PhoneDialer.getInstance(context)
-    private val tracker: AnalyticsTracker = MixPanelTracker.getInstance(context)
+    private val phoneDialer: PhoneDialer by lazy {
+        PhoneDialer.getInstance(context)
+    }
+    private val tracker: AnalyticsTracker by lazy {
+        MixPanelTracker.getInstance(context)
+    }
 
-    val biometricsState = settings.getBiometrics
+//    val biometricsState = settings.getBiometrics
     val showWelcomeState = settings.showWelcomeView
     val getCodePin = settings.getCodePin
-    val allUSSDCodes = settings.getUSSDCodes
+//    val allUSSDCodes = settings.getUSSDCodes
 
     var contactName = mutableStateOf("")
     var contactNumber = mutableStateOf("")
@@ -55,7 +59,7 @@ open class MainViewModel(
             saveWelcomeStatus(false)
         }
     }
-    fun MainViewModel(){}
+
     fun setContactName(newName: String) {
         contactName.value = newName
     }
