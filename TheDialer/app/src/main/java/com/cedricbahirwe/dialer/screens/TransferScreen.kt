@@ -2,18 +2,17 @@ package com.cedricbahirwe.dialer.screens
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.ContactsContract
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,20 +21,24 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -60,11 +63,12 @@ import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
+import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview(showBackground = true)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun TransferView(
     viewModel: TransferViewModel = viewModel(
@@ -78,12 +82,21 @@ fun TransferView(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val activity = LocalContext.current as Activity
     val context = LocalContext.current
 
     var contactNumberState by remember(contactNumber) {
         mutableStateOf(contactNumber)
     }
+
+    val contactsSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+
+        )
+    val coroutineScope = rememberCoroutineScope()
+
+//    BackHandler(contactsSheetState.isVisible) {
+//        coroutineScope.launch { contactsSheetState.hide() }
+//    }
 
     val uiState by viewModel.uiState.collectAsState()
 
@@ -103,213 +116,241 @@ fun TransferView(
         stringResource(R.string.estimated_fee_message, uiState.estimatedFee)
     }
 
-    DisposableEffect(Unit) {
-        focusRequester.requestFocus()
-        onDispose {
-            keyboardController?.hide()
-        }
-    }
+//    DisposableEffect(Unit) {
+//        focusRequester.requestFocus()
+//        onDispose {
+//            keyboardController?.hide()
+//        }
+//    }
 
-    Box {
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colors.background)
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-                TitleView(
-                    title = pageTitle,
-                    modifier = Modifier
-                        .padding(vertical = 12.dp)
-                )
-
-                TextButton(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd),
-                    onClick = {
-                        viewModel.switchTransactionType()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Transparent,
-                        contentColor = AccentBlue
-                    ),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        if (isMerchantTransfer)
-                            stringResource(R.string.pay_user) else
-                            stringResource(R.string.pay_merchant)
-                    )
+    ModalBottomSheetLayout(
+        sheetState = contactsSheetState,
+        sheetContent = {
+            MySpaceScreen {
+                coroutineScope.launch {
+                    contactsSheetState.hide()
                 }
             }
-
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                AnimatedVisibility(
-                    visible = !isMerchantTransfer && uiState.amount.isNotEmpty()
-                ) {
-                    Spacer(Modifier.padding(vertical = 8.dp))
-                    Text(
-                        text = feeHintText,
-                        color = AccentBlue,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-                OutlinedTextField(
-                    value = uiState.amount,
-                    onValueChange = {
-                        viewModel.handleTransactionAmountChange(it)
-                    },
+        },
+        modifier = Modifier.fillMaxSize(),
+        sheetShape = RoundedCornerShape(15.dp)
+    ) {
+        Box {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colors.background)
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    label = {
-                        Text(stringResource(R.string.common_amount))
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }
-                    ),
-                    placeholder = { Text(text = "Enter Amount") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.primary,
-                        focusedBorderColor = AccentBlue
-                    ),
-                    singleLine = true
-                )
-
-                Spacer(Modifier.padding(vertical = 8.dp))
-                OutlinedTextField(
-                    value = contactNumberState.replace("+","").replace(" ","").trim(),
-                    onValueChange = {
-                        contactNumberState = it.trim()
-                        viewModel.handleTransactionNumberChange(it)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = {
-                        Text(if (isMerchantTransfer) "Merchant Code" else "Phone Number")
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                        }
-                    ),
-                    placeholder = { Text(text = "Enter ${if (isMerchantTransfer) "Merchant Code" else "Receiver's number"}") },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.primary,
-                        focusedBorderColor = AccentBlue
-                    ),
-                    singleLine = true
-                )
-
-                AnimatedVisibility(
-                    visible = isMerchantTransfer
                 ) {
-                    Spacer(Modifier.padding(vertical = 8.dp))
-                    Text(
-                        text = stringResource(R.string.show_merchant_code_warning),
-                        color = AccentBlue,
-                        style = MaterialTheme.typography.caption
+
+                    TitleView(
+                        title = pageTitle,
+                        modifier = Modifier
+                            .padding(vertical = 12.dp)
                     )
+
+                    TextButton(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd),
+                        onClick = {
+                            viewModel.switchTransactionType()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent,
+                            contentColor = AccentBlue
+                        ),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text(
+                            if (isMerchantTransfer)
+                                stringResource(R.string.pay_user) else
+                                stringResource(R.string.pay_merchant)
+                        )
+                    }
                 }
-            }
 
-            val btnElevation = ButtonDefaults.elevation(
-                defaultElevation = 20.dp,
-                pressedElevation = 15.dp,
-                disabledElevation = 0.dp,
-                hoveredElevation = 15.dp,
-                focusedElevation = 10.dp
-            )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    AnimatedVisibility(
+                        visible = !isMerchantTransfer && uiState.amount.isNotEmpty()
+                    ) {
+                        Spacer(Modifier.padding(vertical = 8.dp))
+                        Text(
+                            text = feeHintText,
+                            color = AccentBlue,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    OutlinedTextField(
+                        value = uiState.amount,
+                        onValueChange = {
+                            viewModel.handleTransactionAmountChange(it)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        label = {
+                            Text(stringResource(R.string.common_amount))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                        ),
+                        placeholder = { Text(text = "Enter Amount") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.primary,
+                            focusedBorderColor = AccentBlue
+                        ),
+                        singleLine = true
+                    )
 
-            Column(Modifier.padding(vertical = 16.dp)) {
-                // TODO: Waiting for future version?
-                AnimatedVisibility(
-                    visible = !isMerchantTransfer
-                ) {
+                    Spacer(Modifier.padding(vertical = 8.dp))
+                    OutlinedTextField(
+                        value = contactNumberState.replace("+", "").replace(" ", "").trim(),
+                        onValueChange = {
+                            contactNumberState = it.trim()
+                            viewModel.handleTransactionNumberChange(it)
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        label = {
+                            Text(if (isMerchantTransfer) "Merchant Code" else "Phone Number")
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                            }
+                        ),
+                        placeholder = { Text(text = "Enter ${if (isMerchantTransfer) "Merchant Code" else "Receiver's number"}") },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.primary,
+                            focusedBorderColor = AccentBlue
+                        ),
+                        singleLine = true
+                    )
+
+                    AnimatedVisibility(
+                        visible = isMerchantTransfer
+                    ) {
+                        Spacer(Modifier.padding(vertical = 8.dp))
+                        Text(
+                            text = stringResource(R.string.show_merchant_code_warning),
+                            color = AccentBlue,
+                            style = MaterialTheme.typography.caption
+                        )
+                    }
+                }
+
+                val btnElevation = ButtonDefaults.elevation(
+                    defaultElevation = 20.dp,
+                    pressedElevation = 15.dp,
+                    disabledElevation = 0.dp,
+                    hoveredElevation = 15.dp,
+                    focusedElevation = 10.dp
+                )
+
+                Column(Modifier.padding(vertical = 16.dp)) {
+                    // TODO: Waiting for future version?
+                    AnimatedVisibility(
+                        visible = !isMerchantTransfer
+                    ) {
+                        Button(
+                            onClick = {
+                                val activity = context as Activity
+                                // on below line checking if permission is granted.
+                                if (hasContactPermission(context)) {
+                                    coroutineScope.launch {
+                                        contactsSheetState.animateTo(ModalBottomSheetValue.Expanded)
+//                                        contactsSheetState.show()
+                                    }
+                                    return@Button;
+                                    // if permission granted open intent to pick contact/
+                                    val intent = Intent(Intent.ACTION_GET_CONTENT)
+                                    intent.type =
+                                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                                    startActivityForResult(activity, intent, 1, null)
+                                } else {
+                                    // if permission not granted requesting permission .
+                                    requestContactPermission(context, activity)
+                                }
+                            },
+                            Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.White,
+                                contentColor = AccentBlue
+                            ),
+                            elevation = btnElevation,
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Icon(
+                                Icons.Rounded.Person,
+                                contentDescription = "Pick Contact icon"
+                            )
+                            Text(
+                                stringResource(R.string.pick_contact_text),
+                                Modifier.padding(start = 10.dp)
+                            )
+                        }
+                    }
+
+
+                    Spacer(Modifier.padding(10.dp))
+
                     Button(
                         onClick = {
-                            // on below line checking if permission is granted.
-                            if (hasContactPermission(context)) {
-                                // if permission granted open intent to pick contact/
-                                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                                intent.type =
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-                                startActivityForResult(activity, intent, 1, null)
-                            } else {
-                                // if permission not granted requesting permission .
-                                requestContactPermission(context, activity)
-                            }
+                            focusManager.clearFocus()
+                            viewModel.transferMoney()
                         },
                         Modifier
                             .fillMaxWidth()
                             .height(48.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.White,
-                            contentColor = AccentBlue
+                            backgroundColor = AccentBlue,
+                            contentColor = Color.White
                         ),
                         elevation = btnElevation,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(8.dp),
+                        enabled = uiState.isValid
                     ) {
-                        Icon(
-                            Icons.Rounded.Person,
-                            contentDescription = "Pick Contact icon"
-                        )
                         Text(
-                            stringResource(R.string.pick_contact_text),
-                            Modifier.padding(start = 10.dp)
+                            stringResource(R.string.dial_ussd_text),
+                            Modifier.padding(start = 1.dp)
                         )
                     }
                 }
 
-
-                Spacer(Modifier.padding(10.dp))
-
-                Button(
-                    onClick = {
-                        focusManager.clearFocus()
-                        viewModel.transferMoney()
-                    },
-                    Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = AccentBlue,
-                        contentColor = Color.White
-                    ),
-                    elevation = btnElevation,
-                    shape = RoundedCornerShape(8.dp),
-                    enabled = uiState.isValid
-                ) {
-                    Text(stringResource(R.string.dial_ussd_text), Modifier.padding(start = 1.dp))
-                }
+                Spacer(modifier = Modifier.weight(1.0f))
             }
-
-            Spacer(modifier = Modifier.weight(1.0f))
         }
     }
-
 }
 
+@Preview(showBackground = true)
+@Composable
+fun TransferPreview() {
+    DialerTheme {
+        TransferView(contactName = "Cedric", contactNumber = "0781000000" )
+    }
+}
 // Function to open the contact picker and handle the result
 fun hasContactPermission(context: Context): Boolean {
     // on below line checking if permission is present or not.
     return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
-            PackageManager.PERMISSION_GRANTED;
+            PackageManager.PERMISSION_GRANTED
 }
 
 fun requestContactPermission(context: Context, activity: Activity) {

@@ -21,12 +21,19 @@ class TransferViewModel(
     private val _uiState = MutableStateFlow(Transaction("", "", TransactionType.MERCHANT))
     val uiState: StateFlow<Transaction> = _uiState.asStateFlow()
 
-    private val phoneDialer = PhoneDialer.getInstance(context)
+    private val phoneDialer by lazy {
+        PhoneDialer.getInstance(context)
+    }
+
+    private val tracker: AnalyticsTracker by lazy {
+        MixPanelTracker.getInstance(context)
+    }
+
     // TODO: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
     private var selectedContact: Contact? = null
 
-    private val tracker: AnalyticsTracker = MixPanelTracker.getInstance(context)
+
 
     fun switchTransactionType() {
         _uiState.update { currentState ->
