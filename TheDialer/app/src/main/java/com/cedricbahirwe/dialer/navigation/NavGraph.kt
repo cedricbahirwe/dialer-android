@@ -7,11 +7,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.cedricbahirwe.dialer.BuildConfig
-import com.cedricbahirwe.dialer.screens.QuickDialingView
 import com.cedricbahirwe.dialer.screens.AboutScreen
 import com.cedricbahirwe.dialer.screens.DashBoardContainer
 import com.cedricbahirwe.dialer.screens.HistoryView
 import com.cedricbahirwe.dialer.screens.PurchaseDetailView
+import com.cedricbahirwe.dialer.screens.QuickDialingView
 import com.cedricbahirwe.dialer.screens.SettingsScreen
 import com.cedricbahirwe.dialer.screens.TransferView
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
@@ -77,7 +77,8 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
 
 private fun addSendScreen(navGraphBuilder: NavGraphBuilder, mainViewModel: MainViewModel) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
-        TransferView(contactName = mainViewModel.contactName.value, contactNumber = mainViewModel.contactNumber.value)
+//        contactName = mainViewModel.contactName.value, contactNumber = mainViewModel.contactNumber.value
+        TransferView()
     }
 }
 

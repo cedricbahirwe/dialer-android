@@ -3,9 +3,8 @@ package com.cedricbahirwe.dialer.screens
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.provider.ContactsContract
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,12 +33,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -56,7 +54,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.R
@@ -75,34 +72,35 @@ fun TransferView(
         factory = TransferViewModelFactory(
             LocalContext.current
         )
-    ),
-    contactName: String,
-    contactNumber: String
+    )
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
 
-    var contactNumberState by remember(contactNumber) {
-        mutableStateOf(contactNumber)
+    val contactsSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
+    LaunchedEffect(contactsSheetState.progress.to) {
+        if (contactsSheetState.progress.from == ModalBottomSheetValue.Expanded &&
+            contactsSheetState.progress.to == ModalBottomSheetValue.HalfExpanded) {
+            contactsSheetState.hide()
+        }
     }
 
-    val contactsSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-
-        )
     val coroutineScope = rememberCoroutineScope()
 
-//    BackHandler(contactsSheetState.isVisible) {
-//        coroutineScope.launch { contactsSheetState.hide() }
-//    }
+    BackHandler(contactsSheetState.isVisible) {
+        coroutineScope.launch { contactsSheetState.hide() }
+    }
 
     val uiState by viewModel.uiState.collectAsState()
 
     val isMerchantTransfer = remember(uiState.isMerchantTransfer) {
         uiState.isMerchantTransfer
     }
+    
+    val selectedContact by viewModel.selectedContact.collectAsState()
 
     val pageTitle = if (isMerchantTransfer) {
         stringResource(id = R.string.pay_merchant)
@@ -123,14 +121,19 @@ fun TransferView(
 //        }
 //    }
 
+
     ModalBottomSheetLayout(
         sheetState = contactsSheetState,
         sheetContent = {
-            MySpaceScreen {
-                coroutineScope.launch {
-                    contactsSheetState.hide()
+            ContactList(
+                viewModel = ContactsViewModel(LocalContext.current),
+                onSelectContact = {
+                    viewModel.cleanPhoneNumber(it)
+                    coroutineScope.launch {
+                        contactsSheetState.hide()
+                    }
                 }
-            }
+            )
         },
         modifier = Modifier.fillMaxSize(),
         sheetShape = RoundedCornerShape(15.dp)
@@ -214,10 +217,20 @@ fun TransferView(
                     )
 
                     Spacer(Modifier.padding(vertical = 8.dp))
+                    AnimatedVisibility(
+                        visible = !isMerchantTransfer
+                    ) {
+                        Text(
+                            text = selectedContact.names,
+                            color = AccentBlue,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
                     OutlinedTextField(
-                        value = contactNumberState.replace("+", "").replace(" ", "").trim(),
+                        value = uiState.number,
                         onValueChange = {
-                            contactNumberState = it.trim()
                             viewModel.handleTransactionNumberChange(it)
                         },
                         modifier = Modifier.fillMaxWidth(),
@@ -262,7 +275,6 @@ fun TransferView(
                 )
 
                 Column(Modifier.padding(vertical = 16.dp)) {
-                    // TODO: Waiting for future version?
                     AnimatedVisibility(
                         visible = !isMerchantTransfer
                     ) {
@@ -271,16 +283,11 @@ fun TransferView(
                                 val activity = context as Activity
                                 // on below line checking if permission is granted.
                                 if (hasContactPermission(context)) {
+                                    focusManager.clearFocus()
+                                    // if permission granted open contacts List
                                     coroutineScope.launch {
                                         contactsSheetState.animateTo(ModalBottomSheetValue.Expanded)
-//                                        contactsSheetState.show()
                                     }
-                                    return@Button;
-                                    // if permission granted open intent to pick contact/
-                                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                                    intent.type =
-                                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-                                    startActivityForResult(activity, intent, 1, null)
                                 } else {
                                     // if permission not granted requesting permission .
                                     requestContactPermission(context, activity)
@@ -343,7 +350,7 @@ fun TransferView(
 @Composable
 fun TransferPreview() {
     DialerTheme {
-        TransferView(contactName = "Cedric", contactNumber = "0781000000" )
+        TransferView()
     }
 }
 // Function to open the contact picker and handle the result

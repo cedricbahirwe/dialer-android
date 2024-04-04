@@ -31,8 +31,8 @@ class TransferViewModel(
 
     // TODO: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
-    private var selectedContact: Contact? = null
-
+//    private var selectedContact: Contact? = null
+    val selectedContact = MutableStateFlow(Contact.empty)
 
 
     fun switchTransactionType() {
@@ -51,6 +51,11 @@ class TransferViewModel(
                 amount = cleanAmount
             )
         }
+    }
+
+    fun cleanPhoneNumber(contact: Contact) {
+        selectedContact.value = contact
+        _uiState.value.number = selectedContact.value.phoneNumbers.first()
     }
 
     fun handleTransactionNumberChange(value: String) {
@@ -73,8 +78,8 @@ class TransferViewModel(
                     contact.phoneNumberList.any { it.equals(filteredValue, ignoreCase = true) }
                 }
 
-                selectedContact = if (matchedContacts.isEmpty()) {
-                    Contact("", emptyList())
+                selectedContact.value = if (matchedContacts.isEmpty()) {
+                    Contact("", mutableListOf())
                 } else {
                     matchedContacts.first()
                 }
