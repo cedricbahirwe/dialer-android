@@ -2,12 +2,10 @@ package com.cedricbahirwe.dialer.screens
 
 import android.Manifest
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.ContactsContract
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -73,7 +71,8 @@ fun TransferView(
         )
     ),
     contactName: String,
-    contactNumber: String
+    contactNumber: String,
+    openContactList: () -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -81,7 +80,7 @@ fun TransferView(
     val activity = LocalContext.current as Activity
     val context = LocalContext.current
 
-    var contactNumberState by remember(contactNumber) {
+    var selectedContactNumber by remember(contactNumber) {
         mutableStateOf(contactNumber)
     }
 
@@ -190,9 +189,9 @@ fun TransferView(
 
                 Spacer(Modifier.padding(vertical = 8.dp))
                 OutlinedTextField(
-                    value = contactNumberState.replace("+","").replace(" ","").trim(),
+                    value = selectedContactNumber.replace("+","").replace(" ","").trim(),
                     onValueChange = {
-                        contactNumberState = it.trim()
+                        selectedContactNumber = it
                         viewModel.handleTransactionNumberChange(it)
                     },
                     modifier = Modifier.fillMaxWidth(),

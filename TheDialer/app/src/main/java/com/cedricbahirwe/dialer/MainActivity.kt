@@ -10,35 +10,52 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.navigation.NavGraph
+import com.cedricbahirwe.dialer.screens.hasContactPermission
+import com.cedricbahirwe.dialer.screens.requestContactPermission
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.MainViewModel
 import com.cedricbahirwe.dialer.viewmodel.isPermissionGranted
 import com.cedricbahirwe.dialer.viewmodel.permissions
 import com.cedricbahirwe.dialer.viewmodel.requestPermission
 
+private const val REQUEST_CONTACT_PICKER = 1
+
 class MainActivity : ComponentActivity() {
 
     private lateinit var mainViewModel: MainViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
 
+        initializeViewModel()
+
+        handlePermissions()
+
+        setContent {
+            MainScreen(
+                mainViewModel = mainViewModel
+            )
+        }
+    }
+
+    private fun initializeViewModel() {
         mainViewModel = MainViewModel(
             context = this.applicationContext, AppSettingsRepository.getInstance(
                 this.applicationContext
             )
         )
+    }
+
+    private fun handlePermissions() {
         if (!isPermissionGranted(this, permissions[0])) {
             Toast.makeText(
                 this,
@@ -46,11 +63,6 @@ class MainActivity : ComponentActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             requestPermission(this, permissions[0])
-        }
-        setContent {
-            MainScreen(
-                mainViewModel = mainViewModel
-            )
         }
     }
 
@@ -61,7 +73,7 @@ class MainActivity : ComponentActivity() {
         if (resultCode != Activity.RESULT_OK) return
 
         // on below line we are checking if data is not null.
-        if (requestCode === 1 && data != null) {
+        if (requestCode === REQUEST_CONTACT_PICKER && data != null) {
             // on below line we are getting contact data
             val contactData: Uri? = data.data
 
@@ -89,17 +101,41 @@ class MainActivity : ComponentActivity() {
 fun MainScreen(
     mainViewModel: MainViewModel
 ) {
+    val activity = LocalContext.current as Activity
+    val context = LocalContext.current
+
     DialerTheme {
         val navController = rememberNavController()
-        NavGraph(navController, mainViewModel)
+        NavGraph(navController, mainViewModel, openContactList = {
+            if (hasContactPermission(activity)) {
+                // if permission granted open intent to pick contact/
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type =
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                ActivityCompat.startActivityForResult(
+                    activity,
+                    intent,
+                    REQUEST_CONTACT_PICKER,
+                    null
+                )
+            } else {
+                // if permission not granted requesting permission .
+                requestContactPermission(context, activity)
+            }
+        })
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    val mainViewModel = MainViewModel(
+        context = LocalContext.current.applicationContext, AppSettingsRepository.getInstance(
+            LocalContext.current.applicationContext
+        )
+    )
     DialerTheme {
-//        MainScreen()
+        MainScreen(mainViewModel = mainViewModel)
     }
 }
 
