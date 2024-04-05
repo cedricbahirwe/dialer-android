@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
@@ -47,6 +49,11 @@ fun ContactsList(
 ) {
     val showPhoneNumberSelector by viewModel.showPhoneNumberSelector.collectAsState()
     val selectedContact by viewModel.selectedContact.collectAsState()
+
+    val searchedContacts by viewModel.searchedContacts.collectAsState(initial = emptyList())
+    val hasContacts by viewModel.hasContacts.collectAsState(initial = false)
+
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     if (showPhoneNumberSelector) {
         AlertDialog(
@@ -80,7 +87,7 @@ fun ContactsList(
                         elevation = ButtonDefaults.elevation(0.dp, 0.dp),
                         contentPadding = PaddingValues(10.dp),
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Unspecified,
+                            backgroundColor = Color.Transparent,
                             contentColor = AccentBlue
                         ),
                         onClick = {
@@ -96,46 +103,85 @@ fun ContactsList(
         )
     }
 
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-        modifier = Modifier.background(MaterialTheme.colors.background)
-    ) {
-        viewModel.searchedContacts.forEach { section ->
-            item {
-                Text(
-                    text = section.letter.toString(),
-                    modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
-                    ,
-                    style = MaterialTheme.typography.body2,
-                    color = Color.Gray
-                )
-            }
+    if (hasContacts.not()) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .background(MaterialTheme.colors.background)
+                .padding(16.dp),
 
-            // Display contacts in the section
-            items(section.contacts) { contact ->
-                val isFirstContact = contact == section.contacts.first()
-                val isLastContact = contact == section.contacts.last()
+        ) {
+            Text("No Contacts Found.",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text("Please make sure the app has permission to access your contacts.",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                color = Color.Gray
+            )
+        }
+    } else {
 
-                val topRadius = if (isFirstContact) 16.dp else 0.dp
-                val bottomRadius = if (isLastContact) 16.dp else 0.dp
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+            modifier = Modifier
+                .background(MaterialTheme.colors.background)
+                .fillMaxSize()
+                .padding(top = 10.dp)
+        ) {
+            SearchField(
+                searchQuery = searchQuery,
+                onSearch = {
+                   viewModel.onSearch(it)
+                           },
+                onEndEditing = {
+                    viewModel.onSearch("")
+                }
+            )
 
-                Box(
-                    contentAlignment = Alignment.BottomCenter,
-                   modifier = Modifier
-                       .clip(
-                           RoundedCornerShape(
-                               topRadius, topRadius, bottomRadius, bottomRadius
-                           )
-                       )
-                       .background(MaterialTheme.colors.surface)
-                ) {
-                    ContactRowView(contact, onClick = {
-                        viewModel.completion = onSelectContact
-                        viewModel.handleSelection(contact)
-                    })
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                searchedContacts.forEach { section ->
+                    item {
+                        Text(
+                            text = section.letter.toString(),
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
+                            style = MaterialTheme.typography.body2,
+                            color = Color.Gray
+                        )
+                    }
 
-                    if (contact != section.contacts.last()) {
-                        Divider(Modifier.padding(start = 16.dp))
+                    items(section.contacts) { contact ->
+                        val isFirstContact = contact == section.contacts.first()
+                        val isLastContact = contact == section.contacts.last()
+
+                        val topRadius = if (isFirstContact) 16.dp else 0.dp
+                        val bottomRadius = if (isLastContact) 16.dp else 0.dp
+
+                        Box(
+                            contentAlignment = Alignment.BottomCenter,
+                            modifier = Modifier
+                                .clip(
+                                    RoundedCornerShape(
+                                        topRadius, topRadius, bottomRadius, bottomRadius
+                                    )
+                                )
+                                .background(MaterialTheme.colors.surface)
+                        ) {
+                            ContactRowView(contact, onClick = {
+                                viewModel.completion = onSelectContact
+                                viewModel.handleSelection(contact)
+                            })
+
+                            if (contact != section.contacts.last()) {
+                                Divider(Modifier.padding(start = 16.dp))
+                            }
+                        }
                     }
                 }
             }

@@ -11,12 +11,20 @@ import androidx.lifecycle.ViewModel
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.data.ContactManager
 import com.cedricbahirwe.dialer.data.ContactsDictionary
-import com.cedricbahirwe.dialer.data.PreviewContent
+import com.cedricbahirwe.dialer.data.getAllContactsSorted
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
-final class ContactsViewModel(private val context: Context) : ViewModel() {
-    private val _contacts = MutableStateFlow<List<Contact>>(emptyList())
+class ContactsViewModel(private val context: Context) : ViewModel() {
+    lateinit var completion: (Contact) -> Unit
+
+    private val _contactsDict =
+        MutableStateFlow<List<ContactsDictionary>>(emptyList())// PreviewContent.generateDummyContactsDictionary()
+    val hasContacts: Flow<Boolean> get() = _contactsDict.map { it.isNotEmpty() }
 
     private val _selectedContact = MutableStateFlow(Contact.empty)
     val selectedContact: StateFlow<Contact> get() = _selectedContact
@@ -26,28 +34,28 @@ final class ContactsViewModel(private val context: Context) : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> get() = _searchQuery
 
-    private val contactsDict: List<ContactsDictionary> get() = PreviewContent.generateDummyContactsDictionary()//ContactsDictionary.transform(_contacts.value)
-
-    val searchedContacts: List<ContactsDictionary>
-        get() {
-            val contacts = _contacts.value.sortedBy { it.names }
-            return if (_searchQuery.value.isEmpty()) {
-                contactsDict
-            } else {
-                val filteredContacts = contacts.filter { contact ->
-                    contact.names.contains(_searchQuery.value, ignoreCase = true) ||
-                            contact.phoneNumbers.joinToString("").contains(_searchQuery.value)
-                }
-                ContactsDictionary.transform(filteredContacts)
+    // Define searchedContacts as a StateFlow
+    val searchedContacts: Flow<List<ContactsDictionary>> = combine(
+        _contactsDict,
+        _searchQuery
+    ) { contactsDict, searchQuery ->
+        val sortedContacts = contactsDict.flatMap { it.contacts }.sortedBy { it.names }
+        if (searchQuery.isEmpty()) {
+            contactsDict
+        } else {
+            val filteredContacts = sortedContacts.filter { contact ->
+                contact.names.contains(searchQuery, ignoreCase = true) ||
+                        contact.phoneNumbers.joinToString("").contains(searchQuery)
             }
+            ContactsDictionary.transform(filteredContacts)
         }
+    }.distinctUntilChanged()
 
     init {
         // Fetch contacts when the ViewModel is initialized
-//        fetchContacts()
+        fetchContacts()
     }
 
-    lateinit var completion: (Contact) -> Unit
 
     fun handleSelection(contact: Contact) {
         _selectedContact.value = contact
@@ -112,10 +120,18 @@ final class ContactsViewModel(private val context: Context) : ViewModel() {
             }
         }
 
-        _contacts.value = ContactManager.filterMtnContacts(contactsList)
+        val mtnContacts = ContactManager.filterMtnContacts(contactsList)
+        _contactsDict.value = ContactsDictionary.transform(mtnContacts)
     }
 
     fun hidePhoneNumberSelector() {
         showPhoneNumberSelector.value = false
     }
+
+    fun onSearch(query: String) {
+        println("Searching $query")
+        _searchQuery.value = query
+    }
+
+    fun getAllContacts(): List<Contact> = _contactsDict.value.getAllContactsSorted()
 }

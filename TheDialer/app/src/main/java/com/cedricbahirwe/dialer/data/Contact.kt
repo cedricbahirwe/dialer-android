@@ -34,3 +34,7 @@ data class ContactsDictionary(val letter: Char, val contacts: List<Contact>): Id
         }
     }
 }
+
+fun List<ContactsDictionary>.getAllContactsSorted(): List<Contact> {
+    return this.flatMap { it.contacts }
+}
