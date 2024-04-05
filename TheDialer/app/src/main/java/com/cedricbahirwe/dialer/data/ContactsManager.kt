@@ -1,8 +1,5 @@
 package com.cedricbahirwe.dialer.data
 
-import com.cedricbahirwe.dialer.screens.asMtnNumber
-import com.cedricbahirwe.dialer.screens.isMtnNumber
-
 object ContactManager {
     fun filterMtnContacts(contacts: List<Contact>): List<Contact> {
         val resultingContacts: MutableList<Contact> = mutableListOf()
@@ -23,4 +20,20 @@ object ContactManager {
 
         return resultingContacts
     }
+}
+
+private fun String.isMtnNumber(): Boolean {
+    val number = this.trim().replace(" ", "")
+    return number.startsWith("+25078") || number.startsWith("25078") || number.startsWith("078") ||
+            number.startsWith("+25079") || number.startsWith("25079") || number.startsWith("079")
+}
+
+private fun String.asMtnNumber(): String {
+    var mtnNumber = this
+    if (mtnNumber.startsWith("25")) {
+        mtnNumber = mtnNumber.removeRange(0, 2)
+    } else if (mtnNumber.startsWith("+25")) {
+        mtnNumber = mtnNumber.removeRange(0, 3)
+    }
+    return mtnNumber
 }

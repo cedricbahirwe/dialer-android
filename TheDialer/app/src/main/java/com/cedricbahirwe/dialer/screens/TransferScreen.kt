@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -61,6 +60,7 @@ import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import com.cedricbahirwe.dialer.viewmodel.ContactsViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 import kotlinx.coroutines.launch
@@ -125,7 +125,7 @@ fun TransferView(
     ModalBottomSheetLayout(
         sheetState = contactsSheetState,
         sheetContent = {
-            ContactList(
+            ContactsList(
                 viewModel = ContactsViewModel(LocalContext.current),
                 onSelectContact = {
                     viewModel.cleanPhoneNumber(it)
@@ -135,8 +135,7 @@ fun TransferView(
                 }
             )
         },
-        modifier = Modifier.fillMaxSize(),
-        sheetShape = RoundedCornerShape(15.dp)
+        sheetShape = RoundedCornerShape(15.dp, 15.dp)
     ) {
         Box {
             Column(

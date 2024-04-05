@@ -110,7 +110,7 @@ fun DashBoardContainer(
             else PurchaseDetailView(viewModel)
         },
         modifier = Modifier.fillMaxSize(),
-        sheetShape = RoundedCornerShape(15.dp)
+        sheetShape = RoundedCornerShape(15.dp, 15.dp)
     ) {
 
         Box {

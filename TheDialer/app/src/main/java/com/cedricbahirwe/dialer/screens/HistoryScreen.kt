@@ -44,6 +44,7 @@ import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModel
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModelFactory
 import java.text.SimpleDateFormat
@@ -253,5 +254,7 @@ fun HistoryScreenPreview() {
     val context = LocalContext.current
     val appSettingsRepository = AppSettingsRepository.getInstance(context)
     val viewModel = HistoryViewModel(context, appSettingsRepository)
-    HistoryView(viewModel = viewModel)
+    DialerTheme() {
+        HistoryView(viewModel = viewModel)
+    }
 }
