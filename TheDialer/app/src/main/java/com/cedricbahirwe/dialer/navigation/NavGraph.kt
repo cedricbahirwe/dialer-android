@@ -14,9 +14,14 @@ import com.cedricbahirwe.dialer.screens.HistoryView
 import com.cedricbahirwe.dialer.screens.PurchaseDetailView
 import com.cedricbahirwe.dialer.screens.SettingsScreen
 import com.cedricbahirwe.dialer.screens.TransferView
+import com.cedricbahirwe.dialer.viewmodel.MainViewModel
 
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(
+    navController: NavHostController,
+    mainViewModel: MainViewModel,
+    openContactList: () -> Unit
+) {
 
     NavHost(
         navController = navController,
@@ -27,7 +32,7 @@ fun NavGraph(navController: NavHostController) {
 
         addAirtimePurchaseScreen(this)
 
-        addSendScreen(this)
+        addSendScreen(this, mainViewModel,openContactList)
 
         addHistoryScreen(this)
 
@@ -71,9 +76,9 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     }
 }
 
-private fun addSendScreen(navGraphBuilder: NavGraphBuilder) {
+private fun addSendScreen(navGraphBuilder: NavGraphBuilder,mainViewModel: MainViewModel,openContactList : () -> Unit = {}) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
-        TransferView()
+        TransferView(contactName = mainViewModel.contactName.value, contactNumber = mainViewModel.contactNumber.value, openContactList = openContactList)
     }
 }
 
