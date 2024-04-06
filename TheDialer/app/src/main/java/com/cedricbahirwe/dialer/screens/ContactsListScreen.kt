@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +25,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -62,7 +64,7 @@ fun ContactsList(
     val showPhoneNumberSelector by viewModel.showPhoneNumberSelector.collectAsState()
     val selectedContact by viewModel.selectedContact.collectAsState()
     val searchedContacts by viewModel.searchedContacts.collectAsState(initial = emptyList())
-    val hasContacts by viewModel.hasContacts.collectAsState(initial = true)
+    val hasContacts by viewModel.hasContacts.collectAsState(initial = false)
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isEditing = remember { mutableStateOf(false) }
 
@@ -146,7 +148,6 @@ fun ContactsList(
             )
         }
     } else {
-
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
             modifier = Modifier
@@ -177,11 +178,13 @@ fun ContactsList(
                 )
             }
 
-
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
+
+                if (searchedContacts.isEmpty()) item { EmptyResultsView() }
+
                 searchedContacts.forEach { section ->
                     item {
                         Text(
@@ -278,5 +281,37 @@ fun ContactRowView(contact: Contact, onClick: () -> Unit) {
                 overflow = TextOverflow.Visible
             )
         }
+    }
+}
+
+@Composable
+private fun EmptyResultsView() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Icon(
+            imageVector = Icons.Filled.Search,
+            contentDescription = "Search",
+            tint = MaterialTheme.colors.primary,
+            modifier = Modifier.size(80.dp)
+        )
+
+
+        Text(
+            "No Results found",
+            style = MaterialTheme.typography.body1.copy(fontSize = 24.sp)
+        )
+
+        Text(
+            text = "Try a different name or\nphone number",
+            fontSize = 16.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center
+        )
     }
 }
