@@ -18,15 +18,18 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -46,17 +49,20 @@ import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.ContactsViewModel
+import com.cedricbahirwe.dialer.viewmodel.ContactsViewModelFactory
 
 @Composable
 fun ContactsList(
     navController: NavController,
-    viewModel: ContactsViewModel = viewModel(),
+    viewModel: ContactsViewModel = viewModel(
+        factory = ContactsViewModelFactory(LocalContext.current)
+    ),
     onSelectContact: (Contact) -> Unit
 ) {
     val showPhoneNumberSelector by viewModel.showPhoneNumberSelector.collectAsState()
     val selectedContact by viewModel.selectedContact.collectAsState()
     val searchedContacts by viewModel.searchedContacts.collectAsState(initial = emptyList())
-    val hasContacts by viewModel.hasContacts.collectAsState(initial = false)
+    val hasContacts by viewModel.hasContacts.collectAsState(initial = true)
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isEditing = remember { mutableStateOf(false) }
 
@@ -148,19 +154,29 @@ fun ContactsList(
                 .fillMaxSize()
                 .padding(top = 10.dp)
         ) {
-            SearchField(
-                searchQuery = searchQuery,
-                isEditing = isEditing,
-                onSearch = {
-                    viewModel.onSearch(it)
-                },
-                onClearField = {
-                    viewModel.onSearch("")
-                },
-                focusManager = focusManager,
-                focusRequester = focusRequester,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
+            Row(
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                IconButton(onClick = {
+                    navController.navigateUp()
+                }) {
+                    Icon(Icons.Filled.ArrowBack, "backIcon", tint = MaterialTheme.colors.primary)
+                }
+
+                SearchField(
+                    searchQuery = searchQuery,
+                    isEditing = isEditing,
+                    onSearch = {
+                        viewModel.onSearch(it)
+                    },
+                    onClearField = {
+                        viewModel.onSearch("")
+                    },
+                    focusManager = focusManager,
+                    focusRequester = focusRequester,
+                )
+            }
+
 
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),

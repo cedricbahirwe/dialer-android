@@ -8,6 +8,7 @@ import android.provider.ContactsContract
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.data.ContactManager
 import com.cedricbahirwe.dialer.data.ContactsDictionary
@@ -136,4 +137,17 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
     }
 
 //    fun getAllContacts(): List<Contact> = _contactsDict.value.getAllContactsSorted()
+}
+
+class ContactsViewModelFactory(
+    private val context: Context,
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ContactsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ContactsViewModel(context) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

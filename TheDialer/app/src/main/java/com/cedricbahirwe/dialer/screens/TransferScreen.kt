@@ -67,9 +67,10 @@ fun TransferView(
 
     val uiState by viewModel.uiState.collectAsState()
 
-    val isMerchantTransfer = remember(uiState.isMerchantTransfer) {
-        uiState.isMerchantTransfer
-    }
+    val isMerchantTransfer = uiState.isMerchantTransfer
+//        . remember(uiState.isMerchantTransfer) {
+//        uiState.isMerchantTransfer
+//    }
 
     val selectedContact by viewModel.selectedContact.collectAsState()
 

@@ -2,6 +2,7 @@ package com.cedricbahirwe.dialer.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -17,15 +18,16 @@ import com.cedricbahirwe.dialer.screens.PurchaseDetailView
 import com.cedricbahirwe.dialer.screens.QuickDialingView
 import com.cedricbahirwe.dialer.screens.SettingsScreen
 import com.cedricbahirwe.dialer.screens.TransferView
-import com.cedricbahirwe.dialer.viewmodel.ContactsViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
+import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
 @Composable
 fun NavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    transferViewModel: TransferViewModel = viewModel(
+        factory = TransferViewModelFactory(LocalContext.current.applicationContext)
+    )
 ) {
-    val transferViewModel = TransferViewModel(LocalContext.current)
-
     NavHost(
         navController = navController,
         startDestination = NavRoute.HomeScreen.path
@@ -126,7 +128,6 @@ private fun addContactsListScreen(
     navGraphBuilder.composable(route = NavRoute.ContactsList.path) {
         ContactsList(
             navController = navController,
-            ContactsViewModel(LocalContext.current),
             onSelectContact = onSelectContact
         )
     }
