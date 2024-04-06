@@ -48,7 +48,6 @@ fun NavGraph(
         addAboutScreen(navController, this)
 
         addContactsListScreen(navController, this, onSelectContact = {
-            println("Setting contact")
             transferViewModel.cleanPhoneNumber(it)
         })
     }

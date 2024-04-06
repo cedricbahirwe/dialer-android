@@ -94,7 +94,7 @@ class TransferViewModel(
 
     fun transferMoney() {
         if (!_uiState.value.isValid) return
-        println("Transaction triggered ${_uiState.value.fullCode}")
+//        println("Transaction triggered ${_uiState.value.fullCode}")
         performQuickDial(DialerQuickCode.Other(_uiState.value.fullCode))
         tracker.logTransaction(_uiState.value)
     }
