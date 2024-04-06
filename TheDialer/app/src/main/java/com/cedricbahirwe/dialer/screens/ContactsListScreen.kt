@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,8 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,20 +59,24 @@ fun ContactsList(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isEditing = remember { mutableStateOf(false) }
 
+    val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+
     if (showPhoneNumberSelector) {
         AlertDialog(
             onDismissRequest = {
                 viewModel.hidePhoneNumberSelector()
             },
             title = {
-                Text("Phone Number.",
+                Text(
+                    "Phone Number.",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.body2.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
-                    },
+            },
             text = {
                 Text(
                     text = "Select a phone number to send to",
@@ -79,7 +84,7 @@ fun ContactsList(
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier.fillMaxWidth()
                 )
-                   },
+            },
             buttons = {
                 selectedContact.phoneNumbers.forEach { phoneNumber ->
                     Divider()
@@ -114,12 +119,14 @@ fun ContactsList(
                 .background(MaterialTheme.colors.background)
                 .padding(16.dp),
 
-        ) {
-            Text("No Contacts Found.",
+            ) {
+            Text(
+                "No Contacts Found.",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
             )
-            Text("Please make sure the app has permission to access your contacts.",
+            Text(
+                "Please make sure the app has permission to access your contacts.",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center,
@@ -139,11 +146,14 @@ fun ContactsList(
                 searchQuery = searchQuery,
                 isEditing = isEditing,
                 onSearch = {
-                   viewModel.onSearch(it)
-                           },
+                    viewModel.onSearch(it)
+                },
                 onClearField = {
                     viewModel.onSearch("")
-                }
+                },
+                focusManager = focusManager,
+                focusRequester = focusRequester,
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
 
             LazyColumn(
@@ -178,6 +188,9 @@ fun ContactsList(
                                 .background(MaterialTheme.colors.surface)
                         ) {
                             ContactRowView(contact, onClick = {
+                                focusRequester.freeFocus()
+                                focusManager.clearFocus(force = true)
+                                isEditing.value = false
                                 viewModel.completion = onSelectContact
                                 viewModel.handleSelection(contact)
                             })
@@ -220,31 +233,27 @@ fun ContactRowView(contact: Contact, onClick: () -> Unit) {
                 fontWeight = FontWeight.Medium
             ),
             color = MaterialTheme.colors.primary,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+            maxLines = 1
         )
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        Column(
-            horizontalAlignment = Alignment.End
-        ) {
-            if (contact.phoneNumbers.size == 1) {
-                Text(
-                    text = contact.phoneNumbers[0],
-                    style = MaterialTheme.typography.caption,
-                    color = Color.Gray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Visible
-                )
-            } else {
-                Text(
-                    text = "${contact.phoneNumbers[0]}, +${contact.phoneNumbers.size - 1}more",
-                    style = MaterialTheme.typography.caption,
-                    color = Color.Gray,
-                    maxLines = 1,
-                    overflow = TextOverflow.Visible
-                )
-            }
+        if (contact.phoneNumbers.size == 1) {
+            Text(
+                text = contact.phoneNumbers[0],
+                style = MaterialTheme.typography.caption,
+                color = Color.Gray,
+                maxLines = 1,
+                overflow = TextOverflow.Visible
+            )
+        } else {
+            Text(
+                text = "${contact.phoneNumbers[0]}, +${contact.phoneNumbers.size - 1}more",
+                style = MaterialTheme.typography.caption,
+                color = Color.Gray,
+                maxLines = 1,
+                overflow = TextOverflow.Visible
+            )
         }
     }
 }

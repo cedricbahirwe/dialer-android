@@ -108,7 +108,9 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
 
                 while (it.moveToNext()) {
                     val name = it.getString(nameIndex)
-                    val phoneNumber = it.getString(phoneIndex)
+                    var phoneNumber = it.getString(phoneIndex)
+
+                    phoneNumber = phoneNumber.replace("-", "")
 
                     // Add contact to the list
                     val existingContact = contactsList.find { contact -> contact.names == name }
@@ -130,7 +132,6 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
     }
 
     fun onSearch(query: String) {
-        println("Searching $query")
         _searchQuery.value = query
     }
 

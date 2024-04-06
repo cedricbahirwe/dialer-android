@@ -36,7 +36,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
@@ -59,15 +58,15 @@ import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 @Composable
 fun SearchField(
     searchQuery: String,
-    hint: String = "Search by name or phone",
-    onSearch: (String) -> Unit,
     isEditing: MutableState<Boolean>,
-    onClearField: () -> Unit
+    onSearch: (String) -> Unit,
+    onClearField: () -> Unit,
+    focusManager: FocusManager,
+    focusRequester: FocusRequester,
+    modifier: Modifier = Modifier,
+    hint: String = "Search by name or phone"
 ) {
-
     val interactionSource = remember { MutableInteractionSource() }
-    val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
 
     fun endEditing() {
         onClearField()
@@ -76,15 +75,12 @@ fun SearchField(
     }
 
     BackHandler {
-        println("GO back")
         focusManager.clearFocus()
         isEditing.value = false
     }
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -163,18 +159,22 @@ fun PreviewSearchField() {
     DialerTheme(darkTheme = true) {
         Box(Modifier.background(Color.Black)) {
             SearchField(
+                modifier = Modifier.padding(20.dp),
                 searchQuery = searchQuery,
                 isEditing = isEditing,
                 onSearch = {
                     searchQuery = it
-                }
-            ) {}
+                },
+                onClearField = {},
+                focusManager = LocalFocusManager.current,
+                focusRequester = FocusRequester()
+            )
         }
     }
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainField(
     text: String,
@@ -195,7 +195,9 @@ fun MainField(
         },
         interactionSource = interactionSource,
         singleLine = true,
-        textStyle = MaterialTheme.typography.caption,
+        textStyle = MaterialTheme.typography.body2.copy(
+            color = MaterialTheme.colors.primary,
+        ),
         keyboardOptions = KeyboardOptions(
             autoCorrect = false,
             imeAction = ImeAction.Search
@@ -214,12 +216,10 @@ fun MainField(
             )
             .focusRequester(focusRequester)
             .onFocusEvent {
-                println("Founding ${it.isCaptured} ${it.isFocused} ${it.hasFocus}")
                 isEditing.value = it.hasFocus
 
             }
             .onFocusChanged {
-                println("level: ®${it.isFocused}, and ${it.hasFocus}")
                 isEditing.value = it.isFocused
             }
     ) { innerTextField ->
