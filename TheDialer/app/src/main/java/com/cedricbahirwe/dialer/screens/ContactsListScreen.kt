@@ -24,6 +24,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +56,7 @@ fun ContactsList(
     val hasContacts by viewModel.hasContacts.collectAsState(initial = false)
 
     val searchQuery by viewModel.searchQuery.collectAsState()
+    val isEditing = remember { mutableStateOf(false) }
 
     if (showPhoneNumberSelector) {
         AlertDialog(
@@ -134,10 +137,11 @@ fun ContactsList(
         ) {
             SearchField(
                 searchQuery = searchQuery,
+                isEditing = isEditing,
                 onSearch = {
                    viewModel.onSearch(it)
                            },
-                onEndEditing = {
+                onClearField = {
                     viewModel.onSearch("")
                 }
             )

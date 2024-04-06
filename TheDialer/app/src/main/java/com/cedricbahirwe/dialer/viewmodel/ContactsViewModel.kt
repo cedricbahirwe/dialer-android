@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.data.ContactManager
 import com.cedricbahirwe.dialer.data.ContactsDictionary
+import com.cedricbahirwe.dialer.data.PreviewContent
 import com.cedricbahirwe.dialer.data.getAllContactsSorted
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,7 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
     lateinit var completion: (Contact) -> Unit
 
     private val _contactsDict =
-        MutableStateFlow<List<ContactsDictionary>>(emptyList())// PreviewContent.generateDummyContactsDictionary()
+        MutableStateFlow<List<ContactsDictionary>>(PreviewContent.generateDummyContactsDictionary())// PreviewContent.generateDummyContactsDictionary()
     val hasContacts: Flow<Boolean> get() = _contactsDict.map { it.isNotEmpty() }
 
     private val _selectedContact = MutableStateFlow(Contact.empty)
