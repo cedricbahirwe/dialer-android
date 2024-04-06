@@ -304,7 +304,8 @@ private fun EmptyResultsView() {
 
         Text(
             "No Results found",
-            style = MaterialTheme.typography.body1.copy(fontSize = 24.sp)
+            style = MaterialTheme.typography.body1.copy(fontSize = 24.sp),
+            color = MaterialTheme.colors.primary
         )
 
         Text(
