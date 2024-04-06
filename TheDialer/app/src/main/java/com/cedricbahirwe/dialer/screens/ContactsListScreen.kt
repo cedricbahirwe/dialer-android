@@ -126,27 +126,7 @@ fun ContactsList(
     }
 
     if (hasContacts.not()) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .background(MaterialTheme.colors.background)
-                .padding(16.dp),
-
-            ) {
-            Text(
-                "No Contacts Found.",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Text(
-                "Please make sure the app has permission to access your contacts.",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center,
-                color = Color.Gray
-            )
-        }
+        EmptyContactsView()
     } else {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
@@ -313,6 +293,31 @@ private fun EmptyResultsView() {
             fontSize = 16.sp,
             color = Color.Gray,
             textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun EmptyContactsView() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .background(MaterialTheme.colors.background)
+            .padding(16.dp),
+
+        ) {
+        Text(
+            "No Contacts Found.",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            "Please make sure the app has permission to access your contacts.",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+            color = Color.Gray
         )
     }
 }
