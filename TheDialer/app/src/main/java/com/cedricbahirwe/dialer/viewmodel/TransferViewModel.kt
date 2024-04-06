@@ -58,6 +58,11 @@ class TransferViewModel(
         _uiState.value.number = selectedContact.value.phoneNumbers.first()
     }
 
+    fun clearState() {
+        selectedContact.value = Contact.empty
+        _uiState.value = Transaction("", "", TransactionType.MERCHANT)
+    }
+
     fun handleTransactionNumberChange(value: String) {
         if(value != _uiState.value.number) {
             val filteredValue = value.filter { it.isDigit() }
@@ -97,6 +102,7 @@ class TransferViewModel(
     private fun performQuickDial(quickCode: DialerQuickCode) {
         phoneDialer.dial(quickCode.ussd)
     }
+
 }
 
 class TransferViewModelFactory(

@@ -92,7 +92,7 @@ private fun addSendScreen(
     transferViewModel: TransferViewModel
 ) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
-        TransferView(transferViewModel, openContactList = {
+        TransferView(navController, transferViewModel, openContactList = {
             navController.navigate(NavRoute.ContactsList.path)
         })
     }

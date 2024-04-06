@@ -1,5 +1,6 @@
 package com.cedricbahirwe.dialer.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
@@ -54,6 +57,7 @@ import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TransferView(
+    navController: NavController,
     viewModel: TransferViewModel,
     openContactList: () -> Unit,
 ) {
@@ -62,12 +66,7 @@ fun TransferView(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val uiState by viewModel.uiState.collectAsState()
-
     val isMerchantTransfer = uiState.isMerchantTransfer
-//        . remember(uiState.isMerchantTransfer) {
-//        uiState.isMerchantTransfer
-//    }
-
     val selectedContact by viewModel.selectedContact.collectAsState()
 
     val pageTitle = if (isMerchantTransfer) {
@@ -89,6 +88,10 @@ fun TransferView(
         }
     }
 
+    BackHandler {
+        viewModel.clearStategit()
+        navController.popBackStack()
+    }
 
     Box {
         Column(
@@ -290,6 +293,7 @@ fun TransferView(
 fun TransferPreview() {
     DialerTheme {
         TransferView(
+            rememberNavController(),
             viewModel(
                 factory = TransferViewModelFactory(
                     LocalContext.current
