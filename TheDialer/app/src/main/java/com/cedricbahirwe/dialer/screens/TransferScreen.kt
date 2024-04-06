@@ -89,7 +89,7 @@ fun TransferView(
     }
 
     BackHandler {
-        viewModel.clearStategit()
+        viewModel.clearState()
         navController.popBackStack()
     }
 
