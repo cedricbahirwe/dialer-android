@@ -54,11 +54,7 @@ import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TransferView(
-    viewModel: TransferViewModel = viewModel(
-        factory = TransferViewModelFactory(
-            LocalContext.current
-        )
-    ),
+    viewModel: TransferViewModel,
     openContactList: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -293,6 +289,13 @@ fun TransferView(
 @Composable
 fun TransferPreview() {
     DialerTheme {
-        TransferView(openContactList = {})
+        TransferView(
+            viewModel(
+                factory = TransferViewModelFactory(
+                    LocalContext.current
+                )
+            ),
+            openContactList = {}
+        )
     }
 }
