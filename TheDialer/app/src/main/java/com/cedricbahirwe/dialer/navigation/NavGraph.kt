@@ -1,26 +1,30 @@
 package com.cedricbahirwe.dialer.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.cedricbahirwe.dialer.BuildConfig
+import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.screens.AboutScreen
+import com.cedricbahirwe.dialer.screens.ContactsList
 import com.cedricbahirwe.dialer.screens.DashBoardContainer
 import com.cedricbahirwe.dialer.screens.HistoryView
 import com.cedricbahirwe.dialer.screens.PurchaseDetailView
 import com.cedricbahirwe.dialer.screens.QuickDialingView
 import com.cedricbahirwe.dialer.screens.SettingsScreen
 import com.cedricbahirwe.dialer.screens.TransferView
-import com.cedricbahirwe.dialer.viewmodel.MainViewModel
+import com.cedricbahirwe.dialer.viewmodel.ContactsViewModel
+import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 
 @Composable
 fun NavGraph(
-    navController: NavHostController,
-    mainViewModel: MainViewModel
+    navController: NavHostController
 ) {
+    val transferViewModel = TransferViewModel(LocalContext.current)
 
     NavHost(
         navController = navController,
@@ -31,7 +35,7 @@ fun NavGraph(
 
         addAirtimePurchaseScreen(this)
 
-        addSendScreen(this, mainViewModel)
+        addSendScreen(navController, this, transferViewModel)
 
         addHistoryScreen(this)
 
@@ -40,6 +44,11 @@ fun NavGraph(
         addSettingsScreen(navController, this)
 
         addAboutScreen(navController, this)
+
+        addContactsListScreen(navController, this, onSelectContact = {
+            println("Setting contact")
+            transferViewModel.cleanPhoneNumber(it)
+        })
     }
 }
 
@@ -75,10 +84,15 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     }
 }
 
-private fun addSendScreen(navGraphBuilder: NavGraphBuilder, mainViewModel: MainViewModel) {
+private fun addSendScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    transferViewModel: TransferViewModel
+) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
-//        contactName = mainViewModel.contactName.value, contactNumber = mainViewModel.contactNumber.value
-        TransferView()
+        TransferView(transferViewModel, openContactList = {
+            navController.navigate(NavRoute.ContactsList.path)
+        })
     }
 }
 
@@ -101,5 +115,19 @@ private fun addSettingsScreen(
 ) {
     navGraphBuilder.composable(route = NavRoute.Settings.path) {
         SettingsScreen(navController = navController)
+    }
+}
+
+private fun addContactsListScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    onSelectContact: (Contact) -> Unit
+) {
+    navGraphBuilder.composable(route = NavRoute.ContactsList.path) {
+        ContactsList(
+            navController = navController,
+            ContactsViewModel(LocalContext.current),
+            onSelectContact = onSelectContact
+        )
     }
 }

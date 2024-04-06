@@ -26,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -39,28 +40,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.ContactsViewModel
 
-
 @Composable
 fun ContactsList(
+    navController: NavController,
     viewModel: ContactsViewModel = viewModel(),
     onSelectContact: (Contact) -> Unit
 ) {
     val showPhoneNumberSelector by viewModel.showPhoneNumberSelector.collectAsState()
     val selectedContact by viewModel.selectedContact.collectAsState()
-
     val searchedContacts by viewModel.searchedContacts.collectAsState(initial = emptyList())
     val hasContacts by viewModel.hasContacts.collectAsState(initial = false)
-
     val searchQuery by viewModel.searchQuery.collectAsState()
     val isEditing = remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+
+    val onSelectionComplete: (Contact) -> Unit = {
+        onSelectContact(it)
+        navController.navigateUp()
+    }
 
     if (showPhoneNumberSelector) {
         AlertDialog(
@@ -99,7 +105,7 @@ fun ContactsList(
                             contentColor = AccentBlue
                         ),
                         onClick = {
-                            viewModel.completion = onSelectContact
+                            viewModel.completion = onSelectionComplete
                             viewModel.hidePhoneNumberSelector()
                             viewModel.managePhoneNumber(phoneNumber)
                         }
@@ -191,7 +197,7 @@ fun ContactsList(
                                 focusRequester.freeFocus()
                                 focusManager.clearFocus(force = true)
                                 isEditing.value = false
-                                viewModel.completion = onSelectContact
+                                viewModel.completion = onSelectionComplete
                                 viewModel.handleSelection(contact)
                             })
 
@@ -211,6 +217,7 @@ fun ContactsList(
 fun ContactsListPreview() {
     DialerTheme(darkTheme = false) {
         ContactsList(
+            rememberNavController(),
             viewModel = ContactsViewModel(LocalContext.current),
             onSelectContact = { }
         )

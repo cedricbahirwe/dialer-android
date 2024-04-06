@@ -11,8 +11,6 @@ import androidx.lifecycle.ViewModel
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.data.ContactManager
 import com.cedricbahirwe.dialer.data.ContactsDictionary
-import com.cedricbahirwe.dialer.data.PreviewContent
-import com.cedricbahirwe.dialer.data.getAllContactsSorted
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +22,7 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
     lateinit var completion: (Contact) -> Unit
 
     private val _contactsDict =
-        MutableStateFlow<List<ContactsDictionary>>(PreviewContent.generateDummyContactsDictionary())// PreviewContent.generateDummyContactsDictionary()
+        MutableStateFlow<List<ContactsDictionary>>(emptyList())// PreviewContent.generateDummyContactsDictionary()
     val hasContacts: Flow<Boolean> get() = _contactsDict.map { it.isNotEmpty() }
 
     private val _selectedContact = MutableStateFlow(Contact.empty)
@@ -57,7 +55,6 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
         fetchContacts()
     }
 
-
     fun handleSelection(contact: Contact) {
         _selectedContact.value = contact
 
@@ -78,6 +75,9 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
 
 
     private fun fetchContacts() {
+        if (_contactsDict.value.isNotEmpty()) return
+        println("Reaching here")
+
         val contactPermissionRequestCode = 101
         val contactsList = mutableListOf<Contact>()
 
@@ -135,5 +135,5 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
         _searchQuery.value = query
     }
 
-    fun getAllContacts(): List<Contact> = _contactsDict.value.getAllContactsSorted()
+//    fun getAllContacts(): List<Contact> = _contactsDict.value.getAllContactsSorted()
 }

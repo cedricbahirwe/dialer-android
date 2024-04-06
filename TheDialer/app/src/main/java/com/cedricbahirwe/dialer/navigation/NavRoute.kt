@@ -2,7 +2,7 @@ package com.cedricbahirwe.dialer.navigation
 
 
 enum class NavRoute(val path: String) {
-    HomeScreen("Home Screen"),
+    HomeScreen("Dialer"),
 
     AirtimePurchase("Airtime Purchase"),
 
@@ -12,7 +12,9 @@ enum class NavRoute(val path: String) {
 
     QuickDialing("Quick Dialing"),
 
-    Settings("Settings Screen"),
+    Settings("Settings"),
 
-     AboutApp("About")
+    AboutApp("About"),
+
+    ContactsList("Choose a contact")
 }

@@ -1,7 +1,6 @@
 package com.cedricbahirwe.dialer.screens
 
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -73,19 +72,17 @@ fun SearchField(
         focusManager.clearFocus(force = true)
         isEditing.value = false
     }
-
-    BackHandler {
-        focusManager.clearFocus()
-        isEditing.value = false
-    }
+//
+//    BackHandler {
+//        focusManager.clearFocus()
+//        isEditing.value = false
+//    }
 
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-//        Text(text = "${isEditing.value}")
-
         MainField(
             text = searchQuery,
             onSearch = onSearch,
@@ -146,7 +143,6 @@ fun SearchField(
                     .clickable { endEditing() }
             )
         }
-
     }
 }
 

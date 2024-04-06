@@ -1,7 +1,6 @@
 package com.cedricbahirwe.dialer.viewmodel
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -45,9 +44,6 @@ open class MainViewModel(
     val getCodePin = settings.getCodePin
 //    val allUSSDCodes = settings.getUSSDCodes
 
-    var contactName = mutableStateOf("")
-    var contactNumber = mutableStateOf("")
-
     private val _uiState = MutableStateFlow(PurchaseUiState())
     val uiState: StateFlow<PurchaseUiState> = _uiState.asStateFlow()
 
@@ -60,13 +56,6 @@ open class MainViewModel(
         }
     }
 
-    fun setContactName(newName: String) {
-        contactName.value = newName
-    }
-
-    fun setContactNumber(newNumber: String) {
-        contactNumber.value = newNumber
-    }
     fun shouldShowDeleteBtn() : Boolean {
         return when (_uiState.value.editedField) {
             EditedField.AMOUNT -> {
