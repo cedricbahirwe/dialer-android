@@ -36,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,16 +47,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.data.Contact
+import com.cedricbahirwe.dialer.data.Contacts
+import com.cedricbahirwe.dialer.data.PreviewContent
+import com.cedricbahirwe.dialer.data.getAllContactsSorted
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import com.cedricbahirwe.dialer.ui.theme.MainRed
 import com.cedricbahirwe.dialer.viewmodel.ContactsViewModel
 import com.cedricbahirwe.dialer.viewmodel.ContactsViewModelFactory
 
 @Composable
 fun ContactsList(
     navController: NavController,
+    contacts: Contacts,
     viewModel: ContactsViewModel = viewModel(
-        factory = ContactsViewModelFactory(LocalContext.current)
+        factory = ContactsViewModelFactory(contacts)
     ),
     onSelectContact: (Contact) -> Unit
 ) {
@@ -126,7 +130,9 @@ fun ContactsList(
     }
 
     if (hasContacts.not()) {
-        EmptyContactsView()
+        EmptyContactsView(onDismiss =  {
+            navController.navigateUp()
+        })
     } else {
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
@@ -214,10 +220,11 @@ fun ContactsList(
 @Composable
 @Preview(showBackground = true)
 fun ContactsListPreview() {
+    val dummyContacts = PreviewContent.generateDummyContactsDictionary().getAllContactsSorted()
     DialerTheme(darkTheme = false) {
         ContactsList(
             rememberNavController(),
-            viewModel = ContactsViewModel(LocalContext.current),
+            dummyContacts,
             onSelectContact = { }
         )
     }
@@ -298,12 +305,13 @@ private fun EmptyResultsView() {
 }
 
 @Composable
-private fun EmptyContactsView() {
+private fun EmptyContactsView(onDismiss: () -> Unit) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .background(MaterialTheme.colors.background)
+            .fillMaxSize()
             .padding(16.dp),
 
         ) {
@@ -314,10 +322,25 @@ private fun EmptyContactsView() {
         )
         Text(
             "Please make sure the app has permission to access your contacts.",
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
-            color = Color.Gray
+            color = Color.Gray,
+            modifier = Modifier.padding(10.dp)
         )
+
+        Button(
+            shape = RoundedCornerShape(24.dp),
+            colors = ButtonDefaults.buttonColors(
+                contentColor = Color.White,
+                backgroundColor = MainRed
+            ),
+            modifier = Modifier.size(120.dp, 48.dp),
+            onClick = { onDismiss.invoke() }
+        ) {
+            Text("Dismiss",
+                modifier = Modifier.padding(4.dp)
+            )
+        }
     }
 }

@@ -1,6 +1,13 @@
 package com.cedricbahirwe.dialer.screens
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +50,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -51,6 +59,7 @@ import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import com.cedricbahirwe.dialer.utilities.ContactsPermissionManager
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
@@ -61,6 +70,30 @@ fun TransferView(
     viewModel: TransferViewModel,
     openContactList: () -> Unit,
 ) {
+
+    val context = LocalContext.current
+    val permission = Manifest.permission.READ_CONTACTS
+
+    fun openContactsList() {
+        val contacts = ContactsPermissionManager.getContacts(context)
+        viewModel.setContacts(emptyList())
+        openContactList.invoke()
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openContactsList()
+        } else {
+            Toast.makeText(
+                context,
+                R.string.contact_permission_denied_toast,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -79,6 +112,21 @@ fun TransferView(
         stringResource(R.string.beyond_range_fee_msg)
     } else {
         stringResource(R.string.estimated_fee_message, uiState.estimatedFee)
+    }
+
+    fun checkAndRequestContactPermission(
+        context: Context,
+        permission: String,
+        launcher: ManagedActivityResultLauncher<String, Boolean>
+    ) {
+        val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
+        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+            // Open contact list because permission is already granted
+            openContactsList()
+        } else {
+            // Request a permission
+            launcher.launch(permission)
+        }
     }
 
     DisposableEffect(Unit) {
@@ -235,7 +283,7 @@ fun TransferView(
                 ) {
                     Button(
                         onClick = {
-                            openContactList.invoke()
+                            checkAndRequestContactPermission(context, permission, launcher)
                         },
                         Modifier
                             .fillMaxWidth()

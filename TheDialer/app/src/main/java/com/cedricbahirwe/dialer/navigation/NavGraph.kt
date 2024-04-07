@@ -47,7 +47,7 @@ fun NavGraph(
 
         addAboutScreen(navController, this)
 
-        addContactsListScreen(navController, this, onSelectContact = {
+        addContactsListScreen(navController, this, transferViewModel, onSelectContact = {
             transferViewModel.cleanPhoneNumber(it)
         })
     }
@@ -88,7 +88,8 @@ private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
 private fun addSendScreen(
     navController: NavController,
     navGraphBuilder: NavGraphBuilder,
-    transferViewModel: TransferViewModel
+    transferViewModel: TransferViewModel,
+
 ) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         TransferView(navController, transferViewModel, openContactList = {
@@ -122,11 +123,13 @@ private fun addSettingsScreen(
 private fun addContactsListScreen(
     navController: NavController,
     navGraphBuilder: NavGraphBuilder,
+    transferViewModel: TransferViewModel,
     onSelectContact: (Contact) -> Unit
 ) {
     navGraphBuilder.composable(route = NavRoute.ContactsList.path) {
         ContactsList(
             navController = navController,
+            transferViewModel.getContacts(),
             onSelectContact = onSelectContact
         )
     }

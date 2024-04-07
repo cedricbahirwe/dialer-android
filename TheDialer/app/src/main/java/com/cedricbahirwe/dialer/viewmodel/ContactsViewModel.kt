@@ -1,16 +1,8 @@
 package com.cedricbahirwe.dialer.viewmodel
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
-import android.content.pm.PackageManager
-import android.provider.ContactsContract
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.cedricbahirwe.dialer.data.Contact
-import com.cedricbahirwe.dialer.data.ContactManager
 import com.cedricbahirwe.dialer.data.ContactsDictionary
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,11 +11,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class ContactsViewModel(private val context: Context) : ViewModel() {
+class ContactsViewModel(contacts: List<Contact>) : ViewModel() {
     lateinit var completion: (Contact) -> Unit
 
     private val _contactsDict =
-        MutableStateFlow<List<ContactsDictionary>>(emptyList()) //PreviewContent.generateDummyContactsDictionary())
+        MutableStateFlow(ContactsDictionary.transform(contacts)) //PreviewContent.generateDummyContactsDictionary())
     val hasContacts: Flow<Boolean> get() = _contactsDict.map { it.isNotEmpty() }
 
     private val _selectedContact = MutableStateFlow(Contact.empty)
@@ -51,11 +43,10 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
         }
     }.distinctUntilChanged()
 
-    init {
-        // Fetch contacts when the ViewModel is initialized
-        fetchContacts()
-    }
 
+    init {
+        println("Init here ${contacts.size}", )
+    }
     fun handleSelection(contact: Contact) {
         _selectedContact.value = contact
 
@@ -74,60 +65,6 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
         completion(_selectedContact.value)
     }
 
-
-    private fun fetchContacts() {
-        if (_contactsDict.value.isNotEmpty()) return
-        println("Reaching here")
-
-        val contactPermissionRequestCode = 101
-        val contactsList = mutableListOf<Contact>()
-
-        // Check if the permission to read contacts is granted
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Request the permission
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                contactPermissionRequestCode
-            )
-        } else {
-            // Permission is granted, query the contacts
-            val cursor = context.contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null,
-                null,
-                null,
-                ContactsContract.Contacts.DISPLAY_NAME + " ASC"
-            )
-
-
-            cursor?.use {
-                val nameIndex = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-                val phoneIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-
-                while (it.moveToNext()) {
-                    val name = it.getString(nameIndex)
-                    var phoneNumber = it.getString(phoneIndex)
-
-                    phoneNumber = phoneNumber.replace("-", "")
-
-                    // Add contact to the list
-                    val existingContact = contactsList.find { contact -> contact.names == name }
-                    if (existingContact != null) {
-                        existingContact.addPhoneNumber(phoneNumber)
-                    } else {
-                        contactsList.add(Contact(name, mutableListOf(phoneNumber)))
-                    }
-                }
-            }
-        }
-
-        val mtnContacts = ContactManager.filterMtnContacts(contactsList)
-        _contactsDict.value = ContactsDictionary.transform(mtnContacts)
-    }
-
     fun hidePhoneNumberSelector() {
         showPhoneNumberSelector.value = false
     }
@@ -140,14 +77,69 @@ class ContactsViewModel(private val context: Context) : ViewModel() {
 }
 
 class ContactsViewModelFactory(
-    private val context: Context,
+    private val contacts: List<Contact>,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ContactsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ContactsViewModel(context) as T
+            return ContactsViewModel(contacts) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+
+
+
+//private fun fetchContacts() {
+//    if (_contactsDict.value.isNotEmpty()) return
+//    println("Reaching here")
+//
+//    val contactPermissionRequestCode = 101
+//    val contactsList = mutableListOf<Contact>()
+//
+//    // Check if the permission to read contacts is granted
+//    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+//        != PackageManager.PERMISSION_GRANTED
+//    ) {
+//        // Request the permission
+//        ActivityCompat.requestPermissions(
+//            context as Activity,
+//            arrayOf(Manifest.permission.READ_CONTACTS),
+//            contactPermissionRequestCode
+//        )
+//    } else {
+//        // Permission is granted, query the contacts
+//        val cursor = context.contentResolver.query(
+//            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//            null,
+//            null,
+//            null,
+//            ContactsContract.Contacts.DISPLAY_NAME + " ASC"
+//        )
+//
+//
+//        cursor?.use {
+//            val nameIndex = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+//            val phoneIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+//
+//            while (it.moveToNext()) {
+//                val name = it.getString(nameIndex)
+//                var phoneNumber = it.getString(phoneIndex)
+//
+//                phoneNumber = phoneNumber.replace("-", "")
+//
+//                // Add contact to the list
+//                val existingContact = contactsList.find { contact -> contact.names == name }
+//                if (existingContact != null) {
+//                    existingContact.addPhoneNumber(phoneNumber)
+//                } else {
+//                    contactsList.add(Contact(name, mutableListOf(phoneNumber)))
+//                }
+//            }
+//        }
+//    }
+//
+//    val mtnContacts = ContactManager.filterMtnContacts(contactsList)
+//    _contactsDict.value = ContactsDictionary.transform(mtnContacts)
+//}

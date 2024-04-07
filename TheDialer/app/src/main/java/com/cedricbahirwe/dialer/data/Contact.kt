@@ -2,6 +2,8 @@ package com.cedricbahirwe.dialer.data
 
 import com.cedricbahirwe.dialer.data.protocol.Identifiable
 
+typealias Contacts = List<Contact>
+
 data class Contact(val names: String, val phoneNumbers: MutableList<String>) {
 
     private val id: String

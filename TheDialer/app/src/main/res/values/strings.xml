@@ -66,6 +66,7 @@
     <string name="toast_ussd_permission_is_not_granted">USSD Permission is not granted</string>
     <string name="common_continue">Continue</string>
     <string name="about">About</string>
+    <string name="contact_permission_denied_toast">Contacts permission not Granted!\n\nPlease make sure the app has permission to access your contacts.</string>
     <plurals name="purchase_count">
         <item quantity="one">%d time</item>
         <item quantity="other">%d times</item>
