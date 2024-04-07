@@ -254,7 +254,7 @@ fun HistoryScreenPreview() {
     val context = LocalContext.current
     val appSettingsRepository = AppSettingsRepository.getInstance(context)
     val viewModel = HistoryViewModel(context, appSettingsRepository)
-    DialerTheme() {
+    DialerTheme {
         HistoryView(viewModel = viewModel)
     }
 }
