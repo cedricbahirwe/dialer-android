@@ -1,32 +1,21 @@
 package com.cedricbahirwe.dialer.utilities
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.provider.ContactsContract
+import androidx.core.content.ContextCompat
 import com.cedricbahirwe.dialer.data.Contact
 import com.cedricbahirwe.dialer.data.ContactManager
 
-object ContactsPermissionManager {
-
-//    fun hasPermission(): Boolean {
-//        return (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
-//                == PackageManager.PERMISSION_GRANTED)
-//    }
-
-//    private val contactPermissionRequestCode = 101
-
-//    fun requestPermission() {
-//        if (hasPermission()) return
-//
-//        ActivityCompat.requestPermissions(
-//            context as Activity,
-//            arrayOf(Manifest.permission.READ_CONTACTS),
-//            contactPermissionRequestCode
-//        )
-//        println("Finish here")
-//    }
+object ContactsProvider {
+    private fun hasPermission(context: Context): Boolean {
+        return (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
+                == PackageManager.PERMISSION_GRANTED)
+    }
 
     fun getContacts(context: Context): List<Contact> {
-//        if (hasPermission().not()) return emptyList()
+        if (hasPermission(context).not()) return emptyList()
 
         val contactsList = mutableListOf<Contact>()
 

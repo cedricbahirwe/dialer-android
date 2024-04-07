@@ -15,7 +15,7 @@ class ContactsViewModel(contacts: List<Contact>) : ViewModel() {
     lateinit var completion: (Contact) -> Unit
 
     private val _contactsDict =
-        MutableStateFlow(ContactsDictionary.transform(contacts)) //PreviewContent.generateDummyContactsDictionary())
+        MutableStateFlow(ContactsDictionary.transform(contacts))
     val hasContacts: Flow<Boolean> get() = _contactsDict.map { it.isNotEmpty() }
 
     private val _selectedContact = MutableStateFlow(Contact.empty)
@@ -43,10 +43,6 @@ class ContactsViewModel(contacts: List<Contact>) : ViewModel() {
         }
     }.distinctUntilChanged()
 
-
-    init {
-        println("Init here ${contacts.size}", )
-    }
     fun handleSelection(contact: Contact) {
         _selectedContact.value = contact
 
@@ -72,8 +68,6 @@ class ContactsViewModel(contacts: List<Contact>) : ViewModel() {
     fun onSearch(query: String) {
         _searchQuery.value = query
     }
-
-//    fun getAllContacts(): List<Contact> = _contactsDict.value.getAllContactsSorted()
 }
 
 class ContactsViewModelFactory(
@@ -88,58 +82,3 @@ class ContactsViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-
-
-
-//private fun fetchContacts() {
-//    if (_contactsDict.value.isNotEmpty()) return
-//    println("Reaching here")
-//
-//    val contactPermissionRequestCode = 101
-//    val contactsList = mutableListOf<Contact>()
-//
-//    // Check if the permission to read contacts is granted
-//    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS)
-//        != PackageManager.PERMISSION_GRANTED
-//    ) {
-//        // Request the permission
-//        ActivityCompat.requestPermissions(
-//            context as Activity,
-//            arrayOf(Manifest.permission.READ_CONTACTS),
-//            contactPermissionRequestCode
-//        )
-//    } else {
-//        // Permission is granted, query the contacts
-//        val cursor = context.contentResolver.query(
-//            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//            null,
-//            null,
-//            null,
-//            ContactsContract.Contacts.DISPLAY_NAME + " ASC"
-//        )
-//
-//
-//        cursor?.use {
-//            val nameIndex = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
-//            val phoneIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-//
-//            while (it.moveToNext()) {
-//                val name = it.getString(nameIndex)
-//                var phoneNumber = it.getString(phoneIndex)
-//
-//                phoneNumber = phoneNumber.replace("-", "")
-//
-//                // Add contact to the list
-//                val existingContact = contactsList.find { contact -> contact.names == name }
-//                if (existingContact != null) {
-//                    existingContact.addPhoneNumber(phoneNumber)
-//                } else {
-//                    contactsList.add(Contact(name, mutableListOf(phoneNumber)))
-//                }
-//            }
-//        }
-//    }
-//
-//    val mtnContacts = ContactManager.filterMtnContacts(contactsList)
-//    _contactsDict.value = ContactsDictionary.transform(mtnContacts)
-//}

@@ -59,7 +59,7 @@ import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
 import com.cedricbahirwe.dialer.ui.theme.DialerTheme
-import com.cedricbahirwe.dialer.utilities.ContactsPermissionManager
+import com.cedricbahirwe.dialer.utilities.ContactsProvider
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
@@ -75,8 +75,8 @@ fun TransferView(
     val permission = Manifest.permission.READ_CONTACTS
 
     fun openContactsList() {
-        val contacts = ContactsPermissionManager.getContacts(context)
-        viewModel.setContacts(emptyList())
+        val contacts = ContactsProvider.getContacts(context)
+        viewModel.setContacts(contacts)
         openContactList.invoke()
     }
 
