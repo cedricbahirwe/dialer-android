@@ -1,5 +1,7 @@
 package com.cedricbahirwe.dialer.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,7 +32,11 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavRoute.HomeScreen.path
+        startDestination = NavRoute.HomeScreen.path,
+        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(50)) },
+        exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(50)) },
+        popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(500)) },
+        popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(500)) }
     ) {
 
         addHomeScreen(navController, this)
