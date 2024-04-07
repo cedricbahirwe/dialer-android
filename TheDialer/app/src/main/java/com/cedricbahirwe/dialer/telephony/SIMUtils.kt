@@ -7,7 +7,7 @@ import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.TextUtils
 
-class SIMUtils private constructor(private val context: Context) {
+class SIMUtils private constructor(context: Context) {
     private val telephonyManagers: MutableMap<Int, TelephonyManager>
     private val telephonyManager: TelephonyManager
     private val subscriptionManager: SubscriptionManager

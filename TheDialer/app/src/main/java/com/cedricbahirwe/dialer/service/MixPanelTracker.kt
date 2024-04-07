@@ -11,7 +11,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class MixPanelTracker private constructor(context: Context): AnalyticsTracker {
-    private var mp: MixpanelAPI = MixpanelAPI.getInstance(context, AppConstants.mixPanelToken, true)
+    private var mp: MixpanelAPI = MixpanelAPI.getInstance(context, AppConstants.MIX_PANEL_TOKEN, true)
 
     companion object {
         @Volatile

@@ -5,7 +5,7 @@
     <string name="pick_contact_text">Pick a contact</string>
     <string name="title_activity_pin_view">PinView</string>
     <string name="pin_chars_invalid">The code pin must be composed of digits.</string>
-    <string name="pin_count_invalid">The code pin must be %1$d digits, Found count digits.</string>
+    <string name="pin_count_invalid">The code pin must be 5 digits, Found %d digits.</string>
     <string name="change_language_title">Change Language</string>
     <string name="change_language_description">Select your desired language.</string>
     <string name="biometric_title">Biometric Authentication</string>

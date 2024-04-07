@@ -191,7 +191,7 @@ fun MainField(
             color = MaterialTheme.colors.primary,
         ),
         keyboardOptions = KeyboardOptions(
-            autoCorrect = false,
+            autoCorrectEnabled = false,
             imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(

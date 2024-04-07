@@ -6,11 +6,6 @@ typealias Contacts = List<Contact>
 
 data class Contact(val names: String, val phoneNumbers: MutableList<String>) {
 
-    private val id: String
-        get() {
-            return names + phoneNumbers.toString()
-        }
-
     fun addPhoneNumber(number: String) {
         phoneNumbers.add(number)
     }

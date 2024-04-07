@@ -55,7 +55,7 @@ fun AboutScreen(
             append(textParts[0])
             addStringAnnotation(
                 tag = "URL",
-                annotation = AppLinks.cedricLinkedIn,
+                annotation = AppLinks.CEDRIC_LINKEDIN,
                 start = 0,
                 end = textParts[0].length
             )
@@ -67,7 +67,7 @@ fun AboutScreen(
             append(textParts[1])
             addStringAnnotation(
                 tag = "URL",
-                annotation = AppLinks.estherLinkedIn,
+                annotation = AppLinks.ESTHER_LINKEDIN,
                 start = textParts[0].length + 5,
                 end = text.length
             )
