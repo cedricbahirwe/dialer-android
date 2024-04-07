@@ -17,7 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,7 +82,7 @@ fun AboutScreen(
                     IconButton(onClick = {
                         navController.navigateUp()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "backIcon")
                     }
                 },
                 backgroundColor = MaterialTheme.colors.background,

@@ -18,8 +18,6 @@
     <string name="contact_us_description">Get help or ask a question.</string>
     <string name="tweet_us_title">Tweet Us</string>
     <string name="tweet_us_description">Stay up to date.</string>
-    <string name="translate_suggestion_title">Translation Suggestion</string>
-    <string name="translate_suggestion_description">Improve our localization.</string>
     <string name="common_about">About</string>
     <string name="version_information_title">Version information.</string>
     <string name="review_dialer_title">Review Dialer</string>

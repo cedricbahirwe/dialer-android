@@ -6,7 +6,6 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Phone
-import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.ui.graphics.Color
@@ -22,7 +21,6 @@ enum class SettingsOption {
     BIOMETRICS,
     CONTACT_US,
     TWEET_US,
-    TRANSLATION_SUGGESTION,
     ABOUT,
     REVIEW,
     DELETE_PIN,
@@ -65,12 +63,6 @@ enum class SettingsOption {
                 AccentBlue,
                 R.string.tweet_us_title,
                 R.string.tweet_us_description
-            )
-            TRANSLATION_SUGGESTION -> SettingsItem(
-                Icons.Rounded.Send,
-                Color.Cyan,
-                R.string.translate_suggestion_title,
-                R.string.translate_suggestion_description
             )
             ABOUT -> SettingsItem(
                 Icons.Rounded.Info,
