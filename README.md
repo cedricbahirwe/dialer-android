@@ -1,15 +1,14 @@
 # Dialer Android
 An intuitive USSD client to handle most of the common operations for you. Access Network providers' USSD codes, and simplify packages activation nightmare.
-This is Dialer for Android, the equivalent of the [iOS](https://github.com/cedricbahirwe/dialer) App.
+Dialer for Android is the equivalent of the [iOS](https://github.com/cedricbahirwe/dialer) App.
 
 Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id1591756747).
 
 ## ✨ TODOs :
 - Local Storage Implementation
-- Contacts Filtering.
 - Transaction History
 
-## Technology 🧑🏽‍💻
+## Tech Stack 🧑🏽‍💻
 
 - Kotlin
 - JetPack Compose
@@ -24,5 +23,5 @@ Download the `iOS` app on [AppStore](https://apps.apple.com/ke/app/dial-it/id159
 
 ## Authors
 
-* **Cedric Bahirwe** - *iOS & Android Engineer* - [cedricbahirwe](https://github.com/cedricbahirwe)
 * **Esther Carelle** - *Android Engineer* - [esthcarelle](https://github.com/esthcarelle)
+* **Cedric Bahirwe** - *iOS & Android Engineer* - [cedricbahirwe](https://github.com/cedricbahirwe)
