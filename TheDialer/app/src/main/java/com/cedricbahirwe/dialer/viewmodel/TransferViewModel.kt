@@ -21,12 +21,16 @@ class TransferViewModel(
     private val _uiState = MutableStateFlow(Transaction("", "", TransactionType.MERCHANT))
     val uiState: StateFlow<Transaction> = _uiState.asStateFlow()
 
-    private val phoneDialer = PhoneDialer.getInstance(context)
-    // TODO: - These two will be used when implementing the Contact Picker
     private val _uiContacts = MutableStateFlow(emptyList<Contact>())
-    private var selectedContact: Contact? = null
+    val selectedContact = MutableStateFlow(Contact.empty)
 
-    private val tracker: AnalyticsTracker = MixPanelTracker.getInstance(context)
+    private val phoneDialer by lazy {
+        PhoneDialer.getInstance(context)
+    }
+
+    private val tracker: AnalyticsTracker by lazy {
+        MixPanelTracker.getInstance(context)
+    }
 
     fun switchTransactionType() {
         _uiState.update { currentState ->
@@ -44,6 +48,22 @@ class TransferViewModel(
                 amount = cleanAmount
             )
         }
+    }
+
+    fun cleanPhoneNumber(contact: Contact) {
+        selectedContact.value = contact
+        _uiState.value.number = selectedContact.value.phoneNumbers.first()
+    }
+
+    fun clearState() {
+        selectedContact.value = Contact.empty
+        _uiState.value = Transaction("", "", TransactionType.MERCHANT)
+    }
+
+    fun getContacts(): List<Contact> = _uiContacts.value
+
+    fun setContacts(contacts: List<Contact>) {
+        _uiContacts.value = contacts
     }
 
     fun handleTransactionNumberChange(value: String) {
@@ -66,8 +86,8 @@ class TransferViewModel(
                     contact.phoneNumberList.any { it.equals(filteredValue, ignoreCase = true) }
                 }
 
-                selectedContact = if (matchedContacts.isEmpty()) {
-                    Contact("", emptyList())
+                selectedContact.value = if (matchedContacts.isEmpty()) {
+                    Contact("", mutableListOf())
                 } else {
                     matchedContacts.first()
                 }
@@ -77,7 +97,7 @@ class TransferViewModel(
 
     fun transferMoney() {
         if (!_uiState.value.isValid) return
-        println("Transaction triggered ${_uiState.value.fullCode}")
+//        println("Transaction triggered ${_uiState.value.fullCode}")
         performQuickDial(DialerQuickCode.Other(_uiState.value.fullCode))
         tracker.logTransaction(_uiState.value)
     }

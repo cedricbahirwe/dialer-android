@@ -7,4 +7,5 @@
     <color name="teal_700">#FF018786</color>
     <color name="primaryBackground">#FF000000</color>
     <color name="colorPrimary">#FFFFFFFF</color>
+    <color name="offBackground">#FFF1F5F9</color>
 </resources>

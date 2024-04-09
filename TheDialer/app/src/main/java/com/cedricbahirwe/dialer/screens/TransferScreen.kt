@@ -1,5 +1,13 @@
 package com.cedricbahirwe.dialer.screens
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,9 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -42,40 +48,59 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.isMerchantTransfer
 import com.cedricbahirwe.dialer.ui.theme.AccentBlue
+import com.cedricbahirwe.dialer.ui.theme.DialerTheme
+import com.cedricbahirwe.dialer.utilities.ContactsProvider
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModelFactory
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TransferView(
-    viewModel: TransferViewModel = viewModel(
-        factory = TransferViewModelFactory(
-            LocalContext.current
-        )
-    ),
-    contactName: String,
-    contactNumber: String,
-    openContactList: () -> Unit = {}
+    navController: NavController,
+    viewModel: TransferViewModel,
+    openContactList: () -> Unit,
 ) {
+
+    val context = LocalContext.current
+    val permission = Manifest.permission.READ_CONTACTS
+
+    fun openContactsList() {
+        val contacts = ContactsProvider.getContacts(context)
+        viewModel.setContacts(contacts)
+        openContactList.invoke()
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openContactsList()
+        } else {
+            Toast.makeText(
+                context,
+                R.string.contact_permission_denied_toast,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var selectedContactNumber by remember(contactNumber) {
-        mutableStateOf(contactNumber)
-    }
-
     val uiState by viewModel.uiState.collectAsState()
-
-    val isMerchantTransfer = remember(uiState.isMerchantTransfer) {
-        uiState.isMerchantTransfer
-    }
+    val isMerchantTransfer = uiState.isMerchantTransfer
+    val selectedContact by viewModel.selectedContact.collectAsState()
 
     val pageTitle = if (isMerchantTransfer) {
         stringResource(id = R.string.pay_merchant)
@@ -89,11 +114,31 @@ fun TransferView(
         stringResource(R.string.estimated_fee_message, uiState.estimatedFee)
     }
 
+    fun checkAndRequestContactPermission(
+        context: Context,
+        permission: String,
+        launcher: ManagedActivityResultLauncher<String, Boolean>
+    ) {
+        val permissionCheckResult = ContextCompat.checkSelfPermission(context, permission)
+        if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
+            // Open contact list because permission is already granted
+            openContactsList()
+        } else {
+            // Request a permission
+            launcher.launch(permission)
+        }
+    }
+
     DisposableEffect(Unit) {
         focusRequester.requestFocus()
         onDispose {
             keyboardController?.hide()
         }
+    }
+
+    BackHandler {
+        viewModel.clearState()
+        navController.popBackStack()
     }
 
     Box {
@@ -175,10 +220,20 @@ fun TransferView(
                 )
 
                 Spacer(Modifier.padding(vertical = 8.dp))
+                AnimatedVisibility(
+                    visible = !isMerchantTransfer
+                ) {
+                    Text(
+                        text = selectedContact.names,
+                        color = AccentBlue,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
                 OutlinedTextField(
-                    value = selectedContactNumber.replace("+", "").replace(" ", "").trim(),
+                    value = uiState.number,
                     onValueChange = {
-                        selectedContactNumber = it
                         viewModel.handleTransactionNumberChange(it)
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -223,13 +278,12 @@ fun TransferView(
             )
 
             Column(Modifier.padding(vertical = 16.dp)) {
-                // TODO: Waiting for future version?
                 AnimatedVisibility(
                     visible = !isMerchantTransfer
                 ) {
                     Button(
                         onClick = {
-                            openContactList.invoke()
+                            checkAndRequestContactPermission(context, permission, launcher)
                         },
                         Modifier
                             .fillMaxWidth()
@@ -252,7 +306,6 @@ fun TransferView(
                     }
                 }
 
-
                 Spacer(Modifier.padding(10.dp))
 
                 Button(
@@ -271,15 +324,30 @@ fun TransferView(
                     shape = RoundedCornerShape(8.dp),
                     enabled = uiState.isValid
                 ) {
-                    Text(stringResource(R.string.dial_ussd_text), Modifier.padding(start = 1.dp))
+                    Text(
+                        stringResource(R.string.dial_ussd_text),
+                        Modifier.padding(start = 1.dp)
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.weight(1.0f))
         }
     }
-
 }
 
-
-
+@Preview(showBackground = true)
+@Composable
+fun TransferPreview() {
+    DialerTheme {
+        TransferView(
+            rememberNavController(),
+            viewModel(
+                factory = TransferViewModelFactory(
+                    LocalContext.current
+                )
+            ),
+            openContactList = {}
+        )
+    }
+}

@@ -2,4 +2,5 @@
 <resources>
     <color name="primaryBackground">#FFFFFFFF</color>
     <color name="colorPrimary">#FF000000</color>
+    <color name="offBackground">#FF242526</color>
 </resources>

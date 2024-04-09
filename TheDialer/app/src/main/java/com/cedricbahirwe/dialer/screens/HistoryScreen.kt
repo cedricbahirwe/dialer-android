@@ -44,13 +44,13 @@ import com.cedricbahirwe.dialer.R
 import com.cedricbahirwe.dialer.common.TitleView
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
+import com.cedricbahirwe.dialer.ui.theme.DialerTheme
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModel
 import com.cedricbahirwe.dialer.viewmodel.HistoryViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Preview(showBackground = true)
 @Composable
 fun HistoryView(
     viewModel: HistoryViewModel = viewModel(
@@ -245,5 +245,16 @@ private fun HistoryBottomBar(estimatedTotalPrice: Int) {
             textAlign = TextAlign.Left,
             maxLines = 1
         )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun HistoryScreenPreview() {
+    val context = LocalContext.current
+    val appSettingsRepository = AppSettingsRepository.getInstance(context)
+    val viewModel = HistoryViewModel(context, appSettingsRepository)
+    DialerTheme {
+        HistoryView(viewModel = viewModel)
     }
 }
