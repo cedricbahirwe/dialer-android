@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -71,7 +69,6 @@ fun SettingsScreen(
 
 //    val biometricsState = viewModel.biometricsState.collectAsState(initial = false)
     val context = LocalContext.current
-    val codePin = viewModel.getCodePin.collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
 
 //    val reviewManager = remember {
@@ -136,18 +133,6 @@ fun SettingsScreen(
 //                        )
 //                    )
 //                }
-
-                AnimatedVisibility(visible = codePin.value != null) {
-                    Divider(startIndent = 60.dp)
-                    SettingsItemRow(SettingsOption.DELETE_PIN) {
-                        coroutineScope.launch {
-                            println("Pin is ${codePin.value!!.asString}")
-                            viewModel.removePinCode()
-                            Toast.makeText(context, "Your PIN has been deleted.", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-
 
                 Divider(startIndent = 60.dp)
                 SettingsItemRow(SettingsOption.DELETE_ALL_USSD) {

@@ -3,7 +3,10 @@ package com.cedricbahirwe.dialer.utilities
 object AppConstants {
     // Airtime USSD Dial constants
     const val MIX_PANEL_TOKEN = "9363b9aaa8571bcb0c7b69e52861c017"
-    val allowedAmountRangeForPin = 10..100
+
+    val PIN_UI_DIGITS = listOf(
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "0", "X"
+    )
 }
 
 object AppLinks {

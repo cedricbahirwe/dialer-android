@@ -157,13 +157,7 @@ fun QuickDialingView(navController: NavHostController) {
             Spacer(modifier = Modifier.weight(1f))
 
             PinView(
-                isFullMode = true,
-                showDeleteBtn = false,
                 btnSize = 70f,
-                btnColors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = Color.Gray.copy(0.4f),
-                    contentColor = Color.White
-                ),
                 onEditChanged = { handleNewPinInput(it) }
             )
 

@@ -23,7 +23,6 @@ enum class SettingsOption {
     TWEET_US,
     ABOUT,
     REVIEW,
-    DELETE_PIN,
     DELETE_ALL_USSD;
 
     fun getSettingsItem(): SettingsItem {
@@ -39,12 +38,6 @@ enum class SettingsOption {
                 Color.Green,
                 R.string.biometric_title,
                 R.string.biometric_description
-            )
-            DELETE_PIN -> SettingsItem(
-                Icons.Rounded.Delete,
-                Color.Red,
-                R.string.remove_pin_title,
-                R.string.remove_pin_description
             )
             DELETE_ALL_USSD -> SettingsItem(
                 Icons.Rounded.Delete,

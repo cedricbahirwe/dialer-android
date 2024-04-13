@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.DialerSerializer
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.utilities.LocalKeys
@@ -25,11 +23,6 @@ class AppSettingsRepository private constructor(context: Context) {
 //    val getBiometrics: Flow<Boolean> = context.dataStore.data.map { preferences ->
 //        preferences[ALLOW_BIOMETRICS] ?: false
 //    }
-
-    val getCodePin: Flow<CodePin?> = context.dataStore.data.map {
-        val item = it[PIN_CODE]
-        if (item.isNullOrEmpty()) null else CodePin(item)
-    }
 
     val showWelcomeView: Flow<Boolean> = context.dataStore.data.map {
         it[SHOW_WELCOME_VIEW] ?: true
@@ -57,18 +50,6 @@ class AppSettingsRepository private constructor(context: Context) {
     suspend fun saveWelcomeStatus(status: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[SHOW_WELCOME_VIEW] = status
-        }
-    }
-
-    suspend fun saveCodePin(value: CodePin) {
-        context.dataStore.edit {
-            it[PIN_CODE] = value.asString
-        }
-    }
-
-    suspend fun removePinCode() {
-        context.dataStore.edit {
-            it[PIN_CODE] = ""
         }
     }
 
@@ -160,7 +141,6 @@ class AppSettingsRepository private constructor(context: Context) {
 
         private val Context.dataStore by preferencesDataStore("appSettings")
 //        private val ALLOW_BIOMETRICS = booleanPreferencesKey(LocalKeys.ALL)
-        private val PIN_CODE = stringPreferencesKey(LocalKeys.PIN_CODE)
 //        private  val SYNC_DATE = stringPreferencesKey(LocalKeys.lastSyncDate)
 
         private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.CUSTOM_USSD_CODES)
