@@ -1,26 +1,24 @@
 package com.cedricbahirwe.dialer.utilities
 
 object LocalKeys {
-    const val appUniqueID = "appUniqueIdentifier"
-    const val recentCodes = "recentCodes"
-    const val pinCode = "pinCode"
-    const val lastSyncDate = "lastSyncDate"
+    const val RECENT_CODES = "recentCodes"
+    const val PIN_CODE = "pinCode"
 
     // Onboard
-    const val showWelcomeView = "showWelcomeView"
+    const val SHOW_WELCOME_VIEW = "showWelcomeView"
 
     // Electricity
-    const val meterNumbers = "meterNumbers"
+//    const val meterNumbers = "meterNumbers"
 
     // Biometrics
-    const val allowBiometrics = "allowBiometrics"
+//    const val allowBiometrics = "allowBiometrics"
 
     // Custom USSD codes
-    const val customUSSDCodes = "customUSSDCodes"
+    const val CUSTOM_USSD_CODES = "customUSSDCodes"
 
     // Last Date the app asked the user to update
-    const val lastAskedDateToUpdate = "lastAskedDateToUpdate"
+//    const val lastAskedDateToUpdate = "lastAskedDateToUpdate"
 
     // Daily local notification scheduled
-    const val dailyNotificationEnabled = "dailyNotificationEnabled"
+//    const val dailyNotificationEnabled = "dailyNotificationEnabled"
 }

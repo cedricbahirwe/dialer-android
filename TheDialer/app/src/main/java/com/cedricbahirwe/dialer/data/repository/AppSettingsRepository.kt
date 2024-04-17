@@ -10,23 +10,21 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.DialerSerializer
 import com.cedricbahirwe.dialer.data.RecentDialCode
-import com.cedricbahirwe.dialer.data.USSDCode
 import com.cedricbahirwe.dialer.utilities.LocalKeys
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 private typealias RecentCodes = List<RecentDialCode>
-private typealias USSDCodes = List<USSDCode>
 
 class AppSettingsRepository private constructor(context: Context) {
 
     private val context =
         context.applicationContext
 
-    val getBiometrics: Flow<Boolean> = context.dataStore.data.map { preferences ->
-        preferences[ALLOW_BIOMETRICS] ?: false
-    }
+//    val getBiometrics: Flow<Boolean> = context.dataStore.data.map { preferences ->
+//        preferences[ALLOW_BIOMETRICS] ?: false
+//    }
 
     val getCodePin: Flow<CodePin?> = context.dataStore.data.map {
         val item = it[PIN_CODE]
@@ -46,15 +44,15 @@ class AppSettingsRepository private constructor(context: Context) {
         items.map { item -> DialerSerializer.fromJson(item) }
     }
 
-    val getUSSDCodes: Flow<Set<String>> = context.dataStore.data.map {
-        it[ALL_USSD_CODES] ?: emptySet()
-    }
+//    val getUSSDCodes: Flow<Set<String>> = context.dataStore.data.map {
+//        it[ALL_USSD_CODES] ?: emptySet()
+//    }
 
-    suspend fun saveBiometricsStatus(status: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[ALLOW_BIOMETRICS] = status
-        }
-    }
+//    suspend fun saveBiometricsStatus(status: Boolean) {
+//        context.dataStore.edit { preferences ->
+//            preferences[ALLOW_BIOMETRICS] = status
+//        }
+//    }
 
     suspend fun saveWelcomeStatus(status: Boolean) {
         context.dataStore.edit { preferences ->
@@ -137,11 +135,11 @@ class AppSettingsRepository private constructor(context: Context) {
             preferences[RECENT_CODES] = resultItemsSet
         }
     }
-    suspend fun saveRecentCodes(codes: RecentCodes) {
-        context.dataStore.edit {
-            it[RECENT_CODES] = codes.map { item -> DialerSerializer.toJson(item) }.toSet()
-        }
-    }
+//    suspend fun saveRecentCodes(codes: RecentCodes) {
+//        context.dataStore.edit {
+//            it[RECENT_CODES] = codes.map { item -> DialerSerializer.toJson(item) }.toSet()
+//        }
+//    }
 
 //    suspend fun saveUSSDCode(ussd: USSDCode) {
 //        context.dataStore.edit {
@@ -161,14 +159,14 @@ class AppSettingsRepository private constructor(context: Context) {
         private var INSTANCE: AppSettingsRepository? = null
 
         private val Context.dataStore by preferencesDataStore("appSettings")
-        private val ALLOW_BIOMETRICS = booleanPreferencesKey(LocalKeys.allowBiometrics)
-        private val PIN_CODE = stringPreferencesKey(LocalKeys.pinCode)
+//        private val ALLOW_BIOMETRICS = booleanPreferencesKey(LocalKeys.ALL)
+        private val PIN_CODE = stringPreferencesKey(LocalKeys.PIN_CODE)
 //        private  val SYNC_DATE = stringPreferencesKey(LocalKeys.lastSyncDate)
 
-        private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.customUSSDCodes)
-        private  val RECENT_CODES = stringSetPreferencesKey(LocalKeys.recentCodes)
+        private  val ALL_USSD_CODES = stringSetPreferencesKey(LocalKeys.CUSTOM_USSD_CODES)
+        private  val RECENT_CODES = stringSetPreferencesKey(LocalKeys.RECENT_CODES)
 
-        private val SHOW_WELCOME_VIEW = booleanPreferencesKey(LocalKeys.showWelcomeView)
+        private val SHOW_WELCOME_VIEW = booleanPreferencesKey(LocalKeys.SHOW_WELCOME_VIEW)
 //        const val MAX_DAYS_BEFORE_SYNC = 30
 
         fun getInstance(context: Context): AppSettingsRepository {

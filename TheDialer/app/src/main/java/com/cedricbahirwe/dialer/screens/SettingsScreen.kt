@@ -28,7 +28,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -88,7 +88,7 @@ fun SettingsScreen(
                     IconButton(onClick = {
                         navController.navigateUp()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "backIcon")
                     }
                 },
                 backgroundColor = MaterialTheme.colors.background,
@@ -160,11 +160,11 @@ fun SettingsScreen(
 
             Section(R.string.reach_out) {
                 SettingsItemRow(SettingsOption.CONTACT_US) {
-                    openWebLink(context, AppLinks.emailLink)
+                    openWebLink(context, AppLinks.CONTACT_EMAIL_LINK)
                 }
                 Divider(startIndent = 60.dp)
                 SettingsItemRow(SettingsOption.TWEET_US) {
-                    openWebLink(context, AppLinks.dialerTwitter)
+                    openWebLink(context, AppLinks.DIALER_TWITTER)
                 }
             }
 
@@ -286,7 +286,7 @@ fun TermsAndConditions() {
                 text = "Terms & Conditions",
                 style = TextStyle.Default.copy(color = AccentBlue, fontWeight = FontWeight.Bold),
                 modifier = Modifier.clickable {
-                    openWebLink(context, AppLinks.privacyPolicy)
+                    openWebLink(context, AppLinks.APP_PRIVACY_POLICY)
                 }
             )
             Text(
@@ -297,7 +297,7 @@ fun TermsAndConditions() {
                 text = "Privacy Policy.",
                 style = TextStyle.Default.copy(color = AccentBlue, fontWeight = FontWeight.Bold),
                 modifier = Modifier.clickable {
-                    openWebLink(context, AppLinks.privacyPolicy)
+                    openWebLink(context, AppLinks.APP_PRIVACY_POLICY)
                 }
             )
         }

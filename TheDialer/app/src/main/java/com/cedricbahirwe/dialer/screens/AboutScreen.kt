@@ -17,7 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +55,7 @@ fun AboutScreen(
             append(textParts[0])
             addStringAnnotation(
                 tag = "URL",
-                annotation = AppLinks.cedricLinkedIn,
+                annotation = AppLinks.CEDRIC_LINKEDIN,
                 start = 0,
                 end = textParts[0].length
             )
@@ -67,7 +67,7 @@ fun AboutScreen(
             append(textParts[1])
             addStringAnnotation(
                 tag = "URL",
-                annotation = AppLinks.estherLinkedIn,
+                annotation = AppLinks.ESTHER_LINKEDIN,
                 start = textParts[0].length + 5,
                 end = text.length
             )
@@ -82,7 +82,7 @@ fun AboutScreen(
                     IconButton(onClick = {
                         navController.navigateUp()
                     }) {
-                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "backIcon")
                     }
                 },
                 backgroundColor = MaterialTheme.colors.background,

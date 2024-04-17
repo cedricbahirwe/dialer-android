@@ -4,8 +4,8 @@ import kotlin.random.Random
 
 sealed class PreviewContent {
     companion object {
-        private val examplePurchaseDetail = PurchaseDetailModel(amount = 100)
-        val exampleRecentCode = RecentDialCode(detail = examplePurchaseDetail)
+//        private val examplePurchaseDetail = PurchaseDetailModel(amount = 100)
+//        val exampleRecentCode = RecentDialCode(detail = examplePurchaseDetail)
 
         // Function to generate Rwandan phone numbers
         private fun generateRwandanPhoneNumber(): String {

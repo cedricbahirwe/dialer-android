@@ -78,12 +78,13 @@ fun DashBoardContainer(
 
     val purchaseSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
+        skipHalfExpanded = true,
+        confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
 
     val mySpaceSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { false }
+        confirmValueChange = { false }
     )
 
     val coroutineScope = rememberCoroutineScope()
@@ -156,7 +157,7 @@ fun DashBoardContainer(
                         viewModel.trackAirtimeOpen()
                         coroutineScope.launch {
                             isMySpaceFlowActive.value = false
-                            purchaseSheetState.animateTo(ModalBottomSheetValue.Expanded)
+                            purchaseSheetState.show()
                         }
                     }
                     Spacer(modifier = Modifier.width(16.dp))
