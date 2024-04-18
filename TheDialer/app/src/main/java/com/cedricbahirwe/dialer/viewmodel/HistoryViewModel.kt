@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cedricbahirwe.dialer.data.RecentDialCode
 import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class HistoryViewModel(
@@ -20,7 +19,6 @@ class HistoryViewModel(
         PhoneDialer.getInstance(context)
     }
 
-    private val codePin = settings.getCodePin
     // Retrieve all locally stored recent codes.
     val recentCodes = settings.getRecentCodes
 
@@ -30,7 +28,7 @@ class HistoryViewModel(
     /// - Parameter recentCode: the row code to be performed.
     fun performRecentDialing(recentCode: RecentDialCode) {
         viewModelScope.launch {
-            val fullCode = recentCode.detail.getFullUSSDCode(codePin.firstOrNull())
+            val fullCode = recentCode.detail.getFullUSSDCode()
             phoneDialer.dial(fullCode) {
                 when (it) {
                     true -> Log.d("PhoneDialer", "Successfully Dialed : $fullCode")

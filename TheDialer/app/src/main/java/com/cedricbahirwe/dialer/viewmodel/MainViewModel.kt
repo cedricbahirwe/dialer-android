@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.cedricbahirwe.dialer.data.CodePin
 import com.cedricbahirwe.dialer.data.DialingError
 import com.cedricbahirwe.dialer.data.PurchaseDetailModel
 import com.cedricbahirwe.dialer.data.RecentDialCode
@@ -12,20 +11,11 @@ import com.cedricbahirwe.dialer.data.repository.AppSettingsRepository
 import com.cedricbahirwe.dialer.service.AnalyticsTracker
 import com.cedricbahirwe.dialer.service.AppAnalyticsEventType
 import com.cedricbahirwe.dialer.service.MixPanelTracker
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-
-enum class EditedField {
-    AMOUNT, PIN
-}
-data class PurchaseUiState (
-    val amount: Int = 0,
-    val pin: String = "",
-    val editedField: EditedField = EditedField.AMOUNT
-)
 
 open class MainViewModel(
     context: Context,
@@ -41,14 +31,12 @@ open class MainViewModel(
 
 //    val biometricsState = settings.getBiometrics
     val showWelcomeState = settings.showWelcomeView
-    val getCodePin = settings.getCodePin
 //    val allUSSDCodes = settings.getUSSDCodes
 
-    private val _uiState = MutableStateFlow(PurchaseUiState())
-    val uiState: StateFlow<PurchaseUiState> = _uiState.asStateFlow()
+    private val _airtimeState = MutableStateFlow(0)
+    val airtimeState = _airtimeState.asStateFlow()
 
-    val hasValidAmount: Boolean get() = _uiState.value.amount > 0
-    val isPinCodeValid: Boolean get() = _uiState.value.pin.length == 5
+    val hasValidAmount: Flow<Boolean> get() = airtimeState.map { it > 0 }
 
     fun finishOnBoarding() {
         viewModelScope.launch {
@@ -56,20 +44,8 @@ open class MainViewModel(
         }
     }
 
-    fun shouldShowDeleteBtn() : Boolean {
-        return when (_uiState.value.editedField) {
-            EditedField.AMOUNT -> {
-                hasValidAmount
-            }
-
-            EditedField.PIN-> {
-                _uiState.value.pin.isNotEmpty()
-            }
-        }
-    }
-
     fun handleNewKey(value: String) {
-        var input = if (_uiState.value.editedField == EditedField.PIN) _uiState.value.pin else _uiState.value.amount.toString()
+        var input = _airtimeState.value.toString()
 
         if (value == "X") {
             if (input.isNotEmpty())
@@ -82,82 +58,33 @@ open class MainViewModel(
     }
 
     private fun handleNewInput(value: String) {
-        when (_uiState.value.editedField) {
-            EditedField.AMOUNT -> {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        amount = value.toIntOrNull() ?: 0
-                    )
-                }
-            }
-            EditedField.PIN-> {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        pin = value.take(5)
-                    )
-                }
-            }
-        }
-    }
-
-    fun updateEditedField(newField: EditedField) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                editedField = newField
-            )
-        }
+        _airtimeState.value = value.toIntOrNull() ?: 0
     }
 
 //    suspend fun storeCode(code: RecentDialCode) {
 //        settings.saveRecentCode(code)
 //    }
 
-    private fun getOptionalCodePin(): CodePin? {
-        return try {
-            CodePin(_uiState.value.pin)
-        } catch (e: Exception) {
-            println("Found Error with Pin")
-            e.printStackTrace()
-            return null
-        }
-    }
-
-    fun getCodePin(): CodePin {
-        return try {
-            CodePin(_uiState.value.pin)
-        } catch (e: Exception) {
-            println("Found Error with Pin")
-            e.printStackTrace()
-            throw  e
-        }
-    }
-
     fun confirmPurchase() {
-        val purchase = PurchaseDetailModel(_uiState.value.amount)
+        val purchase = PurchaseDetailModel(_airtimeState.value)
 
-        println("Failure here ${_uiState.value}")
-//        return;
         dialCode(purchase) { success, failure ->
             viewModelScope.launch {
                 if (success != null) {
                     settings.saveRecentCode(RecentDialCode(detail = purchase))
-                    _uiState.update {
-                        it.copy(amount = 0)
-                    }
+                    _airtimeState.value = 0
                 } else if (failure != null) {
                     println("Failure here ${failure.message}")
 //                    Toast.makeText("", Toast.LENGTH_SHORT)
                 }
             }
         }
-
-        println("Purchasing ${purchase.getFullUSSDCode(null)}")
     }
     private fun dialCode(
         purchase: PurchaseDetailModel,
         completion: (success: String?, failure: DialingError?) -> Unit
     ) {
-        val fullCode = purchase.getFullUSSDCode(getOptionalCodePin())
+        val fullCode = purchase.getFullUSSDCode()
         phoneDialer.dial(fullCode) {
             when (it) {
                 true -> completion("Successfully Dialed", null)
@@ -165,12 +92,6 @@ open class MainViewModel(
             }
         }
     }
-
-//    private fun getFullUSSDCode(purchase: PurchaseDetailModel): String {
-//        return purchase.getFullUSSDCode(getCodePin())
-//    }
-
-
 
     /// Perform a quick dialing from the `History View Row.`
     /// - Parameter recentCode: the row code to be performed.
@@ -201,11 +122,6 @@ open class MainViewModel(
 //        settings.saveUSSDCodes(codes)
 //    }
 
-    // Local Storage
-    suspend fun saveCodePin(codePin: CodePin) {
-        settings.saveCodePin(codePin)
-    }
-
     private suspend fun saveWelcomeStatus(newValue: Boolean) {
         settings.saveWelcomeStatus(newValue)
     }
@@ -213,14 +129,6 @@ open class MainViewModel(
     suspend fun removeAllUSSDCodes() {
         settings.removeAllUSSDCodes()
     }
-
-    suspend fun removePinCode() {
-        settings.removePinCode()
-        _uiState.update {
-            it.copy(pin = "")
-        }
-    }
-
 
     fun trackAirtimeOpen() {
         tracker.logEvent(AppAnalyticsEventType.AIRTIME_OPENED)
