@@ -10,8 +10,6 @@ enum class NavRoute(val path: String) {
 
     History("History"),
 
-    QuickDialing("Quick Dialing"),
-
     Settings("Settings"),
 
     AboutApp("About"),
