@@ -20,7 +20,6 @@
     <string name="version_information_title">Version information.</string>
     <string name="review_dialer_title">Review Dialer</string>
     <string name="review_dialer_subtitle">Let us know how we are doing.</string>
-    <string name="title_activity_quick_dialing">QuickDialingActivity</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="send_screen">Send money screen</string>
     <string name="pin_view">Pin View</string>
@@ -30,7 +29,6 @@
     <string name="nav_title">Navigation screen</string>
     <string name="roll">Roll</string>
     <string name="common_amount">Amount</string>
-    <string name="quick_dial">Quick Dial</string>
     <string name="pay_merchant">Pay Merchant</string>
     <string name="pay_user">Switch to User</string>
     <string name="show_merchant_code_warning">The code should be a 5–6 digits number</string>
@@ -50,7 +48,6 @@
     <string name="buy_airtime">Buy airtime</string>
     <string name="transfer_pay">Transfer/Pay</string>
     <string name="my_space">My Space</string>
-    <string name="quick_dial_icon">Quick Dial icon</string>
     <string name="coming_soon">Coming Soon</string>
     <string name="reach_out">Reach Out</string>
     <string name="common_colophon">Colophon</string>

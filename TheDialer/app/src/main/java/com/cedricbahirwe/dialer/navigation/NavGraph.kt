@@ -17,7 +17,6 @@ import com.cedricbahirwe.dialer.screens.ContactsList
 import com.cedricbahirwe.dialer.screens.DashBoardContainer
 import com.cedricbahirwe.dialer.screens.HistoryView
 import com.cedricbahirwe.dialer.screens.PurchaseDetailView
-import com.cedricbahirwe.dialer.screens.QuickDialingView
 import com.cedricbahirwe.dialer.screens.SettingsScreen
 import com.cedricbahirwe.dialer.screens.TransferView
 import com.cedricbahirwe.dialer.viewmodel.TransferViewModel
@@ -33,10 +32,30 @@ fun NavGraph(
     NavHost(
         navController = navController,
         startDestination = NavRoute.HomeScreen.path,
-        enterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(50)) },
-        exitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(50)) },
-        popEnterTransition = { slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(500)) },
-        popExitTransition = { slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(500)) }
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(50)
+            )
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(50)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(500)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(500)
+            )
+        }
     ) {
 
         addHomeScreen(navController, this)
@@ -46,8 +65,6 @@ fun NavGraph(
         addSendScreen(navController, this, transferViewModel)
 
         addHistoryScreen(this)
-
-        addQuickDialingScreen(navController, this)
 
         addSettingsScreen(navController, this)
 
@@ -76,15 +93,6 @@ private fun addAirtimePurchaseScreen(navGraphBuilder: NavGraphBuilder) {
     }
 }
 
-private fun addQuickDialingScreen(
-    navController: NavHostController,
-    navGraphBuilder: NavGraphBuilder
-) {
-    navGraphBuilder.composable(NavRoute.QuickDialing.path) {
-        QuickDialingView(navController = navController)
-    }
-}
-
 private fun addHistoryScreen(navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.History.path) {
         HistoryView()
@@ -96,7 +104,7 @@ private fun addSendScreen(
     navGraphBuilder: NavGraphBuilder,
     transferViewModel: TransferViewModel,
 
-) {
+    ) {
     navGraphBuilder.composable(route = NavRoute.Send.path) {
         TransferView(navController, transferViewModel, openContactList = {
             navController.navigate(NavRoute.ContactsList.path)
